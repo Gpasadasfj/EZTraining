@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     # External apps
     'corsheaders',
+    "rest_framework",
 ]
 
 if DEBUG:
@@ -163,3 +164,10 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 # CORS
 CORS_ALLOWED_ORIGINS= ["http://localhost:5173"]
+
+# DRF
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
