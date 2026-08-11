@@ -44,7 +44,13 @@ INSTALLED_APPS = [
 
     # External apps
     'corsheaders',
-    "rest_framework",
+    'rest_framework',
+
+    # My apps
+    'users',
+    'exercises',
+    'routines',
+    'workouts',
 ]
 
 if DEBUG:
@@ -77,11 +83,10 @@ INTERNAL_IPS = ['127.0.0.1']
 
 ROOT_URLCONF = 'config.urls'
 
-TEMPLATES_DIR = BASE_DIR / "templates"
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATES_DIR],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -171,3 +176,6 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
 }
+
+# AbstractUser
+AUTH_USER_MODEL = "users.User"
