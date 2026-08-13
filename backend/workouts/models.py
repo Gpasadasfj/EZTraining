@@ -1,3 +1,78 @@
 from django.db import models
 
-# Create your models here.
+from exercises.models import Exercise
+from routines.models import RoutineDay
+from users.models import User
+
+class Workout(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    routine_day = models.ForeignKey(
+        RoutineDay,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True
+    )
+    started_at = models.DateTimeField(auto_now_add=True)
+    finished_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+    duration = models.DurationField(
+        null=True,
+        blank=True
+    )
+    completed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class WorkoutExercise(models.Model):
+    workout = models.ForeignKey(
+        Workout,
+        on_delete=models.CASCADE
+    )
+    exercise = models.ForeignKey(
+        Exercise,
+        on_delete=models.CASCADE
+    )
+    order = models.PositiveIntegerField()
+    target_sets = models.PositiveIntegerField()
+    min_reps = models.PositiveIntegerField()
+    max_reps = models.PositiveIntegerField()
+    target_rir = models.PositiveIntegerField()
+    rest_time = models.PositiveIntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["workout", "order"],
+                name="unique_set_order_per_workout",
+            )
+        ]
+
+class WorkoutSet(models.Model):
+    workout_exercise = models.ForeignKey(
+        WorkoutExercise,
+        on_delete=models.CASCADE
+    )
+    set_number = models.PositiveSmallIntegerField()
+    weight = models.DecimalField(
+        max_digits=5,
+        decimal_places=2
+    )
+    reps = models.DecimalField(
+        max_digits=6,
+        decimal_places=2
+    )
+    rir = models.PositiveIntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["workout_exercise", "set_number"],
+                name="unique_set_number_per_exercise",
+            )
+        ]
+
