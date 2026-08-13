@@ -13,6 +13,9 @@ class Routine(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.name
+
 class RoutineDay(models.Model):
     routine = models.ForeignKey(
         Routine,
@@ -22,6 +25,9 @@ class RoutineDay(models.Model):
     order = models.PositiveSmallIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         constraints = [
@@ -48,6 +54,9 @@ class RoutineExercise(models.Model):
     rest_time = models.PositiveSmallIntegerField() # Seconds
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.routine_day.name} - {self.exercise.name_es}"
 
     class Meta:
         constraints = [

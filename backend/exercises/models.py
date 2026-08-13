@@ -5,15 +5,24 @@ class BodyPart(models.Model):
     name_en = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
 
+    def __str__(self):
+        return self.name_es
+
 class Muscle(models.Model):
     name_es = models.CharField(max_length=100)
     name_en = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
 
+    def __str__(self):
+        return self.name_es
+
 class Equipment(models.Model):
     name_es = models.CharField(max_length=100)
     name_en = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.name_es
 
 class Exercise(models.Model):
     source_id = models.PositiveIntegerField(
@@ -45,3 +54,6 @@ class Exercise(models.Model):
     equipment = models.ManyToManyField(
         Equipment
     )
+
+    def __str__(self):
+        return self.name_es
