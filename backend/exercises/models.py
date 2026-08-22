@@ -25,7 +25,8 @@ class Equipment(models.Model):
         return self.name_es
 
 class Exercise(models.Model):
-    source_id = models.PositiveIntegerField(
+    source_id = models.CharField(
+        max_length=64,
         unique=True,
         blank=True,
         null=True
@@ -36,6 +37,7 @@ class Exercise(models.Model):
     instructions_es = models.JSONField()
     instructions_en = models.JSONField()
     image = models.ImageField(
+        upload_to="exercises/",
         null=True,
         blank=True
     )
@@ -49,10 +51,12 @@ class Exercise(models.Model):
     )
     secondary_muscles = models.ManyToManyField(
         Muscle,
-        related_name="secondary_muscles"
+        related_name="secondary_muscles",
+        blank=True
     )
     equipment = models.ManyToManyField(
-        Equipment
+        Equipment,
+        blank=True
     )
 
     def __str__(self):

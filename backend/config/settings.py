@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # External apps
     'corsheaders',
     'rest_framework',
+    "rest_framework_simplejwt.token_blacklist",
 
     # My apps
     'users',
@@ -175,6 +176,9 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication"
+    ]
 }
 
 # AbstractUser
