@@ -23,10 +23,17 @@ from rest_framework_simplejwt.views import (
 
 import debug_toolbar
 
+from config import settings
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/token/', TokenObtainPairView.as_view()),
     path('api/token/refresh/', TokenRefreshView.as_view()),
     path('api/users/', include("users.urls")),
-    path('__debug__/', include(debug_toolbar.urls)),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path("api-auth/", include("rest_framework.urls")),
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]

@@ -1,11 +1,16 @@
 from rest_framework import status
 from rest_framework.decorators import APIView
+from rest_framework.generics import DestroyAPIView, ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import RegisterSerializer, LogoutSerializer, UserSerializer
+from core.permissions import IsOwner
+from core.mixins import OwnerCreateMixin
+from users.models import WeightLog
+
+from .serializers import RegisterSerializer, LogoutSerializer, UserSerializer, WeightLogSerializer
 
 class RegisterView(APIView):
 
@@ -61,3 +66,16 @@ class MeView(APIView):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+class WeightLogView(OwnerCreateMixin, ListCreateAPIView):
+    serializer_class = WeightLogSerializer
+
+    def get_queryset(self):
+        return WeightLog.objects.filter(user=self.request.user)
+
+class WeightLogDeleteView(DestroyAPIView):
+    serializer_class = WeightLogSerializer
+    permission_classes = [IsOwner]
+
+    def get_queryset(self):
+        return WeightLog.objects.filter(user=self.request.user)

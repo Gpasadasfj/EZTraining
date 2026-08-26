@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import User
+from .models import User, WeightLog
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -42,7 +42,6 @@ class UserSerializer(serializers.ModelSerializer):
         ]
 
         read_only_fields = [
-            "id",
             "username",
             "email",
         ]
@@ -70,3 +69,16 @@ class UserSerializer(serializers.ModelSerializer):
             )
 
         return value
+
+class WeightLogSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = WeightLog
+        fields = [
+            "id",
+            "weight",
+            "recorded_at",
+            ]
+        read_only_fields = [
+            "recorded_at"
+        ]
