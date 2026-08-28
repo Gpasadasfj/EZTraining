@@ -75,7 +75,7 @@ class WeightLogView(OwnerCreateMixin, ListCreateAPIView):
 
 class WeightLogDeleteView(DestroyAPIView):
     serializer_class = WeightLogSerializer
-    permission_classes = [IsOwner]
+    permission_classes = [IsAuthenticated, IsOwner] 
 
     def get_queryset(self):
         return WeightLog.objects.filter(user=self.request.user)

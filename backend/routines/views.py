@@ -1,3 +1,51 @@
-from django.shortcuts import render
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
+from django.shortcuts import get_object_or_404
 
-# Create your views here.
+from .permissions import IsRoutineDayOwner, IsRoutineExerciseOwner
+from core.permissions import IsOwner
+from core.mixins import OwnerCreateMixin
+from .models import Routine, RoutineDay, RoutineExercise
+from .serializers import RoutineDaySerializer, RoutineExerciseSerializer, RoutineSerializer
+
+
+class RoutineViewSet(OwnerCreateMixin, ModelViewSet):
+    serializer_class = RoutineSerializer
+    permission_classes = [IsAuthenticated, IsOwner] 
+    
+    def get_queryset(self):
+        return Routine.objects.filter(user=self.request.user)
+
+class RoutineDayViewSet(ModelViewSet):
+    serializer_class = RoutineDaySerializer
+    permission_classes = [IsAuthenticated, IsRoutineDayOwner]
+
+    def perform_create(self, serializer):
+        routine = get_object_or_404(Routine, pk=self.kwargs["routine_pk"], user=self.request.user)
+        serializer.save(routine=routine)
+
+    def get_queryset(self):
+        return RoutineDay.objects.filter(
+            routine__id=self.kwargs["routine_pk"],
+            routine__user=self.request.user
+            )
+
+class RoutineExerciseViewSet(ModelViewSet):
+    serializer_class = RoutineExerciseSerializer
+    permission_classes = [IsAuthenticated, IsRoutineExerciseOwner]
+
+    def perform_create(self, serializer):
+        routine_day = get_object_or_404(
+            RoutineDay, 
+            pk=self.kwargs["routine_day_pk"], 
+            routine__user=self.request.user,
+            routine_id=self.kwargs["routine_pk"]
+        )
+        serializer.save(routine_day=routine_day)
+
+    def get_queryset(self):
+        return RoutineExercise.objects.filter(
+            routine_day=self.kwargs["routine_day_pk"],
+            routine_day__routine=self.kwargs["routine_pk"],
+            routine_day__routine__user=self.request.user,
+        )

@@ -15,6 +15,8 @@ class Workout(models.Model):
         blank=True,
         null=True
     )
+    routine_name = models.CharField(max_length=150, blank=True)
+    routine_day_name = models.CharField(max_length=150, blank=True)
     started_at = models.DateTimeField(auto_now_add=True)
     finished_at = models.DateTimeField(
         null=True,
