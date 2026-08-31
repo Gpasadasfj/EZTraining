@@ -62,13 +62,21 @@ class WorkoutSet(models.Model):
     set_number = models.PositiveSmallIntegerField()
     weight = models.DecimalField(
         max_digits=5,
-        decimal_places=2
+        decimal_places=2,
+        blank=True,
+        null=True
+
     )
     reps = models.DecimalField(
         max_digits=6,
-        decimal_places=2
+        decimal_places=2,
+        blank=True,
+        null=True
     )
-    rir = models.PositiveIntegerField()
+    rir = models.PositiveIntegerField(
+        blank=True,
+        null=True
+    )
 
     class Meta:
         constraints = [

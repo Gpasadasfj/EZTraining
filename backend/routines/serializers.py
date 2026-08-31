@@ -22,6 +22,8 @@ class RoutineSerializer(serializers.ModelSerializer):
         ]
 
 class RoutineDaySerializer(serializers.ModelSerializer):
+    order = serializers.IntegerField(required=False, min_value=0)
+
 
     class Meta:
         model = RoutineDay
@@ -30,6 +32,8 @@ class RoutineDaySerializer(serializers.ModelSerializer):
             "routine",
             "name",
             "order",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = [
             "routine",
@@ -38,6 +42,8 @@ class RoutineDaySerializer(serializers.ModelSerializer):
         ]
 
 class RoutineExerciseSerializer(serializers.ModelSerializer):
+    order = serializers.IntegerField(required=False, min_value=0)
+
 
     class Meta:
         model = RoutineExercise

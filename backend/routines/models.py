@@ -40,11 +40,12 @@ class RoutineDay(models.Model):
 class RoutineExercise(models.Model):
     routine_day = models.ForeignKey(
         RoutineDay,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="routine_exercises"
     )
     exercise = models.ForeignKey(
         Exercise,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
     )
     order = models.PositiveSmallIntegerField()
     target_sets = models.PositiveSmallIntegerField()
