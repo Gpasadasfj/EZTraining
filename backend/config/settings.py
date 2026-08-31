@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     # External apps
     'corsheaders',
     'rest_framework',
-    "rest_framework_simplejwt.token_blacklist",
+    'rest_framework_simplejwt.token_blacklist',
+    'django_filters',
 
     # My apps
     'users',
@@ -173,12 +174,17 @@ CORS_ALLOWED_ORIGINS= ["http://localhost:5173"]
 
 # DRF
 REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ]
 }
 
 if DEBUG:

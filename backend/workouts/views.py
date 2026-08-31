@@ -45,7 +45,9 @@ class WorkoutViewSet(ModelViewSet):
         workout.duration = duration
         workout.completed = True
         workout.save(
-            update_fields=["finished_at", "duration", "completed"]
+            update_fields=[
+                "finished_at", "duration", "completed", "updated_at"
+                ]
             )
 
         # Devolver una respuesta
