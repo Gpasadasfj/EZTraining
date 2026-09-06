@@ -9,14 +9,12 @@ class RoutineSerializer(serializers.ModelSerializer):
         model = Routine
         fields = [
             "id",
-            "user",
             "name",
             "description",
             "created_at",
             "updated_at",
         ]
         read_only_fields = [
-            "user",
             "created_at",
             "updated_at",
         ]
