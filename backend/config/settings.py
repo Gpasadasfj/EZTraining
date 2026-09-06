@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'exercises',
     'routines',
     'workouts',
+    'dashboard',
 ]
 
 if DEBUG:
