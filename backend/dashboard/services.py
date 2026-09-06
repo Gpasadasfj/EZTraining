@@ -117,14 +117,14 @@ def get_personal_records(user):
     for body_part in body_parts:
         record = WorkoutSet.objects.filter(
             workout_exercise__workout__user=user,
-            workout_exercise__exercise__body_part__name_es=body_part,
+            workout_exercise__exercise__body_part__slug=body_part,
         ).order_by("-weight").first()
 
         if record is None:
             data[body_part] = {}
         else:
             data[body_part] = {
-                "body_part": record.workout_exercise.exercise.body_part,
+                "body_part": record.workout_exercise.exercise.body_part.name_es,
                 "exercise": record.workout_exercise.exercise.name_es,
                 "weight": record.weight,
                 "reps": record.reps,
