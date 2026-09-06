@@ -77,3 +77,74 @@ class WeightLogViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(WeightLog.objects.filter(pk=weight_log.pk).exists())
+
+class RegisterViewTests(APITestCase):
+    def test_can_register_with_valid_data(self):
+        url = reverse("register")
+
+        response = self.client.post(url, {
+            "username": "newuser",
+            "email": "newuser@test.com",
+            "password": "supersecret123",
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(User.objects.filter(username="newuser").exists())
+
+    def test_password_is_hashed_not_stored_in_plain_text(self):
+        url = reverse("register")
+
+        self.client.post(url, {
+            "username": "newuser",
+            "email": "newuser@test.com",
+            "password": "supersecret123",
+        })
+
+        user = User.objects.get(username="newuser")
+        self.assertNotEqual(user.password, "supersecret123")
+        self.assertTrue(user.check_password("supersecret123"))
+
+    def test_password_is_not_returned_in_the_response(self):
+        url = reverse("register")
+
+        response = self.client.post(url, {
+            "username": "newuser",
+            "email": "newuser@test.com",
+            "password": "supersecret123",
+        })
+
+        self.assertNotIn("password", response.data)
+
+    def test_cannot_register_with_duplicate_email(self):
+        User.objects.create_user(username="existing", email="dup@test.com", password="testpass123")
+        url = reverse("register")
+
+        response = self.client.post(url, {
+            "username": "another",
+            "email": "dup@test.com",
+            "password": "supersecret123",
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_cannot_register_with_duplicate_username(self):
+        User.objects.create_user(username="existing", email="first@test.com", password="testpass123")
+        url = reverse("register")
+
+        response = self.client.post(url, {
+            "username": "existing",
+            "email": "second@test.com",
+            "password": "supersecret123",
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_cannot_register_without_password(self):
+        url = reverse("register")
+
+        response = self.client.post(url, {
+            "username": "newuser",
+            "email": "newuser@test.com",
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
