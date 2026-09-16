@@ -1,13 +1,20 @@
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
+import Login from './pages/login'
+import Dashboard from './pages/dashboard'
+import ProtectedRoute from './routes/ProtectedRoute'
+import Register from './pages/register'
+import AppLayout from './layouts/AppLayout'
 
 function App() {
   return (
-    <div className="min-h-screen flex-col bg-red-600 flex items-center justify-center">
-      <h1 className="text-2xl font-extralight text-white">
-        Tailwind funciona
-      </h1>
-      <p className='text-black text-4xl ml-5 mt-4 pl-4'>hola hola</p>
-    </div>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+        <Route path="/" element={<Dashboard />} />
+      </Route>
+    </Routes>
   )
 }
 
