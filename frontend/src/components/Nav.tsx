@@ -15,6 +15,7 @@ export default function Nav() {
       <Link to="/exercises">Ejercicios</Link>{" "}
       <Link to="/me">Mi perfil</Link>
       <Link to="/routines">Rutinas</Link>
+      <Link to="/workouts">Entrenamiento</Link>
       <button onClick={handleLogout}>Cerrar sesión</button>
     </nav>
   );

@@ -3,7 +3,7 @@ import {
   useDeleteRoutineDays,
   useRoutineDaysDetail,
 } from "../../../hooks/routines/useRoutineDays";
-import RoutineExercises from "./routinesExercises.tsx/routineExercises";
+import RoutineExercises from "./routinesExercises/routineExercises";
 
 export default function RoutineDaysDetail() {
   const { id, dayId } = useParams();
@@ -32,7 +32,10 @@ export default function RoutineDaysDetail() {
       {isDeleteError && <p>{deleteError.message}</p>}
 
       <ul>
-        <Link to={`/routines/${id}/days/${dayId}/exercises/new`}> Añadir ejercicio</Link>
+        <Link to={`/routines/${id}/days/${dayId}/exercises/new`}>
+          {" "}
+          Añadir ejercicio
+        </Link>
         {Object.entries(data).map(([key, value]) => (
           <li key={key}>
             {key}:{" "}
@@ -43,7 +46,6 @@ export default function RoutineDaysDetail() {
         <button disabled={isPending} onClick={() => handleDelete()}>
           Eliminar dia
         </button>
-       
       </ul>
     </div>
   );

@@ -12,8 +12,10 @@ import RoutineDetail from "./pages/routines/routineDetail";
 import RoutineForm from "./pages/routines/routineForm";
 import RoutineDaysDetail from "./pages/routines/routinesDays/routineDaysDetail";
 import RoutineDaysForm from "./pages/routines/routinesDays/routineDaysForm";
-import RoutineExerciseForm from "./pages/routines/routinesDays/routinesExercises.tsx/routineExerciseForm";
-import RoutineExerciseDetail from "./pages/routines/routinesDays/routinesExercises.tsx/routineExerciseDetail";
+import RoutineExerciseForm from "./pages/routines/routinesDays/routinesExercises/routineExerciseForm";
+import RoutineExerciseDetail from "./pages/routines/routinesDays/routinesExercises/routineExerciseDetail";
+import Workouts from "./pages/workouts/workouts";
+import WorkoutDetail from "./pages/workouts/workoutDetail";
 
 function App() {
   return (
@@ -55,6 +57,8 @@ function App() {
           path="/routines/:id/days/:dayId/exercises/:exerciseId/update"
           element={<RoutineExerciseForm />}
         />
+        <Route path="/workouts" element={<Workouts />} />
+        <Route path="/workouts/:id" element={<WorkoutDetail />} />
       </Route>
     </Routes>
   );

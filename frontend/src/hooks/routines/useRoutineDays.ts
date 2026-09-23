@@ -17,6 +17,7 @@ export default function useRoutineDays(routineId: number) {
       const res = await routineDaysRequest(routineId);
       return res.data;
     },
+    enabled: !Number.isNaN(routineId),
   });
 }
 
