@@ -1,3 +1,5 @@
+from django.db import transaction
+from django.db.models.aggregates import Max
 from django.utils import timezone
 from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import action
@@ -68,6 +70,26 @@ class WorkoutExerciseViewSet(
             workout__user=self.request.user,
             workout__id=self.kwargs["workout_pk"]
         )
+
+    def perform_update(self, serializer):
+        instance = serializer.instance
+        new_order = serializer.validated_data.get("order")
+
+        with transaction.atomic():
+            if new_order is not None and new_order != instance.order:
+                siblings = WorkoutExercise.objects.filter(workout_id=instance.workout_id)
+                conflicting = siblings.filter(order=new_order).exclude(pk=instance.pk).first()
+
+                if conflicting:
+                    old_order = instance.order
+                    temp_order = (siblings.aggregate(Max("order"))["order__max"] or 0) + 1
+
+                    siblings.filter(pk=instance.pk).update(order=temp_order)
+
+                    conflicting.order = old_order
+                    conflicting.save(update_fields=["order"])
+
+            serializer.save()
 
 class WorkoutSetViewSet(
     mixins.ListModelMixin,

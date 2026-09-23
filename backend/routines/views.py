@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models.aggregates import Max
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
@@ -36,6 +37,26 @@ class RoutineDayViewSet(ModelViewSet):
             routine__user=self.request.user
             )
 
+    def perform_update(self, serializer):
+        instance = serializer.instance
+        new_order = serializer.validated_data.get("order")
+
+        with transaction.atomic():
+            if new_order is not None and new_order != instance.order:
+                siblings = RoutineDay.objects.filter(routine=instance.routine)
+                conflicting = siblings.filter(order=new_order).exclude(pk=instance.pk).first()
+
+                if conflicting:
+                    old_order = instance.order
+                    temp_order = (siblings.aggregate(Max("order"))["order__max"] or 0) + 1
+
+                    siblings.filter(pk=instance.pk).update(order=temp_order)
+
+                    conflicting.order = old_order
+                    conflicting.save(update_fields=["order"])
+
+            serializer.save()
+
 class RoutineExerciseViewSet(ModelViewSet):
     serializer_class = RoutineExerciseSerializer
     permission_classes = [IsAuthenticated, IsRoutineExerciseOwner]
@@ -60,3 +81,23 @@ class RoutineExerciseViewSet(ModelViewSet):
             routine_day__routine=self.kwargs["routine_pk"],
             routine_day__routine__user=self.request.user,
         )
+
+    def perform_update(self, serializer):
+        instance = serializer.instance
+        new_order = serializer.validated_data.get("order")
+
+        with transaction.atomic():
+            if new_order is not None and new_order != instance.order:
+                siblings = RoutineExercise.objects.filter(routine_day=instance.routine_day)
+                conflicting = siblings.filter(order=new_order).exclude(pk=instance.pk).first()
+
+                if conflicting:
+                    old_order = instance.order
+                    temp_order = (siblings.aggregate(Max("order"))["order__max"] or 0) + 1
+
+                    siblings.filter(pk=instance.pk).update(order=temp_order)
+
+                    conflicting.order = old_order
+                    conflicting.save(update_fields=["order"])
+
+            serializer.save()

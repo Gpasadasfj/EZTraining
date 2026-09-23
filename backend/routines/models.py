@@ -30,6 +30,7 @@ class RoutineDay(models.Model):
         return self.name
 
     class Meta:
+        ordering = ["order"]
         constraints = [
             models.UniqueConstraint(
                 fields=["routine", "order"],
@@ -60,6 +61,7 @@ class RoutineExercise(models.Model):
         return f"{self.routine_day.name} - {self.exercise.name_es}"
 
     class Meta:
+        ordering = ["order"]
         constraints = [
             models.UniqueConstraint(
                 fields=["routine_day", "order"],

@@ -47,6 +47,7 @@ class WorkoutExercise(models.Model):
     rest_time = models.PositiveIntegerField()
 
     class Meta:
+        ordering = ["order"]
         constraints = [
             models.UniqueConstraint(
                 fields=["workout", "order"],
