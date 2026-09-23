@@ -23,10 +23,12 @@ class RoutineDayViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         routine = get_object_or_404(Routine, pk=self.kwargs["routine_pk"], user=self.request.user)
-        last_order = RoutineDay.objects.filter(routine=routine).aggregate(Max("order"))["order__max"]
-        next_order = (last_order or 0) + 1
-
-        serializer.save(routine=routine, order=next_order)
+        if serializer.validated_data.get("order") is None:
+            last_order = RoutineDay.objects.filter(routine=routine).aggregate(Max("order"))["order__max"]
+            next_order = (last_order or 0) + 1
+            serializer.save(routine=routine, order=next_order)
+        else:
+            serializer.save(routine=routine)
 
     def get_queryset(self):
         return RoutineDay.objects.filter(
@@ -45,9 +47,12 @@ class RoutineExerciseViewSet(ModelViewSet):
             routine__user=self.request.user,
             routine_id=self.kwargs["routine_pk"]
         )
-        last_order = RoutineExercise.objects.filter(routine_day=routine_day).aggregate(Max("order"))["order__max"]
-        next_order = (last_order or 0) + 1
-        serializer.save(routine_day=routine_day, order=next_order)
+        if serializer.validated_data.get("order") is None:
+            last_order = RoutineExercise.objects.filter(routine_day=routine_day).aggregate(Max("order"))["order__max"]
+            next_order = (last_order or 0) + 1
+            serializer.save(routine_day=routine_day, order=next_order)
+        else:
+            serializer.save(routine_day=routine_day)
 
     def get_queryset(self):
         return RoutineExercise.objects.filter(

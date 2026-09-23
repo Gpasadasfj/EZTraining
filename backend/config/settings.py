@@ -68,14 +68,16 @@ if DEBUG:
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    # External middleware
+    "corsheaders.middleware.CorsMiddleware",
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    # External middleware
-    "corsheaders.middleware.CorsMiddleware",
 ]
 
 if DEBUG:
@@ -180,7 +182,10 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 # CORS
-CORS_ALLOWED_ORIGINS= ["http://localhost:5173"]
+CORS_ALLOWED_ORIGINS= [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    ]
 
 # DRF
 REST_FRAMEWORK = {
