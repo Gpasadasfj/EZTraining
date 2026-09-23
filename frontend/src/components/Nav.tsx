@@ -1,15 +1,21 @@
-import { useNavigate } from "react-router-dom";
-import { logout } from "../services/auth"
+import { Link, useNavigate } from "react-router-dom";
+import { logout } from "../services/auth";
 
 export default function Nav() {
-    const navigate = useNavigate()
+  const navigate = useNavigate();
 
-    function handleLogout() {
-        logout();
-        navigate("/login")
-    };
+  function handleLogout() {
+    logout();
+    navigate("/login");
+  }
 
-    return (
-        <button onClick={handleLogout}>Cerrar sesión</button>
-    )
+  return (
+    <nav>
+      <Link to="/">Dashboard</Link>
+      <Link to="/exercises">Ejercicios</Link>{" "}
+      <Link to="/me">Mi perfil</Link>
+      <Link to="/routines">Rutinas</Link>
+      <button onClick={handleLogout}>Cerrar sesión</button>
+    </nav>
+  );
 }
