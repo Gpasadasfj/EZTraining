@@ -80,7 +80,7 @@ class RoutineExerciseViewSet(ModelViewSet):
             routine_day=self.kwargs["routine_day_pk"],
             routine_day__routine=self.kwargs["routine_pk"],
             routine_day__routine__user=self.request.user,
-        )
+        ).select_related("exercise")
 
     def perform_update(self, serializer):
         instance = serializer.instance

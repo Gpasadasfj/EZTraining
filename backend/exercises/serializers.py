@@ -1,4 +1,4 @@
-from exercises.models import Exercise
+from exercises.models import Equipment, Exercise, Muscle
 from rest_framework import serializers
 
 
@@ -21,3 +21,18 @@ class ExerciseSerializer(serializers.ModelSerializer):
             "secondary_muscles",
             "equipment",
         ]
+
+class MuscleSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source="__str__", read_only=True)
+
+    class Meta:
+        model = Muscle
+        fields = ["id", "name"]
+
+
+class EquipmentSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source="__str__", read_only=True)
+
+    class Meta:
+        model = Equipment
+        fields = ["id", "name"]
