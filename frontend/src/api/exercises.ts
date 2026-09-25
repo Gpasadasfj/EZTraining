@@ -1,8 +1,34 @@
-import type { Exercise } from "../types/exercises";
+import type { Exercise, ExerciseFilters, FilterOption } from "../types/exercises";
 import type { PaginatedResponse } from "../types/paginated";
 import api from "./axios";
 
-export default function exercisesRequest(pageUrl?: string | null) {
-    const url = pageUrl ?? "exercises/";
-    return api.get<PaginatedResponse<Exercise>>(url);
+export function exercisesRequest(pageUrl: string | null, filters: ExerciseFilters) {
+  if (pageUrl) return api.get<PaginatedResponse<Exercise>>(pageUrl);
+  return api.get<PaginatedResponse<Exercise>>("exercises/", {
+    params: buildExerciseParams("", filters),
+  });
 }
+
+function buildExerciseParams(search: string, filters: ExerciseFilters) {
+  const params = new URLSearchParams();
+  if (search) params.append("search", search);
+  if (filters.muscle !== null) params.append("muscle", String(filters.muscle));
+  filters.secondaryMuscles.forEach((id) => params.append("secondary_muscles", String(id)));
+  filters.equipment.forEach((id) => params.append("equipment", String(id)));
+  return params;
+}
+
+export function searchExercisesRequest(search: string, filters: ExerciseFilters) {
+  return api.get<PaginatedResponse<Exercise>>("exercises/", {
+    params: buildExerciseParams(search, filters),
+  });
+}
+
+export function musclesRequest() {
+  return api.get<FilterOption[]>("exercises/muscles/");
+}
+
+export function equipmentRequest() {
+  return api.get<FilterOption[]>("exercises/equipment/");
+}
+

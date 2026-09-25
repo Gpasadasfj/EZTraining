@@ -6,6 +6,7 @@ import {
   useUpdateRoutineExercise,
 } from "../../../../hooks/routines/useRoutineExercises";
 import type { UpdateRoutineExerciseVariables } from "../../../../types/routines/routineExercises";
+import ExercisePicker from "./exercisePicker";
 
 export default function RoutineExerciseForm() {
   const { id, dayId, exerciseId } = useParams();
@@ -36,6 +37,7 @@ export default function RoutineExerciseForm() {
   const [maxReps, setMaxReps] = useState<number>();
   const [targetRir, setTargetRir] = useState<number>();
   const [restTime, setRestTime] = useState<number>();
+  const [exerciseName, setExerciseName] = useState<string>();
 
   useEffect(() => {
     if (data) {
@@ -46,6 +48,7 @@ export default function RoutineExerciseForm() {
       setMaxReps(data.max_reps);
       setTargetRir(data.target_rir);
       setRestTime(data.rest_time);
+      setExerciseName(data.exercise_name);
     }
   }, [data]);
 
@@ -64,6 +67,8 @@ export default function RoutineExerciseForm() {
 
   const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
+
+    if (!exercise) return;
 
     if (exerciseId) {
       updateMutate(updatePayload, {
@@ -89,20 +94,49 @@ export default function RoutineExerciseForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <p>Ejercicio (id)</p>
-      <input type="number" value={exercise ?? ""} onChange={(e) => setExercise(Number(e.target.value))} />
+      <ExercisePicker
+        selectedName={exerciseName}
+        onSelect={(ex) => {
+          setExercise(ex.id);
+          setExerciseName(ex.name_es);
+        }}
+      />
       <p>Orden</p>
-      <input type="number" value={order ?? ""} onChange={(e) => setOrder(Number(e.target.value))} />
+      <input
+        type="number"
+        value={order ?? ""}
+        onChange={(e) => setOrder(Number(e.target.value))}
+      />
       <p>Series objetivo</p>
-      <input type="number" value={targetSets ?? ""} onChange={(e) => setTargetSets(Number(e.target.value))} />
+      <input
+        type="number"
+        value={targetSets ?? ""}
+        onChange={(e) => setTargetSets(Number(e.target.value))}
+      />
       <p>Repeticiones mínimas</p>
-      <input type="number" value={minReps ?? ""} onChange={(e) => setMinReps(Number(e.target.value))} />
+      <input
+        type="number"
+        value={minReps ?? ""}
+        onChange={(e) => setMinReps(Number(e.target.value))}
+      />
       <p>Repeticiones máximas</p>
-      <input type="number" value={maxReps ?? ""} onChange={(e) => setMaxReps(Number(e.target.value))} />
+      <input
+        type="number"
+        value={maxReps ?? ""}
+        onChange={(e) => setMaxReps(Number(e.target.value))}
+      />
       <p>RIR objetivo</p>
-      <input type="number" value={targetRir ?? ""} onChange={(e) => setTargetRir(Number(e.target.value))} />
+      <input
+        type="number"
+        value={targetRir ?? ""}
+        onChange={(e) => setTargetRir(Number(e.target.value))}
+      />
       <p>Descanso (segundos)</p>
-      <input type="number" value={restTime ?? ""} onChange={(e) => setRestTime(Number(e.target.value))} />
+      <input
+        type="number"
+        value={restTime ?? ""}
+        onChange={(e) => setRestTime(Number(e.target.value))}
+      />
       {(isCreatingError || isUpdatingError) && (
         <p>Error: {(createError ?? updateError)?.message}</p>
       )}

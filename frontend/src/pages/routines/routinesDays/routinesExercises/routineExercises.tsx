@@ -20,7 +20,7 @@ export default function RoutineExercises({ routineId, dayId }: RoutineExercisesP
         {data.results.map((exercise: RoutineExercise) => (
           <li key={exercise.id}>
             <p>orden: {exercise.order}</p>
-            <p>ejercicio id: {exercise.exercise}</p>
+            <p>ejercicio: {exercise.exercise_name}</p>
             <p>series: {exercise.target_sets}</p>
             <p>reps: {exercise.min_reps}-{exercise.max_reps}</p>
             <p>RIR objetivo: {exercise.target_rir}</p>

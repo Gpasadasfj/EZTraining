@@ -2,6 +2,7 @@ export interface RoutineExercise {
   id: number;
   routine_day: number;
   exercise: number;
+  exercise_name: string;
   order: number;
   target_sets: number;
   min_reps: number;

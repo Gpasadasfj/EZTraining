@@ -9,3 +9,14 @@ export interface Exercise {
     secondary_muscles: string[];
     equipment: string[];
 }
+
+export interface FilterOption {
+  id: number;
+  name: string;
+}
+
+export interface ExerciseFilters {
+  muscle: number | null;
+  secondaryMuscles: number[];
+  equipment: number[];
+}
