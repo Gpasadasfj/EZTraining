@@ -7,8 +7,14 @@ interface RoutineExercisesProps {
   dayId: number;
 }
 
-export default function RoutineExercises({ routineId, dayId }: RoutineExercisesProps) {
-  const { data, isLoading, isError, error } = useRoutineExercises(routineId, dayId);
+export default function RoutineExercises({
+  routineId,
+  dayId,
+}: RoutineExercisesProps) {
+  const { data, isLoading, isError, error } = useRoutineExercises(
+    routineId,
+    dayId,
+  );
 
   if (isLoading) return <p>Cargando...</p>;
   if (isError) return <p>Error: {error.message}</p>;
@@ -20,15 +26,24 @@ export default function RoutineExercises({ routineId, dayId }: RoutineExercisesP
         {data.results.map((exercise: RoutineExercise) => (
           <li key={exercise.id}>
             <p>orden: {exercise.order}</p>
+            {exercise.exercise_image && (
+              <img src={exercise.exercise_image} alt={exercise.exercise_name} />
+            )}
             <p>ejercicio: {exercise.exercise_name}</p>
             <p>series: {exercise.target_sets}</p>
-            <p>reps: {exercise.min_reps}-{exercise.max_reps}</p>
+            <p>
+              reps: {exercise.min_reps}-{exercise.max_reps}
+            </p>
             <p>RIR objetivo: {exercise.target_rir}</p>
             <p>descanso: {exercise.rest_time}s</p>
-            <Link to={`/routines/${routineId}/days/${dayId}/exercises/${exercise.id}`}>
+            <Link
+              to={`/routines/${routineId}/days/${dayId}/exercises/${exercise.id}`}
+            >
               Detalle
             </Link>
-            <Link to={`/routines/${routineId}/days/${dayId}/exercises/${exercise.id}/update`}>
+            <Link
+              to={`/routines/${routineId}/days/${dayId}/exercises/${exercise.id}/update`}
+            >
               Editar
             </Link>
           </li>

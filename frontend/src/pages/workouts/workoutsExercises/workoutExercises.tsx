@@ -38,7 +38,10 @@ export default function WorkoutExercises({ workoutId }: WorkoutExercisesProps) {
       <ul>
         {data.results.map((exercise: WorkoutExercise) => (
           <li key={exercise.id}>
-            <p>ejercicio id: {exercise.exercise}</p>
+            <p>ejercicio: {exercise.exercise_name}</p>
+            {exercise.exercise_image && (
+              <img src={exercise.exercise_image} alt={exercise.exercise_name} />
+            )}
             <p>series objetivo: {exercise.target_sets}</p>
             <p>
               reps: {exercise.min_reps}-{exercise.max_reps}
@@ -55,13 +58,13 @@ export default function WorkoutExercises({ workoutId }: WorkoutExercisesProps) {
                 }))
               }
             />
-            <WorkoutSets workoutId={workoutId} exerciseId={exercise.id} />
             <button
               disabled={isPending}
               onClick={() => handleUpdateOrder(exercise.id)}
             >
               Guardar orden
             </button>
+            <WorkoutSets workoutId={workoutId} exerciseId={exercise.id} />
           </li>
         ))}
       </ul>

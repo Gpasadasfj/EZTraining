@@ -33,7 +33,11 @@ export default function Exercises() {
       {data && exercises.length === 0 && <p>No hay ejercicios con esos filtros</p>}
 
       {exercises.map((ex) => (
-        <div key={ex.id}>{ex.name_es}</div>
+        
+        <div key={ex.id}>
+          <img src={ex.image} alt={ex.name_es} className="w-10 h-10"/>
+          {ex.name_es}
+          </div>
       ))}
 
       {hasNextPage && (

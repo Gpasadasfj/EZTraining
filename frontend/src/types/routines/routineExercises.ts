@@ -3,6 +3,7 @@ export interface RoutineExercise {
   routine_day: number;
   exercise: number;
   exercise_name: string;
+  exercise_image: string | null;
   order: number;
   target_sets: number;
   min_reps: number;
