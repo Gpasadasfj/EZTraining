@@ -42,6 +42,8 @@ class RoutineDaySerializer(serializers.ModelSerializer):
 class RoutineExerciseSerializer(serializers.ModelSerializer):
     order = serializers.IntegerField(required=False, min_value=0)
     exercise_name = serializers.CharField(source="exercise.name_es", read_only=True)
+    exercise_image = serializers.ImageField(source="exercise.image", read_only=True)
+
 
 
     class Meta:
@@ -51,6 +53,7 @@ class RoutineExerciseSerializer(serializers.ModelSerializer):
             "routine_day",
             "exercise",
             "exercise_name",
+            "exercise_image",
             "order",
             "target_sets",
             "min_reps",

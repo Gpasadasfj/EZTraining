@@ -29,7 +29,7 @@ class ExerciseFilter(django_filters.FilterSet):
             ]
 
 class ExerciseListView(generics.ListAPIView):
-    queryset = Exercise.objects.all()
+    queryset = Exercise.objects.select_related("muscle", "body_part").prefetch_related("secondary_muscles", "equipment")
     serializer_class = ExerciseSerializer
     filterset_class = ExerciseFilter
     filter_backends = [DjangoFilterBackend, SearchFilter]

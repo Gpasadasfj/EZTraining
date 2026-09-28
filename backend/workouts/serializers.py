@@ -33,6 +33,8 @@ class WorkoutSerializer(serializers.ModelSerializer):
         self.fields["routine_day"].queryset = RoutineDay.objects.filter(routine__user=request.user)
 
 class WorkoutExerciseSerializer(serializers.ModelSerializer):
+    exercise_name = serializers.CharField(source="exercise.name_es", read_only=True)
+    exercise_image = serializers.ImageField(source="exercise.image", read_only=True)
 
     class Meta:
         model = WorkoutExercise
@@ -40,6 +42,8 @@ class WorkoutExerciseSerializer(serializers.ModelSerializer):
             "id",
             "workout",
             "exercise",
+            "exercise_name",
+            "exercise_image",
             "order",
             "target_sets",
             "min_reps",

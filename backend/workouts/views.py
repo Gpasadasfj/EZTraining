@@ -69,7 +69,7 @@ class WorkoutExerciseViewSet(
         return WorkoutExercise.objects.filter(
             workout__user=self.request.user,
             workout__id=self.kwargs["workout_pk"]
-        )
+        ).select_related("exercise")
 
     def perform_update(self, serializer):
         instance = serializer.instance
