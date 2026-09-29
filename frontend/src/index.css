@@ -1,113 +1,131 @@
 @import "tailwindcss";
 
+/* ============================================================
+   1. VALORES DE CADA TEMA
+   El modo oscuro es el de por defecto (:root).
+   El modo claro se activa poniendo data-theme="light" en <html>.
+   ============================================================ */
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  color-scheme: dark;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  /* Fondos */
+  --canvas: #09090b;         /* zinc-950 · fondo de la app */
+  --surface: #18181b;        /* zinc-900 · cards, inputs */
+  --surface-hover: #27272a;  /* zinc-800 */
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Bordes */
+  --line: #27272a;           /* zinc-800 · cards (sutil) */
+  --line-strong: #3f3f46;    /* zinc-700 · inputs, botón secundario */
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
+  /* Texto */
+  --fg: #fafafa;             /* zinc-50 · principal */
+  --fg-muted: #a1a1aa;       /* zinc-400 · secundario */
+  --fg-subtle: #71717a;      /* zinc-500 · deshabilitado */
+
+  /* Marca */
+  --primary: #f97316;        /* orange-500 · rellenos: botón, progreso, checkbox */
+  --primary-hover: #ea580c;  /* orange-600 */
+  --primary-active: #c2410c; /* orange-700 */
+  --on-primary: #09090b;     /* texto encima de un relleno naranja */
+  --primary-soft: rgb(249 115 22 / 0.15); /* fondo de badges */
+  --accent: #f97316;         /* naranja como TEXTO: enlaces, nav activo */
+  --brand: #f97316;          /* logo */
+
+  /* Estados */
+  --success: #22c55e;
+  --warning: #eab308;
+  --danger: #ef4444;
+  --info: #3b82f6;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --canvas: #fafafa;         /* zinc-50 */
+  --surface: #ffffff;
+  --surface-hover: #f4f4f5;  /* zinc-100 */
+
+  --line: #e4e4e7;           /* zinc-200 */
+  --line-strong: #d4d4d8;    /* zinc-300 */
+
+  --fg: #09090b;             /* zinc-950 */
+  --fg-muted: #52525b;       /* zinc-600 */
+  --fg-subtle: #a1a1aa;      /* zinc-400 */
+
+  --primary: #f97316;
+  --primary-hover: #ea580c;
+  --primary-active: #c2410c;
+  --on-primary: #09090b;
+  --primary-soft: rgb(249 115 22 / 0.12);
+  --accent: #c2410c;         /* orange-700: el 500 no se lee como texto sobre blanco */
+  --brand: #ea580c;          /* orange-600 */
+
+  --success: #15803d;        /* green-700 */
+  --warning: #a16207;        /* yellow-700 */
+  --danger: #dc2626;         /* red-600 */
+  --info: #2563eb;           /* blue-600 */
+}
+
+/* ============================================================
+   2. TOKENS DE TAILWIND
+   Cada --color-X genera las clases bg-X, text-X, border-X, ring-X...
+   "inline" hace que la clase use la variable, así cambia con el tema.
+   ============================================================ */
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+  --color-on-primary: var(--on-primary);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent: var(--accent);
+  --color-brand: var(--brand);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+}
+
+@theme {
+  --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Barlow Condensed", "Arial Narrow", ui-sans-serif, sans-serif;
+
+  --radius-card: 12px;
+  --radius-button: 10px;
+
+  --animate-trace: trace 7s linear infinite;
+  --animate-drift: drift 18s ease-in-out infinite alternate;
+
+  @keyframes trace {
+    from { stroke-dashoffset: 1000; }
+    to { stroke-dashoffset: 0; }
+  }
+
+  @keyframes drift {
+    from { transform: translate3d(-2%, -1%, 0) scale(1); }
+    to { transform: translate3d(2%, 2%, 0) scale(1.06); }
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+/* ============================================================
+   3. ESTILOS BASE
+   ============================================================ */
+
+@layer base {
+  body {
+    @apply bg-canvas text-fg font-sans antialiased;
   }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-}
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
 }

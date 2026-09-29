@@ -3,8 +3,14 @@ import useWeightLog, {
   useCreateWeightLog,
   useDeleteWeightLog,
 } from "../hooks/useWeightLog";
-import { type WeightLogItemProps } from "../types/users";
+import { type WeightLog } from "../types/users";
 import { useState } from "react";
+
+export type WeightLogItemProps = {
+    log: WeightLog;
+    isDeleting: boolean;
+    onDelete: (id: number) => void;
+};
 
 export default function WeightLog() {
   const { data, isLoading, isError, error } = useWeightLog();

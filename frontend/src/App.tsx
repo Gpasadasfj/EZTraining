@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import "./App.css";
 import Login from "./pages/login";
 import Dashboard from "./pages/dashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -16,12 +15,16 @@ import RoutineExerciseForm from "./pages/routines/routinesDays/routinesExercises
 import RoutineExerciseDetail from "./pages/routines/routinesDays/routinesExercises/routineExerciseDetail";
 import Workouts from "./pages/workouts/workouts";
 import WorkoutDetail from "./pages/workouts/workoutDetail";
+import AuthLayout from "./layouts/AuthLayout";
 
 function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route element={<AuthLayout />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Route>
+
       <Route
         element={
           <ProtectedRoute>

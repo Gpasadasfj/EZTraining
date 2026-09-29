@@ -23,9 +23,3 @@ export interface WeightLog {
 export interface CreateWeightLogPayload {
     weight: string;
 }
-
-export type WeightLogItemProps = {
-    log: WeightLog;
-    isDeleting: boolean;
-    onDelete: (id: number) => void;
-};
