@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 
 from exercises.models import Exercise
 from routines.models import RoutineDay
@@ -65,8 +66,8 @@ class WorkoutSet(models.Model):
         max_digits=5,
         decimal_places=2,
         blank=True,
-        null=True
-
+        null=True,
+        validators=[MinValueValidator(0)],
     )
     reps = models.DecimalField(
         max_digits=6,
@@ -78,6 +79,7 @@ class WorkoutSet(models.Model):
         blank=True,
         null=True
     )
+    completed = models.BooleanField(default=False)
 
     class Meta:
         constraints = [

@@ -62,18 +62,18 @@ class WorkoutExerciseSerializer(serializers.ModelSerializer):
         ]
 
 class WorkoutSetSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = WorkoutSet
-        fields = [
-            "id",
-            "workout_exercise",
-            "set_number",
-            "weight",
-            "reps",
-            "rir",
-        ]
-        read_only_fields = [
-            "workout_exercise",
-            "set_number",
-        ]
+        fields = ["id", "workout_exercise", "set_number", "weight", "reps", "rir", "completed"]
+        read_only_fields = ["workout_exercise", "set_number"]
+
+    def validate(self, attrs):
+        completed = attrs.get("completed", self.instance.completed if self.instance else False)
+        if completed:
+            errors = {}
+            for field in ("weight", "reps"):
+                if attrs.get(field, getattr(self.instance, field, None)) is None:
+                    errors[field] = "Obligatorio para completar la serie."
+            if errors:
+                raise serializers.ValidationError(errors)
+        return attrs
