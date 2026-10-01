@@ -24,20 +24,31 @@ export type CreateRoutinePayload = Pick<Routine, "name" | "description">;
 
 export type UpdateRoutinePayload = Partial<CreateRoutinePayload>;
 
-export type UpdateRoutineVariables = {
-    id: number;
-    data: UpdateRoutinePayload;
+export interface UpdateRoutineVariables {
+  id: number;
+  data: UpdateRoutinePayload;
 };
 
 export type CreateRoutineExercisePayload = Pick<
   RoutineExercise,
-  "exercise" | "target_sets" | "min_reps" | "max_reps" | "target_rir" | "rest_time"
+  | "exercise"
+  | "target_sets"
+  | "min_reps"
+  | "max_reps"
+  | "target_rir"
+  | "rest_time"
 > &
   Partial<Pick<RoutineExercise, "order">>;
 
 export type UpdateRoutineExercisePayload = Partial<
   Pick<
     RoutineExercise,
-    "exercise" | "order" | "target_sets" | "min_reps" | "max_reps" | "target_rir" | "rest_time"
+    | "exercise"
+    | "order"
+    | "target_sets"
+    | "min_reps"
+    | "max_reps"
+    | "target_rir"
+    | "rest_time"
   >
 >;
