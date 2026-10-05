@@ -1,4 +1,4 @@
-import Logo from "./logo";
+import Logo from "./layout/logo";
 import WorkoutExerciseCard from "./workoutExerciseCard";
 import SetRow from "./setRow";
 import type { SetStatus } from "../types/workouts/workoutSets";

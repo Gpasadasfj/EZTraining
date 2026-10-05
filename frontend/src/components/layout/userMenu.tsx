@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronDown, LogOut, User } from "lucide-react";
-import { logout } from "../services/auth";
-import useMe from "../hooks/useMe";
+import { logout } from "../../services/auth";
+import useMe from "../../hooks/useMe";
 import { useQueryClient } from "@tanstack/react-query";
 
 export default function UserMenu() {

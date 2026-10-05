@@ -1,7 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { BookOpen, ClipboardList, House } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import type { NavItem } from "../types/nav";
+import type { NavItem } from "../../types/nav";
 
 const NAV_ITEMS: NavItem[] = [
   { to: "/", label: "Inicio", icon: House, end: true },

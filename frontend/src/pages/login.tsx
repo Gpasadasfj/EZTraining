@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CircleAlert, LoaderCircle, Lock, User } from "lucide-react";
 import loginAndStoreTokens from "../services/auth";
-import Logo from "../components/logo";
+import Logo from "../components/layout/logo";
 import FormField from "../components/formField";
 
 interface LoginErrors {
@@ -59,8 +59,12 @@ export default function Login() {
       <Logo className="text-3xl lg:hidden" />
 
       <div className="grid gap-1.5">
-        <h1 className="font-display text-3xl leading-tight font-bold">Bienvenido de nuevo</h1>
-        <p className="text-fg-muted">Inicia sesión para seguir con tu entreno.</p>
+        <h1 className="font-display text-3xl leading-tight font-bold">
+          Bienvenido de nuevo
+        </h1>
+        <p className="text-fg-muted">
+          Inicia sesión para seguir con tu entreno.
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} noValidate className="grid gap-5">
@@ -100,7 +104,10 @@ export default function Login() {
             role="alert"
             className="flex items-start gap-2.5 rounded-button border border-danger/30 bg-danger/10 px-3 py-2.5 text-sm"
           >
-            <CircleAlert className="mt-0.5 size-4.5 shrink-0 text-danger" aria-hidden="true" />
+            <CircleAlert
+              className="mt-0.5 size-4.5 shrink-0 text-danger"
+              aria-hidden="true"
+            />
             <span>{error}</span>
           </div>
         )}
@@ -110,7 +117,12 @@ export default function Login() {
           disabled={isSubmitting}
           className="inline-flex items-center justify-center gap-2 rounded-button bg-primary px-5 py-3 font-semibold text-on-primary transition-colors hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fg active:bg-primary-active disabled:cursor-progress disabled:opacity-80"
         >
-          {isSubmitting && <LoaderCircle className="size-4.5 animate-spin" aria-hidden="true" />}
+          {isSubmitting && (
+            <LoaderCircle
+              className="size-4.5 animate-spin"
+              aria-hidden="true"
+            />
+          )}
           {isSubmitting ? "Entrando…" : "Iniciar sesión"}
         </button>
       </form>

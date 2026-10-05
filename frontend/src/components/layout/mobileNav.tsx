@@ -1,7 +1,7 @@
 // components/mobileDock.tsx
 import { NavLink } from "react-router-dom";
 import { BookOpen, ClipboardList, Dumbbell, House, User } from "lucide-react";
-import type { NavItem } from "../types/nav";
+import type { NavItem } from "../../types/nav";
 
 const LEFT_ITEMS: NavItem[] = [
   { to: "/", label: "Inicio", icon: House, end: true },
@@ -57,11 +57,7 @@ export default function MobileNav() {
             }`
           }
         >
-          <Dumbbell
-            className="size-6.5"
-            strokeWidth={2}
-            aria-hidden="true"
-          />
+          <Dumbbell className="size-6.5" strokeWidth={2} aria-hidden="true" />
         </NavLink>
 
         {RIGHT_ITEMS.map((item) => (

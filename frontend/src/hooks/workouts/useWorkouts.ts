@@ -37,6 +37,7 @@ export function useWorkoutsCreate() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },
   });
 }

@@ -2,6 +2,8 @@ export interface NextWorkout {
     routine_day: number;
     routine_name: string;
     name: string;
+    exercises_count: number;
+    sets_count: number;
 }
 
 export interface PersonalRecord {
@@ -20,6 +22,7 @@ export interface PersonalRecords {
 export interface DashboardData {
     workouts_this_week: number;
     target_workouts: number | null;
+    workout_days: number[];
     volume_this_week: number;
     current_weight: number | null;
     target_weight: number | null;

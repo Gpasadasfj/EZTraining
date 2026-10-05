@@ -9,18 +9,20 @@ export default function Me() {
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [height, setHeight] = useState("");
+  const [targetWeight, setTargetWeight] = useState("")
 
   useEffect(() => {
     if (data) {
       setName(data.first_name);
       setLastName(data.last_name);
       setHeight(data.height);
+      setTargetWeight(data.target_weight)
     }
   }, [data]);
 
   const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
-    mutate({ first_name: name, last_name: lastName, height: height });
+    mutate({ first_name: name, last_name: lastName, height: height, target_weight: targetWeight });
   };
 
   if (isLoading) return <p>Cargando...</p>;
@@ -56,6 +58,12 @@ export default function Me() {
           type="number"
           value={height}
           onChange={(e) => setHeight(e.target.value)}
+        />
+        <p>Peso objetivo</p>
+        <input
+          type="number"
+          value={targetWeight}
+          onChange={(e) => setTargetWeight(e.target.value)}
         />
         <button type="submit" disabled={isPending}>
           Enviar

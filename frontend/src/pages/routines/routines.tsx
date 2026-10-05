@@ -17,6 +17,7 @@ export default function Routines() {
           <li key={routine.id}>
             <p>{routine.name}</p>
             <p>{routine.description}</p>
+
             <Link to={`/routines/${routine.id}`}>Detalle de rutina</Link>
             <Link to={`/routines/update/${routine.id}`}>Editar</Link>
           </li>

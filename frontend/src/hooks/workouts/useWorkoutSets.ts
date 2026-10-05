@@ -51,6 +51,7 @@ export function useUpdateWorkoutSet(workoutId: number, exerciseId: number) {
       queryClient.invalidateQueries({
         queryKey: ["workoutSet", workoutId, exerciseId],
       });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },
   });
 }

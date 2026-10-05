@@ -4,7 +4,7 @@ import axios from "axios";
 import { CircleAlert, LoaderCircle, Lock, Mail, User } from "lucide-react";
 import { registerRequest } from "../api/auth";
 import loginAndStoreTokens from "../services/auth";
-import Logo from "../components/logo";
+import Logo from "../components/layout/logo";
 import FormField from "../components/formField";
 
 interface RegisterErrors {
