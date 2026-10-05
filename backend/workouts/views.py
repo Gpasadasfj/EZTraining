@@ -40,19 +40,22 @@ class WorkoutViewSet(ModelViewSet):
         
         # Calcular finished_at y duration
         finished_at = timezone.now()
-        duration = finished_at - workout.started_at
 
-        # Guardar los cambios
-        workout.finished_at = finished_at
-        workout.duration = duration
-        workout.completed = True
-        workout.save(
-            update_fields=[
-                "finished_at", "duration", "completed", "updated_at"
-                ]
-            )
 
-        # Devolver una respuesta
+        with transaction.atomic():
+            workout.finished_at = finished_at
+            workout.duration = finished_at - workout.started_at
+            workout.completed = True
+            workout.save(update_fields=["finished_at", "duration", "completed", "updated_at"])
+
+            # Completar las series que tengan peso y reps
+            WorkoutSet.objects.filter(
+                workout_exercise__workout=workout,
+                completed=False,
+                weight__isnull=False,
+                reps__isnull=False,
+            ).update(completed=True)
+
         serializer = self.get_serializer(workout)
         return Response(serializer.data)
 

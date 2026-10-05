@@ -43,3 +43,6 @@ class WeightLog(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.weight}kg"
+
+    class Meta:
+        ordering = ["-recorded_at", "-id"]

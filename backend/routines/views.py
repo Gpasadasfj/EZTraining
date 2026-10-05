@@ -24,12 +24,12 @@ class RoutineDayViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         routine = get_object_or_404(Routine, pk=self.kwargs["routine_pk"], user=self.request.user)
-        if serializer.validated_data.get("order") is None:
+
+        with transaction.atomic():
+            # Bloquea la rutina: dos creaciones a la vez no pueden calcular el mismo orden
+            Routine.objects.select_for_update().filter(pk=routine.pk).first()
             last_order = RoutineDay.objects.filter(routine=routine).aggregate(Max("order"))["order__max"]
-            next_order = (last_order or 0) + 1
-            serializer.save(routine=routine, order=next_order)
-        else:
-            serializer.save(routine=routine)
+            serializer.save(routine=routine, order=(last_order or 0) + 1)
 
     def get_queryset(self):
         return RoutineDay.objects.filter(

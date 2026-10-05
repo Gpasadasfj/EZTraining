@@ -7,7 +7,13 @@ from django.utils import timezone
 from exercises.models import BodyPart, Muscle, Exercise
 from routines.models import Routine, RoutineDay
 from workouts.models import Workout, WorkoutExercise, WorkoutSet
-from dashboard.services import get_next_workout, get_number_and_target_of_workouts_this_week, get_personal_records, get_workouts_this_week, get_volume_this_week
+from dashboard.services import (
+    get_next_workout,
+    get_number_and_target_of_workouts_this_week,
+    get_personal_records,
+    get_workouts_this_week,
+    get_volume_this_week,
+)
 
 User = get_user_model()
 
@@ -60,6 +66,19 @@ class GetNextWorkoutTests(TestCase):
         self.assertEqual(result["routine_day"], self.day_1.id)
         self.assertEqual(result["name"], "Push")
 
+    def test_returns_zero_counts_when_next_day_has_no_exercises(self):
+        last_workout = Workout.objects.create(
+            user=self.user,
+            routine_day=self.day_1,
+            completed=True,
+        )
+
+        result = get_next_workout(last_workout)
+
+        self.assertEqual(result["exercises_count"], 0)
+        self.assertEqual(result["sets_count"], 0)
+
+
 class GetPersonalRecordsTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -69,7 +88,7 @@ class GetPersonalRecordsTests(TestCase):
         )
 
         chest = BodyPart.objects.create(name_es="Pecho", name_en="Chest", slug="chest")
-        back = BodyPart.objects.create(name_es="Espalda", name_en="Back", slug="back")
+        BodyPart.objects.create(name_es="Espalda", name_en="Back", slug="back")
         muscle = Muscle.objects.create(name_es="Pectoral", name_en="Pectoralis", slug="pectoralis")
 
         self.press_banca = Exercise.objects.create(
@@ -93,7 +112,7 @@ class GetPersonalRecordsTests(TestCase):
 
         routine = Routine.objects.create(user=self.user, name="Rutina", description="")
         routine_day = RoutineDay.objects.create(routine=routine, name="Push", order=1)
-        workout = Workout.objects.create(user=self.user, routine_day=routine_day)
+        workout = Workout.objects.create(user=self.user, routine_day=routine_day, completed=True)
 
         self.we_press_banca = WorkoutExercise.objects.create(
             workout=workout, exercise=self.press_banca, order=1,
@@ -112,8 +131,12 @@ class GetPersonalRecordsTests(TestCase):
         self.assertEqual(records["legs"], {})
 
     def test_picks_the_heaviest_set_across_exercises_of_the_same_body_part(self):
-        WorkoutSet.objects.create(workout_exercise=self.we_press_banca, set_number=1, weight=80, reps=8)
-        WorkoutSet.objects.create(workout_exercise=self.we_press_inclinado, set_number=1, weight=100, reps=5)
+        WorkoutSet.objects.create(
+            workout_exercise=self.we_press_banca, set_number=1, weight=80, reps=8, completed=True,
+        )
+        WorkoutSet.objects.create(
+            workout_exercise=self.we_press_inclinado, set_number=1, weight=100, reps=5, completed=True,
+        )
 
         records = get_personal_records(self.user)
 
@@ -121,6 +144,54 @@ class GetPersonalRecordsTests(TestCase):
         self.assertEqual(records["chest"]["weight"], 100)
         self.assertEqual(records["chest"]["reps"], 5)
         self.assertEqual(records["back"], {})
+
+    def test_ignores_sets_not_completed(self):
+        WorkoutSet.objects.create(
+            workout_exercise=self.we_press_banca, set_number=1, weight=80, reps=8, completed=True,
+        )
+        WorkoutSet.objects.create(
+            workout_exercise=self.we_press_inclinado, set_number=1, weight=200, reps=1, completed=False,
+        )
+
+        records = get_personal_records(self.user)
+
+        self.assertEqual(records["chest"]["exercise"], "Press banca")
+        self.assertEqual(records["chest"]["weight"], 80)
+
+    def test_breaks_weight_ties_by_reps(self):
+        WorkoutSet.objects.create(
+            workout_exercise=self.we_press_banca, set_number=1, weight=100, reps=5, completed=True,
+        )
+        WorkoutSet.objects.create(
+            workout_exercise=self.we_press_banca, set_number=2, weight=100, reps=8, completed=True,
+        )
+
+        records = get_personal_records(self.user)
+
+        self.assertEqual(records["chest"]["weight"], 100)
+        self.assertEqual(records["chest"]["reps"], 8)
+
+    def test_ignores_sets_from_other_users(self):
+        other_user = User.objects.create_user(
+            username="otheruser",
+            email="other@test.com",
+            password="testpass123",
+        )
+        other_routine = Routine.objects.create(user=other_user, name="Otra", description="")
+        other_day = RoutineDay.objects.create(routine=other_routine, name="Push", order=1)
+        other_workout = Workout.objects.create(user=other_user, routine_day=other_day, completed=True)
+        other_we = WorkoutExercise.objects.create(
+            workout=other_workout, exercise=self.press_banca, order=1,
+            target_sets=1, min_reps=1, max_reps=1, target_rir=1, rest_time=60,
+        )
+        WorkoutSet.objects.create(
+            workout_exercise=other_we, set_number=1, weight=150, reps=3, completed=True,
+        )
+
+        records = get_personal_records(self.user)
+
+        self.assertEqual(records["chest"], {})
+
 
 class GetVolumeThisWeekTests(TestCase):
     def setUp(self):
@@ -144,7 +215,7 @@ class GetVolumeThisWeekTests(TestCase):
 
         routine = Routine.objects.create(user=self.user, name="Rutina", description="")
         routine_day = RoutineDay.objects.create(routine=routine, name="Push", order=1)
-        workout = Workout.objects.create(user=self.user, routine_day=routine_day)
+        workout = Workout.objects.create(user=self.user, routine_day=routine_day, completed=True)
 
         self.workout_exercise = WorkoutExercise.objects.create(
             workout=workout, exercise=exercise, order=1,
@@ -158,20 +229,29 @@ class GetVolumeThisWeekTests(TestCase):
         self.assertEqual(total, 0)
 
     def test_sums_weight_times_reps_across_sets(self):
-        WorkoutSet.objects.create(workout_exercise=self.workout_exercise, set_number=1, weight=80, reps=8)
-        WorkoutSet.objects.create(workout_exercise=self.workout_exercise, set_number=2, weight=90, reps=6)
+        WorkoutSet.objects.create(
+            workout_exercise=self.workout_exercise, set_number=1, weight=80, reps=8, completed=True,
+        )
+        WorkoutSet.objects.create(
+            workout_exercise=self.workout_exercise, set_number=2, weight=90, reps=6, completed=True,
+        )
 
         total = get_volume_this_week(self.workouts)
 
         self.assertEqual(total, 80 * 8 + 90 * 6)
 
-    def test_excludes_sets_with_no_weight_or_reps_recorded(self):
-        WorkoutSet.objects.create(workout_exercise=self.workout_exercise, set_number=1, weight=80, reps=8)
-        WorkoutSet.objects.create(workout_exercise=self.workout_exercise, set_number=2, weight=None, reps=None)
+    def test_excludes_sets_not_completed(self):
+        WorkoutSet.objects.create(
+            workout_exercise=self.workout_exercise, set_number=1, weight=80, reps=8, completed=True,
+        )
+        WorkoutSet.objects.create(
+            workout_exercise=self.workout_exercise, set_number=2, weight=90, reps=6, completed=False,
+        )
 
         total = get_volume_this_week(self.workouts)
 
         self.assertEqual(total, 80 * 8)
+
 
 class GetNumberAndTargetOfWorkoutsThisWeekTests(TestCase):
     def setUp(self):
@@ -189,18 +269,20 @@ class GetNumberAndTargetOfWorkoutsThisWeekTests(TestCase):
     def test_returns_none_target_when_there_is_no_last_workout(self):
         workouts = get_workouts_this_week(self.user)
 
-        number, target = get_number_and_target_of_workouts_this_week(workouts, None)
+        number, target, days = get_number_and_target_of_workouts_this_week(workouts, None)
 
         self.assertEqual(number, 0)
         self.assertIsNone(target)
+        self.assertEqual(days, [])
 
     def test_returns_none_target_when_last_workout_has_no_routine_day(self):
         Workout.objects.create(user=self.user, routine_day=None, completed=True)
         workouts = get_workouts_this_week(self.user)
         last_workout = Workout.objects.filter(user=self.user, completed=True).order_by("-started_at").first()
 
-        number, target = get_number_and_target_of_workouts_this_week(workouts, last_workout)
+        number, target, days = get_number_and_target_of_workouts_this_week(workouts, last_workout)
 
+        self.assertEqual(number, 1)
         self.assertIsNone(target)
 
     def test_returns_target_based_on_routine_days_count(self):
@@ -209,10 +291,13 @@ class GetNumberAndTargetOfWorkoutsThisWeekTests(TestCase):
         workouts = get_workouts_this_week(self.user)
         last_workout = Workout.objects.filter(user=self.user, completed=True).order_by("-started_at").first()
 
-        number, target = get_number_and_target_of_workouts_this_week(workouts, last_workout)
+        number, target, days = get_number_and_target_of_workouts_this_week(workouts, last_workout)
 
         self.assertEqual(number, 2)
         self.assertEqual(target, 3)
+        # Los dos entrenos son de hoy: el día aparece una sola vez
+        self.assertEqual(days, [timezone.localdate().weekday()])
+
 
 class GetWorkoutsThisWeekTests(TestCase):
     def setUp(self):
@@ -222,15 +307,22 @@ class GetWorkoutsThisWeekTests(TestCase):
             password="testpass123",
         )
 
-    def test_includes_workout_from_this_week(self):
-        Workout.objects.create(user=self.user)
+    def test_includes_completed_workout_from_this_week(self):
+        Workout.objects.create(user=self.user, completed=True)
 
         workouts = get_workouts_this_week(self.user)
 
         self.assertEqual(workouts.count(), 1)
 
+    def test_excludes_workout_not_completed(self):
+        Workout.objects.create(user=self.user, completed=False)
+
+        workouts = get_workouts_this_week(self.user)
+
+        self.assertEqual(workouts.count(), 0)
+
     def test_excludes_workout_from_last_week(self):
-        workout = Workout.objects.create(user=self.user)
+        workout = Workout.objects.create(user=self.user, completed=True)
         last_week = timezone.now() - timedelta(days=8)
         Workout.objects.filter(pk=workout.pk).update(started_at=last_week)
 
@@ -244,7 +336,7 @@ class GetWorkoutsThisWeekTests(TestCase):
             email="other@test.com",
             password="testpass123",
         )
-        Workout.objects.create(user=other_user)
+        Workout.objects.create(user=other_user, completed=True)
 
         workouts = get_workouts_this_week(self.user)
 
