@@ -1,11 +1,26 @@
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter
-from django.shortcuts import render
 import django_filters
+from django.db.models import ProtectedError
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
+from rest_framework.exceptions import APIException
+from rest_framework.filters import SearchFilter
+from rest_framework.permissions import IsAuthenticated
 
 from exercises.models import Equipment, Exercise, Muscle
-from exercises.serializers import EquipmentSerializer, ExerciseSerializer, MuscleSerializer
+from exercises.permissions import IsOwnerOrReadOnly
+from exercises.serializers import (
+    EquipmentSerializer,
+    ExerciseSerializer,
+    ExerciseWriteSerializer,
+    MuscleSerializer,
+)
+
+
+class ExerciseInUse(APIException):
+    status_code = 409
+    default_detail = "Este ejercicio se usa en tus rutinas o entrenos y no se puede borrar."
+    default_code = "exercise_in_use"
+
 
 class ExerciseFilter(django_filters.FilterSet):
     equipment = django_filters.ModelMultipleChoiceFilter(
@@ -18,27 +33,68 @@ class ExerciseFilter(django_filters.FilterSet):
         queryset=Muscle.objects.all(),
         conjoined=True
     )
+    # ?custom=true → solo los míos · ?custom=false → solo el catálogo
+    custom = django_filters.BooleanFilter(
+        field_name="owner",
+        lookup_expr="isnull",
+        exclude=True,
+    )
 
     class Meta:
         model = Exercise
         fields = [
-            "body_part", 
-            "muscle", 
-            "secondary_muscles", 
-            "equipment"
-            ]
+            "body_part",
+            "muscle",
+            "secondary_muscles",
+            "equipment",
+            "custom",
+        ]
 
-class ExerciseListView(generics.ListAPIView):
-    queryset = Exercise.objects.select_related("muscle", "body_part").prefetch_related("secondary_muscles", "equipment")
-    serializer_class = ExerciseSerializer
+
+def visible_exercises(user):
+    return (
+        Exercise.objects.visible_to(user)
+        .select_related("muscle", "body_part")
+        .prefetch_related("secondary_muscles", "equipment")
+    )
+
+
+class ExerciseListView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     filterset_class = ExerciseFilter
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ["name_es__unaccent"]
 
-class ExerciseDetailView(generics.RetrieveAPIView):
-    queryset = Exercise.objects.all()
-    serializer_class = ExerciseSerializer
+    def get_queryset(self):
+        return visible_exercises(self.request.user)
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return ExerciseWriteSerializer
+        return ExerciseSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class ExerciseDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     lookup_field = "slug"
+
+    def get_queryset(self):
+        return visible_exercises(self.request.user)
+
+    def get_serializer_class(self):
+        if self.request.method in ("PUT", "PATCH"):
+            return ExerciseWriteSerializer
+        return ExerciseSerializer
+
+    def perform_destroy(self, instance):
+        try:
+            instance.delete()
+        except ProtectedError:
+            raise ExerciseInUse()
+
 
 class MuscleListView(generics.ListAPIView):
     queryset = Muscle.objects.all().order_by("name_es")

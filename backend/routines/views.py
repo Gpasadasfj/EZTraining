@@ -1,8 +1,12 @@
 from django.db import transaction
-from django.db.models.aggregates import Max
+from django.db.models import BooleanField, Case, Value, When
+from django.db.models.aggregates import Count, Max, Sum
+from django.db.models.functions import Coalesce
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from django.shortcuts import get_object_or_404
+
+from routines.services import get_active_routine_id
 
 from .permissions import IsRoutineDayOwner, IsRoutineExerciseOwner
 from core.permissions import IsOwner
@@ -16,7 +20,19 @@ class RoutineViewSet(OwnerCreateMixin, ModelViewSet):
     permission_classes = [IsAuthenticated, IsOwner] 
     
     def get_queryset(self):
-        return Routine.objects.filter(user=self.request.user)
+        user = self.request.user
+        active_id = get_active_routine_id(user)
+    
+        return Routine.objects.filter(user=user).annotate(
+            n_days=Count("days", distinct=True),
+            n_exercises=Count("days__routine_exercises", distinct=True),
+            n_sets=Coalesce(Sum("days__routine_exercises__target_sets"), 0),
+            is_active=Case(
+                    When(pk=active_id, then=Value(True)),
+                    default=Value(False),
+                    output_field=BooleanField(),
+                ),
+        ).order_by("-is_active", "created_at", "id")
 
 class RoutineDayViewSet(ModelViewSet):
     serializer_class = RoutineDaySerializer

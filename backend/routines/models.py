@@ -16,10 +16,14 @@ class Routine(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ["created_at", "id"]
+
 class RoutineDay(models.Model):
     routine = models.ForeignKey(
         Routine,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="days"
         )
     name = models.CharField(max_length=100)
     order = models.PositiveSmallIntegerField()

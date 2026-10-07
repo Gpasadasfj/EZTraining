@@ -2,6 +2,7 @@ from datetime import timedelta
 from django.utils import timezone
 from django.db.models import F, Count,  Sum
 
+from routines.services import get_last_workout
 from routines.models import RoutineDay
 from workouts.models import Workout, WorkoutSet
 
@@ -47,12 +48,7 @@ def get_workouts_this_week(user):
 
     return week_workouts
 
-def get_last_workout(user):
-    # Obtener el último entreno del usuario
-    return Workout.objects.filter(
-        user=user, 
-        completed=True
-        ).order_by("-started_at").first()
+
 
 def get_number_and_target_of_workouts_this_week(workouts, last_workout):
     # Entrenos realizados y objetivo de esta semana.
