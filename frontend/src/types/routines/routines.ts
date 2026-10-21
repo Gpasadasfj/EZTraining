@@ -4,6 +4,10 @@ export interface Routine {
   description: string;
   created_at: string;
   updated_at: string;
+  n_days: number;
+  n_exercises: number;
+  n_sets: number;
+  is_active: boolean;
 }
 
 export interface RoutineExercise {
@@ -27,7 +31,7 @@ export type UpdateRoutinePayload = Partial<CreateRoutinePayload>;
 export interface UpdateRoutineVariables {
   id: number;
   data: UpdateRoutinePayload;
-};
+}
 
 export type CreateRoutineExercisePayload = Pick<
   RoutineExercise,

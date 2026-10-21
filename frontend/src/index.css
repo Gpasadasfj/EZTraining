@@ -10,27 +10,27 @@
   color-scheme: dark;
 
   /* Fondos */
-  --canvas: #09090b;         /* zinc-950 · fondo de la app */
-  --surface: #18181b;        /* zinc-900 · cards, inputs */
-  --surface-hover: #27272a;  /* zinc-800 */
+  --canvas: #09090b; /* zinc-950 · fondo de la app */
+  --surface: #18181b; /* zinc-900 · cards, inputs */
+  --surface-hover: #27272a; /* zinc-800 */
 
   /* Bordes */
-  --line: #27272a;           /* zinc-800 · cards (sutil) */
-  --line-strong: #3f3f46;    /* zinc-700 · inputs, botón secundario */
+  --line: #27272a; /* zinc-800 · cards (sutil) */
+  --line-strong: #3f3f46; /* zinc-700 · inputs, botón secundario */
 
   /* Texto */
-  --fg: #fafafa;             /* zinc-50 · principal */
-  --fg-muted: #a1a1aa;       /* zinc-400 · secundario */
-  --fg-subtle: #71717a;      /* zinc-500 · deshabilitado */
+  --fg: #fafafa; /* zinc-50 · principal */
+  --fg-muted: #a1a1aa; /* zinc-400 · secundario */
+  --fg-subtle: #71717a; /* zinc-500 · deshabilitado */
 
   /* Marca */
-  --primary: #f97316;        /* orange-500 · rellenos: botón, progreso, checkbox */
-  --primary-hover: #ea580c;  /* orange-600 */
+  --primary: #f97316; /* orange-500 · rellenos: botón, progreso, checkbox */
+  --primary-hover: #ea580c; /* orange-600 */
   --primary-active: #c2410c; /* orange-700 */
-  --on-primary: #09090b;     /* texto encima de un relleno naranja */
+  --on-primary: #09090b; /* texto encima de un relleno naranja */
   --primary-soft: rgb(249 115 22 / 0.15); /* fondo de badges */
-  --accent: #f97316;         /* naranja como TEXTO: enlaces, nav activo */
-  --brand: #f97316;          /* logo */
+  --accent: #f97316; /* naranja como TEXTO: enlaces, nav activo */
+  --brand: #f97316; /* logo */
 
   /* Estados */
   --success: #22c55e;
@@ -42,29 +42,29 @@
 [data-theme="light"] {
   color-scheme: light;
 
-  --canvas: #fafafa;         /* zinc-50 */
+  --canvas: #fafafa; /* zinc-50 */
   --surface: #ffffff;
-  --surface-hover: #f4f4f5;  /* zinc-100 */
+  --surface-hover: #f4f4f5; /* zinc-100 */
 
-  --line: #e4e4e7;           /* zinc-200 */
-  --line-strong: #d4d4d8;    /* zinc-300 */
+  --line: #e4e4e7; /* zinc-200 */
+  --line-strong: #d4d4d8; /* zinc-300 */
 
-  --fg: #09090b;             /* zinc-950 */
-  --fg-muted: #52525b;       /* zinc-600 */
-  --fg-subtle: #a1a1aa;      /* zinc-400 */
+  --fg: #09090b; /* zinc-950 */
+  --fg-muted: #52525b; /* zinc-600 */
+  --fg-subtle: #a1a1aa; /* zinc-400 */
 
   --primary: #f97316;
   --primary-hover: #ea580c;
   --primary-active: #c2410c;
   --on-primary: #09090b;
   --primary-soft: rgb(249 115 22 / 0.12);
-  --accent: #c2410c;         /* orange-700: el 500 no se lee como texto sobre blanco */
-  --brand: #ea580c;          /* orange-600 */
+  --accent: #c2410c; /* orange-700: el 500 no se lee como texto sobre blanco */
+  --brand: #ea580c; /* orange-600 */
 
-  --success: #15803d;        /* green-700 */
-  --warning: #a16207;        /* yellow-700 */
-  --danger: #dc2626;         /* red-600 */
-  --info: #2563eb;           /* blue-600 */
+  --success: #15803d; /* green-700 */
+  --warning: #a16207; /* yellow-700 */
+  --danger: #dc2626; /* red-600 */
+  --info: #2563eb; /* blue-600 */
 }
 
 /* ============================================================
@@ -109,14 +109,47 @@
   --animate-trace: trace 7s linear infinite;
   --animate-drift: drift 18s ease-in-out infinite alternate;
 
+  --animate-step-in-right: step-in-right 280ms cubic-bezier(0.23, 1, 0.32, 1)
+    both;
+  --animate-step-in-left: step-in-left 280ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  --animate-fade-in: fade-in 160ms ease both;
+
   @keyframes trace {
-    from { stroke-dashoffset: 1000; }
-    to { stroke-dashoffset: 0; }
+    from {
+      stroke-dashoffset: 1000;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
   }
 
   @keyframes drift {
-    from { transform: translate3d(-2%, -1%, 0) scale(1); }
-    to { transform: translate3d(2%, 2%, 0) scale(1.06); }
+    from {
+      transform: translate3d(-2%, -1%, 0) scale(1);
+    }
+    to {
+      transform: translate3d(2%, 2%, 0) scale(1.06);
+    }
+  }
+
+  @keyframes step-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(32px);
+    }
+  }
+
+  @keyframes step-in-left {
+    from {
+      opacity: 0;
+      transform: translateX(-32px);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
   }
 }
 

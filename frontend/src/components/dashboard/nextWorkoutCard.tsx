@@ -1,6 +1,13 @@
 // components/dashboard/nextWorkoutCard.tsx
 import { Link, useNavigate } from "react-router-dom";
-import { Layers, ListChecks, LoaderCircle, Play, Plus, Repeat } from "lucide-react";
+import {
+  Layers,
+  ListChecks,
+  LoaderCircle,
+  Play,
+  Plus,
+  Repeat,
+} from "lucide-react";
 import type { NextWorkout } from "../../types/dashboard";
 import PulseLine from "../pulseLine";
 import { useWorkoutsCreate } from "../../hooks/workouts/useWorkouts";
@@ -21,21 +28,6 @@ const eyebrowClass =
 
 const chipBase =
   "inline-flex h-6 items-center rounded-full px-2.5 text-xs font-bold tracking-[0.04em] uppercase";
-
-/* Colores de los badges del design system */
-const DAY_TYPES = [
-  { match: "push", label: "Push", className: "bg-orange-500/15 text-orange-400" },
-  { match: "pull", label: "Pull", className: "bg-blue-500/15 text-blue-400" },
-  { match: "leg", label: "Legs", className: "bg-green-500/15 text-green-400" },
-  { match: "pierna", label: "Legs", className: "bg-green-500/15 text-green-400" },
-  { match: "upper", label: "Upper", className: "bg-purple-500/15 text-purple-400" },
-  { match: "lower", label: "Lower", className: "bg-pink-500/15 text-pink-400" },
-];
-
-function getDayType(dayName: string) {
-  const lower = dayName.toLowerCase();
-  return DAY_TYPES.find((type) => lower.includes(type.match));
-}
 
 function plural(count: number, singular: string, pluralForm: string) {
   return `${count} ${count === 1 ? singular : pluralForm}`;
@@ -76,7 +68,10 @@ function NextWorkoutContent({
         {hasExercises && (
           <>
             <li className="inline-flex items-center gap-1.5">
-              <ListChecks className="size-4 text-orange-300" aria-hidden="true" />
+              <ListChecks
+                className="size-4 text-orange-300"
+                aria-hidden="true"
+              />
               {plural(exercises_count, "ejercicio", "ejercicios")}
             </li>
             <li className="inline-flex items-center gap-1.5">
@@ -88,16 +83,29 @@ function NextWorkoutContent({
       </ul>
 
       {!hasExercises && (
-        <p className="m-0 text-zinc-300">Este día todavía no tiene ejercicios.</p>
+        <p className="m-0 text-zinc-300">
+          Este día todavía no tiene ejercicios.
+        </p>
       )}
 
       <div className="mt-4 flex flex-wrap items-center gap-4.5">
         {hasExercises ? (
-          <button type="button" onClick={handleStart} disabled={isPending} className={primaryButton}>
+          <button
+            type="button"
+            onClick={handleStart}
+            disabled={isPending}
+            className={primaryButton}
+          >
             {isPending ? (
-              <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
+              <LoaderCircle
+                className="size-4 animate-spin"
+                aria-hidden="true"
+              />
             ) : (
-              <Play className="size-3.75 fill-current stroke-none" aria-hidden="true" />
+              <Play
+                className="size-3.75 fill-current stroke-none"
+                aria-hidden="true"
+              />
             )}
             {isPending ? "Empezando…" : "Empezar entreno"}
           </button>
@@ -125,7 +133,8 @@ function EmptyContent() {
         Crea tu primera rutina
       </h2>
       <p className="m-0 max-w-[48ch] text-zinc-300">
-        Organiza tus días de entreno y cada vez que abras la app verás cuál te toca.
+        Organiza tus días de entreno y cada vez que abras la app verás cuál te
+        toca.
       </p>
       <div className="mt-4">
         <Link to="/routines" className={primaryButton}>
@@ -144,8 +153,6 @@ interface NextWorkoutCardProps {
 }
 
 export default function NextWorkoutCard({ nextWorkout }: NextWorkoutCardProps) {
-  const dayType = nextWorkout ? getDayType(nextWorkout.name) : undefined;
-
   return (
     <section
       aria-labelledby="next-workout-title"
@@ -164,10 +171,10 @@ export default function NextWorkoutCard({ nextWorkout }: NextWorkoutCardProps) {
       />
 
       <div className="absolute top-4.5 left-5 lg:top-6 lg:left-7">
-        {nextWorkout ? (
-          dayType && <span className={`${chipBase} ${dayType.className}`}>{dayType.label}</span>
-        ) : (
-          <span className={`${chipBase} bg-orange-500/15 text-orange-400`}>Primer paso</span>
+        {nextWorkout && (
+          <span className={`${chipBase} bg-orange-500/15 text-orange-400`}>
+            Primer paso
+          </span>
         )}
       </div>
 

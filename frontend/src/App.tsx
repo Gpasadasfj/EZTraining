@@ -8,7 +8,6 @@ import Exercises from "./pages/exercises";
 import Me from "./pages/me";
 import Routines from "./pages/routines/routines";
 import RoutineDetail from "./pages/routines/routineDetail";
-import RoutineForm from "./pages/routines/routineForm";
 import RoutineDaysDetail from "./pages/routines/routinesDays/routineDaysDetail";
 import RoutineDaysForm from "./pages/routines/routinesDays/routineDaysForm";
 import RoutineExerciseForm from "./pages/routines/routinesDays/routinesExercises/routineExerciseForm";
@@ -16,6 +15,8 @@ import RoutineExerciseDetail from "./pages/routines/routinesDays/routinesExercis
 import Workouts from "./pages/workouts/workouts";
 import WorkoutDetail from "./pages/workouts/workoutDetail";
 import AuthLayout from "./layouts/AuthLayout";
+import RoutineWizard from "./pages/routines/wizard/routineWizard";
+import RoutineEdit from "./pages/routines/routineEdit";
 
 function App() {
   return (
@@ -37,8 +38,8 @@ function App() {
         <Route path="/me" element={<Me />} />
         <Route path="/routines" element={<Routines />} />
         <Route path="/routines/:id" element={<RoutineDetail />} />
-        <Route path="/routines/new" element={<RoutineForm />} />
-        <Route path="/routines/update/:id" element={<RoutineForm />} />
+        <Route path="/routines/new" element={<RoutineWizard />} />
+        <Route path="/routines/update/:id" element={<RoutineEdit />} />
         <Route
           path="/routines/:id/days/:dayId"
           element={<RoutineDaysDetail />}

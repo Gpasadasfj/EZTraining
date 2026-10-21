@@ -69,6 +69,7 @@ export function useDeleteRoutine() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["routine"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },
   });
 }
