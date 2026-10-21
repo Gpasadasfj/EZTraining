@@ -55,7 +55,7 @@ export function useUpdateRoutineDays(routineId: number) {
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["routineDay"] });
+      return queryClient.invalidateQueries({ queryKey: ["routineDay"] });
     },
   });
 }
@@ -69,7 +69,7 @@ export function useDeleteRoutineDays(routineId: number) {
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["routineDay"] });
+      return queryClient.invalidateQueries({ queryKey: ["routineDay"] });
     },
   });
 }

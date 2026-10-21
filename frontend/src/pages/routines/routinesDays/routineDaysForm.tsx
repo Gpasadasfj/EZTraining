@@ -1,86 +1,161 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import {
   useCreateRoutineDays,
   useRoutineDaysDetail,
   useUpdateRoutineDays,
 } from "../../../hooks/routines/useRoutineDays";
-import { useNavigate, useParams } from "react-router-dom";
-import type { UpdateRoutineDayVariables } from "../../../types/routines/routineDays";
 
+const fieldClass =
+  "w-full rounded-lg border border-line bg-canvas px-3.5 text-base text-fg placeholder:text-fg-subtle transition outline-none focus:border-primary focus:ring-3 focus:ring-primary/20";
+
+// Crea un día en una rutina existente o edita su nombre.
+// El orden no se edita aquí: el backend lo asigna al crear.
 export default function RoutineDayForm() {
   const { id, dayId } = useParams();
+  const routineId = Number(id);
+  const isEdit = Boolean(dayId);
+  const navigate = useNavigate();
 
   const {
-    mutate: createMutate,
+    mutate: createDay,
     isPending: isCreating,
-    isError: isCreatingError,
     error: createError,
-  } = useCreateRoutineDays(Number(id));
+  } = useCreateRoutineDays(routineId);
   const {
-    mutate: updateMutate,
+    mutate: updateDay,
     isPending: isUpdating,
-    isError: isUpdatingError,
     error: updateError,
-  } = useUpdateRoutineDays(Number(id));
+  } = useUpdateRoutineDays(routineId);
   const { data, isLoading, isError, error } = useRoutineDaysDetail(
-    Number(id),
+    routineId,
     Number(dayId),
   );
 
-  const navigate = useNavigate();
   const [name, setName] = useState("");
-  const [order, setOrder] = useState<number>();
 
-  const updateDayPayload: UpdateRoutineDayVariables = {
-    dayId: Number(dayId),
-    data: { name: name, order: order },
-  };
+  useEffect(() => {
+    if (data) setName(data.name);
+  }, [data]);
+
+  const isSaving = isCreating || isUpdating;
+  const saveError = createError ?? updateError;
+  const canSubmit = name.trim().length > 0 && !isSaving;
+  const backUrl = `/routines/${routineId}`;
 
   const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
+    if (!canSubmit) return;
 
-    if (dayId) {
-      updateMutate(updateDayPayload, {
-        onSuccess: () => navigate(`/routines/${id}`),
-      });
+    const goBack = { onSuccess: () => navigate(backUrl) };
+
+    if (isEdit) {
+      updateDay({ dayId: Number(dayId), data: { name: name.trim() } }, goBack);
     } else {
-      createMutate(
-        { name: name, order: order },
-        { onSuccess: () => navigate(`/routines/${id}`) },
-      );
+      createDay({ name: name.trim() }, goBack);
     }
   };
 
-  useEffect(() => {
-    if (data) {
-      setName(data.name);
-      setOrder(data.order);
-    }
-  }, [data]);
+  if (isEdit && isLoading) {
+    return (
+      <div
+        className="mx-auto grid w-full max-w-xl animate-pulse gap-4.5"
+        aria-busy="true"
+      >
+        <div className="h-6 w-24 rounded-md bg-surface" />
+        <div className="h-10 w-48 rounded-md bg-surface" />
+        <div className="h-44 rounded-2xl border border-line bg-surface" />
+      </div>
+    );
+  }
 
-  if (isLoading) return <p>Cargando...</p>;
-  if (isError) return <p>Error: {error.message}</p>;
+  if (isEdit && isError) {
+    return (
+      <div className="mx-auto grid w-full max-w-xl justify-items-start gap-3 rounded-xl border border-line bg-surface p-5">
+        <p className="font-semibold">No se pudo cargar el día</p>
+        <p className="text-fg-muted">{error.message}</p>
+        <Link
+          to={backUrl}
+          className="inline-flex h-10 items-center rounded-lg border border-line-strong px-4 font-semibold transition hover:bg-surface-hover"
+        >
+          Volver a la rutina
+        </Link>
+      </div>
+    );
+  }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <p>Nombre</p>
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <p>Orden</p>
-      <input
-        type="number"
-        value={order ?? ""}
-        onChange={(e) => setOrder(Number(e.target.value))}
-      />
-      {(isCreatingError || isUpdatingError) && (
-        <p>Error: {(createError ?? updateError)?.message}</p>
-      )}
-      <button disabled={isCreating || isUpdating} type="submit">
-        Enviar
-      </button>
-    </form>
+    <div className="mx-auto grid w-full max-w-xl gap-4.5">
+      <Link
+        to={backUrl}
+        className="-my-1.5 -ml-2 inline-flex h-8 items-center gap-1.5 justify-self-start rounded-lg pr-2.5 pl-1.5 font-medium text-fg-muted transition hover:bg-surface hover:text-fg"
+      >
+        <ArrowLeft className="size-4.5" aria-hidden />
+        Volver a la rutina
+      </Link>
+
+      <header className="grid gap-1.5">
+        <h1 className="font-display text-4xl leading-none font-extrabold italic lg:text-5xl">
+          {isEdit ? "Editar día" : "Nuevo día"}
+        </h1>
+        <p className="text-fg-muted">
+          {isEdit
+            ? "Cambia el nombre del día. Sus ejercicios se mantienen."
+            : "Se añadirá al final de la rutina. Después podrás meterle ejercicios."}
+        </p>
+      </header>
+
+      <form
+        onSubmit={handleSubmit}
+        className="grid gap-5 rounded-2xl border border-line bg-surface p-4.5 lg:p-6"
+      >
+        <div className="grid gap-2">
+          <label htmlFor="day-name" className="font-semibold">
+            Nombre
+          </label>
+          <input
+            id="day-name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Push, Pierna, Torso…"
+            autoComplete="off"
+            autoFocus={!isEdit}
+            required
+            className={`${fieldClass} h-12`}
+          />
+        </div>
+
+        {saveError && (
+          <p
+            role="alert"
+            className="rounded-lg border border-red-500/30 bg-red-500/10 px-3.5 py-3 text-sm text-red-300"
+          >
+            No se pudo guardar el día: {saveError.message}
+          </p>
+        )}
+
+        <div className="flex flex-col-reverse gap-2.5 border-t border-line pt-5 sm:flex-row sm:justify-end">
+          <Link
+            to={backUrl}
+            className="inline-flex h-12 items-center justify-center rounded-lg px-5 font-semibold text-fg-muted transition hover:bg-surface-hover hover:text-fg"
+          >
+            Cancelar
+          </Link>
+          <button
+            type="submit"
+            disabled={!canSubmit}
+            className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-6 font-semibold text-on-primary shadow-lg shadow-primary/40 transition hover:bg-primary-hover active:scale-97 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none disabled:active:scale-100"
+          >
+            {isSaving
+              ? "Guardando…"
+              : isEdit
+                ? "Guardar cambios"
+                : "Añadir día"}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

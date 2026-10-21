@@ -4,16 +4,12 @@ import useRoutineExercises from "../../../hooks/routines/useRoutineExercises";
 import { useWorkoutsCreate } from "../../../hooks/workouts/useWorkouts";
 import type { RoutineDay } from "../../../types/routines/routineDays";
 import type { RoutineExercise } from "../../../types/routines/routineExercises";
+import { formatReps } from "../../../utils/format";
 
 interface RoutineDayCardProps {
   routineId: number;
   day: RoutineDay;
   position: number;
-}
-
-function formatReps(min: number | null, max: number | null) {
-  if (min && max && min !== max) return `${min}–${max}`;
-  return String(min ?? max ?? "—");
 }
 
 export default function RoutineDayCard({

@@ -3,14 +3,12 @@ import { useNavigate } from "react-router-dom";
 import useRoutineDays from "../../../hooks/routines/useRoutineDays";
 import type { RoutineDay } from "../../../types/routines/routineDays";
 
-import {
-  StepIntro,
-  WizardActions,
-  WizardActionsSlot,
-  WizardHeader,
-} from "./wizardUi";
+import { WizardActionsSlot, WizardHeader } from "./wizardUi";
 import type { RoutineValues, WizardStep } from "../../../types/routines/wizard";
 import StepRoutine from "./stepRoutine";
+import StepDays from "./stepDays";
+import StepDayExercises from "./stepDayExercises";
+import StepDone from "./stepDone";
 
 type Direction = "forward" | "back";
 
@@ -97,29 +95,33 @@ export default function RoutineWizard() {
             />
           )}
 
-          {/* Provisional: los sustituimos en los siguientes pasos */}
-          {step.kind === "days" && (
-            <StepPlaceholder
-              eyebrow={routineValues.name}
-              title="Días de entreno"
+          {step.kind === "days" && routineId !== null && (
+            <StepDays
+              routineId={routineId}
+              routineName={routineValues.name}
+              days={days}
               onBack={goBack}
               onNext={goNext}
             />
           )}
-          {step.kind === "day" && (
-            <StepPlaceholder
-              eyebrow={routineValues.name}
-              title={step.day.name}
+
+          {step.kind === "day" && routineId !== null && (
+            <StepDayExercises
+              routineId={routineId}
+              routineName={routineValues.name}
+              day={step.day}
+              isLastDay={step.index === days.length - 1}
               onBack={goBack}
               onNext={goNext}
             />
           )}
-          {step.kind === "done" && (
-            <StepPlaceholder
-              eyebrow={routineValues.name}
-              title="Rutina lista"
-              onNext={() => navigate(`/routines/${routineId}`)}
-              nextLabel="Ver rutina"
+
+          {step.kind === "done" && routineId !== null && (
+            <StepDone
+              routineId={routineId}
+              routineValues={routineValues}
+              days={days}
+              onFinish={() => navigate(`/routines/${routineId}`)}
             />
           )}
         </div>
@@ -128,34 +130,5 @@ export default function RoutineWizard() {
       {/* Fuera del div animado: su transform rompe el `fixed` de la barra en móvil */}
       <div ref={setActionsSlot} />
     </div>
-  );
-}
-
-interface StepPlaceholderProps {
-  eyebrow: string;
-  title: string;
-  onBack?: () => void;
-  onNext: () => void;
-  nextLabel?: string;
-}
-
-function StepPlaceholder({
-  eyebrow,
-  title,
-  onBack,
-  onNext,
-  nextLabel = "Siguiente",
-}: StepPlaceholderProps) {
-  return (
-    <>
-      <div className="pt-3.5 lg:px-7 lg:pt-5.5">
-        <StepIntro
-          eyebrow={eyebrow}
-          title={title}
-          subtitle="Este paso lo hacemos a continuación."
-        />
-      </div>
-      <WizardActions onBack={onBack} onNext={onNext} nextLabel={nextLabel} />
-    </>
   );
 }

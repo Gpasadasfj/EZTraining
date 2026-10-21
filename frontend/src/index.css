@@ -113,6 +113,7 @@
     both;
   --animate-step-in-left: step-in-left 280ms cubic-bezier(0.23, 1, 0.32, 1) both;
   --animate-fade-in: fade-in 160ms ease both;
+  --animate-pop-in: pop-in 420ms cubic-bezier(0.23, 1, 0.32, 1) 120ms both;
 
   @keyframes trace {
     from {
@@ -150,6 +151,10 @@
     from {
       opacity: 0;
     }
+  }
+
+  @keyframes pop-in {
+    from { opacity: 0; transform: scale(0.6); }
   }
 }
 
