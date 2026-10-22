@@ -5,6 +5,7 @@ import { useWorkoutsCreate } from "../../../hooks/workouts/useWorkouts";
 import type { RoutineDay } from "../../../types/routines/routineDays";
 import type { RoutineExercise } from "../../../types/routines/routineExercises";
 import { formatReps } from "../../../utils/format";
+import ExerciseThumb from "../../../components/exercises/exerciseThumb";
 
 interface RoutineDayCardProps {
   routineId: number;
@@ -88,11 +89,12 @@ export default function RoutineDayCard({
             {exercises.map((exercise, index) => (
               <li
                 key={exercise.id}
-                className="flex items-baseline gap-2.5 border-t border-line py-3.5"
+                className="flex items-center gap-3 border-t border-line py-3"
               >
-                <span className="w-5 shrink-0 text-sm font-semibold text-fg-subtle tabular-nums">
+                <span className="w-4 shrink-0 text-sm font-semibold text-fg-subtle tabular-nums">
                   {index + 1}
                 </span>
+                <ExerciseThumb src={exercise.exercise_image} size="sm" />
                 <span className="min-w-0 flex-1 leading-snug font-medium">
                   {exercise.exercise_name}
                 </span>

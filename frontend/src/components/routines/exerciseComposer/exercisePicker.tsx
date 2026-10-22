@@ -7,6 +7,7 @@ import {
 import useDebouncedValue from "../../../hooks/useDebouncedValue";
 import type { Exercise, ExerciseFilters } from "../../../types/exercises";
 import { composerFieldClass } from "./composerFieldClass";
+import ExerciseThumb from "../../exercises/exerciseThumb";
 
 type Source = "catalog" | "mine";
 
@@ -136,9 +137,12 @@ export default function ExercisePicker({
             <button
               type="button"
               onClick={() => onPick(exercise)}
-              className="flex w-full items-center justify-between gap-3 rounded-lg px-2.5 py-3 text-left transition hover:bg-surface-hover"
+              className="flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left transition hover:bg-surface-hover"
             >
-              <span className="min-w-0 font-medium">{exercise.name_es}</span>
+              <ExerciseThumb src={exercise.image} size="sm" />
+              <span className="min-w-0 flex-1 font-medium">
+                {exercise.name_es}
+              </span>
               <span className="shrink-0 text-xs font-semibold text-fg-subtle">
                 {exercise.muscle}
               </span>

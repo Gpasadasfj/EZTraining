@@ -3,7 +3,7 @@ export interface Exercise {
   slug: string;
   name_es: string;
   instructions_es: Record<string, string>;
-  image: string;
+  image: string | null;
   body_part: string;
   muscle: string;
   secondary_muscles: string[];

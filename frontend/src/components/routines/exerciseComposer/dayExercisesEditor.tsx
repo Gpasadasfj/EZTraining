@@ -9,6 +9,7 @@ import { formatReps } from "../../../utils/format";
 import ExercisePicker from "./exercisePicker";
 import CreateExerciseForm from "./createExerciseForm";
 import ExerciseConfigForm from "./exerciseConfigForm";
+import ExerciseThumb from "../../exercises/exerciseThumb";
 
 // Solo puede haber un panel abierto a la vez.
 type Panel =
@@ -97,10 +98,11 @@ export default function DayExercisesEditor({
             return (
               <li
                 key={exercise.id}
-                className={`flex min-h-16 items-center gap-3 rounded-lg border border-line bg-surface py-2.5 pr-1.5 pl-3.5 transition duration-200 ease-out starting:-translate-y-1.5 starting:opacity-0 motion-reduce:transition-none lg:bg-canvas ${
+                className={`flex min-h-16 items-center gap-3 rounded-lg border border-line bg-surface py-2 pr-1.5 pl-2 transition duration-200 ease-out starting:-translate-y-1.5 starting:opacity-0 motion-reduce:transition-none lg:bg-canvas ${
                   isRemoving ? "opacity-50" : ""
                 }`}
               >
+                <ExerciseThumb src={exercise.exercise_image} />
                 <div className="grid min-w-0 flex-1 gap-0.5">
                   <span className="leading-snug font-semibold wrap-anywhere">
                     {exercise.exercise_name}

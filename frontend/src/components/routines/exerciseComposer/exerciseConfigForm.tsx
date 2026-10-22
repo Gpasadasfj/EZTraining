@@ -7,6 +7,7 @@ import {
 import type { Exercise } from "../../../types/exercises";
 import type { RoutineExercise } from "../../../types/routines/routineExercises";
 import { composerFieldClass } from "./composerFieldClass";
+import ExerciseThumb from "../../exercises/exerciseThumb";
 
 // Los inputs trabajan con texto para poder quedarse vacíos mientras el usuario escribe.
 interface ConfigValues {
@@ -134,10 +135,11 @@ export default function ExerciseConfigForm(props: ExerciseConfigFormProps) {
       onSubmit={handleSubmit}
       className="grid animate-fade-in gap-4 rounded-xl border border-line-strong bg-surface p-3.5 shadow-xl shadow-black/40 lg:bg-canvas"
     >
-      <div className="flex items-center justify-between gap-3 rounded-lg border border-line bg-canvas px-3.5 py-3 lg:bg-surface">
+      <div className="flex items-center gap-3 rounded-lg border border-line bg-canvas py-2.5 pr-3.5 pl-2.5 lg:bg-surface">
         {props.mode === "create" ? (
           <>
-            <div className="grid min-w-0 gap-0.5">
+            <ExerciseThumb src={props.exercise.image} size="sm" />
+            <div className="grid min-w-0 flex-1 gap-0.5">
               <span className="flex items-center gap-1.5 text-xs font-semibold text-fg-subtle">
                 {props.exercise.is_custom && (
                   <span className="rounded-full bg-primary/15 px-2 py-0.5 font-bold tracking-wide text-orange-300 uppercase">
@@ -159,14 +161,20 @@ export default function ExerciseConfigForm(props: ExerciseConfigFormProps) {
             </button>
           </>
         ) : (
-          <div className="grid min-w-0 gap-0.5">
-            <span className="text-xs font-semibold text-fg-subtle">
-              Editar ejercicio
-            </span>
-            <strong className="font-semibold wrap-anywhere">
-              {props.routineExercise.exercise_name}
-            </strong>
-          </div>
+          <>
+            <ExerciseThumb
+              src={props.routineExercise.exercise_image}
+              size="sm"
+            />
+            <div className="grid min-w-0 flex-1 gap-0.5">
+              <span className="text-xs font-semibold text-fg-subtle">
+                Editar ejercicio
+              </span>
+              <strong className="font-semibold wrap-anywhere">
+                {props.routineExercise.exercise_name}
+              </strong>
+            </div>
+          </>
         )}
       </div>
 
