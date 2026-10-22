@@ -3,7 +3,7 @@ import { isAxiosError } from "axios";
 import { Check, Lock } from "lucide-react";
 import { useCreateExercise, useMuscles } from "../../../hooks/useExercises";
 import type { Exercise } from "../../../types/exercises";
-import { composerFieldClass } from "./wizardUi";
+import { composerFieldClass } from "./composerFieldClass";
 import { capitalize } from "../../../utils/format";
 
 interface CreateExerciseFormProps {

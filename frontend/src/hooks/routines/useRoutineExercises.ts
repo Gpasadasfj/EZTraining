@@ -21,22 +21,6 @@ export default function useRoutineExercises(routineId: number, dayId: number) {
   });
 }
 
-export function useRoutineExerciseDetail(
-  routineId: number,
-  dayId: number,
-  exerciseId: number,
-) {
-  return useQuery({
-    queryKey: ["routineExercise", routineId, dayId, exerciseId],
-    queryFn: async () => {
-      const res = await routineExercisesDetailRequest(routineId, dayId, exerciseId);
-      return res.data;
-    },
-    enabled:
-      !Number.isNaN(routineId) && !Number.isNaN(dayId) && !Number.isNaN(exerciseId),
-  });
-}
-
 export function useCreateRoutineExercise(routineId: number, dayId: number) {
   const queryClient = useQueryClient();
 

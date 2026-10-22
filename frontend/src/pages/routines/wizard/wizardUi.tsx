@@ -5,10 +5,6 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 export const fieldClass =
   "w-full rounded-lg border border-line bg-surface px-3.5 text-base text-fg placeholder:text-fg-subtle outline-none transition focus:border-primary focus:ring-3 focus:ring-primary/20 lg:bg-canvas";
 
-
-export const composerFieldClass =
-  "w-full rounded-lg border border-line bg-canvas text-base text-fg placeholder:text-fg-subtle outline-none transition focus:border-primary focus:ring-3 focus:ring-primary/20 lg:bg-surface";
-
 /* Hueco donde se pintan los botones de abajo, fuera de la animación */
 export const WizardActionsSlot = createContext<HTMLElement | null>(null);
 

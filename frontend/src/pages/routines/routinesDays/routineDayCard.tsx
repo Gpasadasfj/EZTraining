@@ -73,7 +73,7 @@ export default function RoutineDayCard({
         <div className="mt-3 grid justify-items-start gap-2.5 rounded-lg border border-dashed border-line-strong p-3.5 text-fg-muted">
           <p>Este día aún no tiene ejercicios.</p>
           <Link
-            to={`${dayUrl}/exercises/new`}
+            to={dayUrl}
             className="inline-flex items-center gap-1.5 font-semibold text-accent underline-offset-4 hover:underline"
           >
             <Plus className="size-4" strokeWidth={2.4} aria-hidden />

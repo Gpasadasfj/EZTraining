@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { Check } from "lucide-react";
-import { useCreateRoutineExercise } from "../../../hooks/routines/useRoutineExercises";
+import {
+  useCreateRoutineExercise,
+  useUpdateRoutineExercise,
+} from "../../../hooks/routines/useRoutineExercises";
 import type { Exercise } from "../../../types/exercises";
-import { composerFieldClass } from "./wizardUi";
+import type { RoutineExercise } from "../../../types/routines/routineExercises";
+import { composerFieldClass } from "./composerFieldClass";
 
 // Los inputs trabajan con texto para poder quedarse vacíos mientras el usuario escribe.
 interface ConfigValues {
@@ -18,8 +22,18 @@ const DEFAULTS: ConfigValues = {
   minReps: "8",
   maxReps: "12",
   rir: "2",
-  rest: "180",
+  rest: "90",
 };
+
+function valuesFrom(routineExercise: RoutineExercise): ConfigValues {
+  return {
+    sets: String(routineExercise.target_sets),
+    minReps: String(routineExercise.min_reps),
+    maxReps: String(routineExercise.max_reps),
+    rir: String(routineExercise.target_rir),
+    rest: String(routineExercise.rest_time),
+  };
+}
 
 function toInt(value: string) {
   const number = parseInt(value, 10);
@@ -52,31 +66,34 @@ function parseConfig(values: ConfigValues) {
   };
 }
 
-interface ExerciseConfigFormProps {
+// Crear: añade al día un ejercicio elegido en el buscador.
+// Editar: cambia las series y repeticiones de uno que ya está en el día.
+type ExerciseConfigFormProps = {
   routineId: number;
   dayId: number;
-  exercise: Exercise;
-  order: number;
-  onChangeExercise: () => void;
   onCancel: () => void;
   onSaved: () => void;
-}
+} & (
+  | {
+      mode: "create";
+      exercise: Exercise;
+      order: number;
+      onChangeExercise: () => void;
+    }
+  | { mode: "edit"; routineExercise: RoutineExercise }
+);
 
-export default function ExerciseConfigForm({
-  routineId,
-  dayId,
-  exercise,
-  order,
-  onChangeExercise,
-  onCancel,
-  onSaved,
-}: ExerciseConfigFormProps) {
-  const [values, setValues] = useState<ConfigValues>(DEFAULTS);
-  const {
-    mutate: createExercise,
-    isPending,
-    error,
-  } = useCreateRoutineExercise(routineId, dayId);
+export default function ExerciseConfigForm(props: ExerciseConfigFormProps) {
+  const { routineId, dayId, onCancel, onSaved } = props;
+
+  const [values, setValues] = useState<ConfigValues>(
+    props.mode === "edit" ? valuesFrom(props.routineExercise) : DEFAULTS,
+  );
+
+  const createMutation = useCreateRoutineExercise(routineId, dayId);
+  const updateMutation = useUpdateRoutineExercise(routineId, dayId);
+  const { isPending, error } =
+    props.mode === "edit" ? updateMutation : createMutation;
 
   const config = parseConfig(values);
   const repsError =
@@ -91,7 +108,7 @@ export default function ExerciseConfigForm({
     config.rest_time >= 0 &&
     !repsError;
 
-  const update =
+  const setField =
     (field: keyof ConfigValues) => (e: React.ChangeEvent<HTMLInputElement>) =>
       setValues((current) => ({ ...current, [field]: e.target.value }));
 
@@ -99,10 +116,17 @@ export default function ExerciseConfigForm({
     e.preventDefault();
     if (!config || !isValid || isPending) return;
 
-    createExercise(
-      { exercise: exercise.id, order, ...config },
-      { onSuccess: onSaved },
-    );
+    if (props.mode === "edit") {
+      updateMutation.mutate(
+        { exerciseId: props.routineExercise.id, data: config },
+        { onSuccess: onSaved },
+      );
+    } else {
+      createMutation.mutate(
+        { exercise: props.exercise.id, order: props.order, ...config },
+        { onSuccess: onSaved },
+      );
+    }
   };
 
   return (
@@ -111,26 +135,39 @@ export default function ExerciseConfigForm({
       className="grid animate-fade-in gap-4 rounded-xl border border-line-strong bg-surface p-3.5 shadow-xl shadow-black/40 lg:bg-canvas"
     >
       <div className="flex items-center justify-between gap-3 rounded-lg border border-line bg-canvas px-3.5 py-3 lg:bg-surface">
-        <div className="grid min-w-0 gap-0.5">
-          <span className="flex items-center gap-1.5 text-xs font-semibold text-fg-subtle">
-            {exercise.is_custom && (
-              <span className="rounded-full bg-primary/15 px-2 py-0.5 font-bold tracking-wide text-orange-300 uppercase">
-                Tuyo
+        {props.mode === "create" ? (
+          <>
+            <div className="grid min-w-0 gap-0.5">
+              <span className="flex items-center gap-1.5 text-xs font-semibold text-fg-subtle">
+                {props.exercise.is_custom && (
+                  <span className="rounded-full bg-primary/15 px-2 py-0.5 font-bold tracking-wide text-orange-300 uppercase">
+                    Tuyo
+                  </span>
+                )}
+                {props.exercise.muscle}
               </span>
-            )}
-            {exercise.muscle}
-          </span>
-          <strong className="font-semibold wrap-anywhere">
-            {exercise.name_es}
-          </strong>
-        </div>
-        <button
-          type="button"
-          onClick={onChangeExercise}
-          className="shrink-0 text-sm font-semibold text-accent underline-offset-4 hover:underline"
-        >
-          Cambiar
-        </button>
+              <strong className="font-semibold wrap-anywhere">
+                {props.exercise.name_es}
+              </strong>
+            </div>
+            <button
+              type="button"
+              onClick={props.onChangeExercise}
+              className="shrink-0 text-sm font-semibold text-accent underline-offset-4 hover:underline"
+            >
+              Cambiar
+            </button>
+          </>
+        ) : (
+          <div className="grid min-w-0 gap-0.5">
+            <span className="text-xs font-semibold text-fg-subtle">
+              Editar ejercicio
+            </span>
+            <strong className="font-semibold wrap-anywhere">
+              {props.routineExercise.exercise_name}
+            </strong>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-6 gap-2.5">
@@ -139,7 +176,7 @@ export default function ExerciseConfigForm({
           id="cfg-sets"
           label="Series"
           value={values.sets}
-          onChange={update("sets")}
+          onChange={setField("sets")}
           min={1}
         />
         <NumberField
@@ -147,7 +184,7 @@ export default function ExerciseConfigForm({
           id="cfg-min"
           label="Reps mín"
           value={values.minReps}
-          onChange={update("minReps")}
+          onChange={setField("minReps")}
           min={1}
         />
         <NumberField
@@ -155,7 +192,7 @@ export default function ExerciseConfigForm({
           id="cfg-max"
           label="Reps máx"
           value={values.maxReps}
-          onChange={update("maxReps")}
+          onChange={setField("maxReps")}
           min={1}
         />
         <NumberField
@@ -163,7 +200,7 @@ export default function ExerciseConfigForm({
           id="cfg-rir"
           label="RIR"
           value={values.rir}
-          onChange={update("rir")}
+          onChange={setField("rir")}
           min={0}
         />
         <NumberField
@@ -171,7 +208,7 @@ export default function ExerciseConfigForm({
           id="cfg-rest"
           label="Descanso (s)"
           value={values.rest}
-          onChange={update("rest")}
+          onChange={setField("rest")}
           min={0}
           step={15}
         />
@@ -184,7 +221,7 @@ export default function ExerciseConfigForm({
           role="alert"
           className="rounded-lg border border-red-500/30 bg-red-500/10 px-3.5 py-3 text-sm text-red-300"
         >
-          No se pudo añadir el ejercicio: {error.message}
+          No se pudo guardar el ejercicio: {error.message}
         </p>
       )}
 
@@ -202,7 +239,13 @@ export default function ExerciseConfigForm({
           className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-semibold text-on-primary shadow-lg shadow-primary/40 transition hover:bg-primary-hover active:scale-97 disabled:cursor-not-allowed disabled:opacity-45 disabled:shadow-none disabled:active:scale-100"
         >
           <Check className="size-4" strokeWidth={2.6} aria-hidden />
-          {isPending ? "Añadiendo…" : "Añadir"}
+          {props.mode === "edit"
+            ? isPending
+              ? "Guardando…"
+              : "Guardar"
+            : isPending
+              ? "Añadiendo…"
+              : "Añadir"}
         </button>
       </div>
     </form>

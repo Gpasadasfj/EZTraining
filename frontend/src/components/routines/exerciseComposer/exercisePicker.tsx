@@ -6,7 +6,7 @@ import {
 } from "../../../hooks/useExercises";
 import useDebouncedValue from "../../../hooks/useDebouncedValue";
 import type { Exercise, ExerciseFilters } from "../../../types/exercises";
-import { composerFieldClass } from "./wizardUi";
+import { composerFieldClass } from "./composerFieldClass";
 
 type Source = "catalog" | "mine";
 
