@@ -1,6 +1,20 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { equipmentRequest, exercisesRequest, musclesRequest, searchExercisesRequest } from "../api/exercises";
-import type { ExerciseFilters } from "../types/exercises";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import {
+  createExerciseRequest,
+  equipmentRequest,
+  exercisesRequest,
+  musclesRequest,
+  searchExercisesRequest,
+} from "../api/exercises";
+import type {
+  CreateExercisePayload,
+  ExerciseFilters,
+} from "../types/exercises";
 
 export function useExercisesInfinite(filters: ExerciseFilters) {
   return useInfiniteQuery({
@@ -49,5 +63,20 @@ export function useEquipment() {
       return res.data;
     },
     staleTime: Infinity,
+  });
+}
+
+export function useCreateExercise() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: CreateExercisePayload) => {
+      const res = await createExerciseRequest(data);
+      return res.data;
+    },
+    // Con return, la mutación no termina hasta que se refrescan las listas.
+    onSuccess: () => {
+      return queryClient.invalidateQueries({ queryKey: ["exercises"] });
+    },
   });
 }

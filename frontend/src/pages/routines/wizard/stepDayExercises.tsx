@@ -6,15 +6,18 @@ import useRoutineExercises, {
 import type { RoutineDay } from "../../../types/routines/routineDays";
 import type { RoutineExercise } from "../../../types/routines/routineExercises";
 import type { Exercise } from "../../../types/exercises";
+import { formatReps } from "../../../utils/format";
 import ExercisePicker from "./exercisePicker";
+import CreateExerciseForm from "./createExerciseForm";
 import ExerciseConfigForm from "./exerciseConfigForm";
 import { StepIntro, WizardActions } from "./wizardUi";
-import { formatReps } from "../../../utils/format";
 
-// Estado del panel para añadir: cerrado, buscando o configurando el ejercicio elegido.
+// Estado del panel para añadir: cerrado, buscando, creando uno nuevo
+// o configurando el ejercicio elegido.
 type Composer =
   | { mode: "closed" }
   | { mode: "pick" }
+  | { mode: "create"; initialName: string }
   | { mode: "config"; exercise: Exercise };
 
 interface StepDayExercisesProps {
@@ -128,6 +131,18 @@ export default function StepDayExercises({
         {composer.mode === "pick" && (
           <ExercisePicker
             onPick={(exercise) => setComposer({ mode: "config", exercise })}
+            onCreate={(name) =>
+              setComposer({ mode: "create", initialName: name })
+            }
+            onCancel={() => setComposer({ mode: "closed" })}
+          />
+        )}
+
+        {composer.mode === "create" && (
+          <CreateExerciseForm
+            initialName={composer.initialName}
+            onCreated={(exercise) => setComposer({ mode: "config", exercise })}
+            onBack={() => setComposer({ mode: "pick" })}
             onCancel={() => setComposer({ mode: "closed" })}
           />
         )}

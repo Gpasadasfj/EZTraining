@@ -111,8 +111,13 @@ export default function ExerciseConfigForm({
       className="grid animate-fade-in gap-4 rounded-xl border border-line-strong bg-surface p-3.5 shadow-xl shadow-black/40 lg:bg-canvas"
     >
       <div className="flex items-center justify-between gap-3 rounded-lg border border-line bg-canvas px-3.5 py-3 lg:bg-surface">
-        <div className="grid min-w-0">
-          <span className="text-xs font-semibold text-fg-subtle">
+        <div className="grid min-w-0 gap-0.5">
+          <span className="flex items-center gap-1.5 text-xs font-semibold text-fg-subtle">
+            {exercise.is_custom && (
+              <span className="rounded-full bg-primary/15 px-2 py-0.5 font-bold tracking-wide text-orange-300 uppercase">
+                Tuyo
+              </span>
+            )}
             {exercise.muscle}
           </span>
           <strong className="font-semibold wrap-anywhere">
