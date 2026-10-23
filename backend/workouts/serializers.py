@@ -32,8 +32,19 @@ class WorkoutSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         self.fields["routine_day"].queryset = RoutineDay.objects.filter(routine__user=request.user)
 
+
+class ActiveWorkoutSerializer(WorkoutSerializer):
+    # Vienen anotados en la consulta de la vista "active"
+    total_sets = serializers.IntegerField(read_only=True)
+    completed_sets = serializers.IntegerField(read_only=True)
+
+    class Meta(WorkoutSerializer.Meta):
+        fields = WorkoutSerializer.Meta.fields + ["total_sets", "completed_sets"]
+
+
 class WorkoutExerciseSerializer(serializers.ModelSerializer):
     exercise_name = serializers.CharField(source="exercise.name_es", read_only=True)
+    exercise_slug = serializers.CharField(source="exercise.slug", read_only=True)
     exercise_image = serializers.ImageField(source="exercise.image", read_only=True)
 
     class Meta:
@@ -43,6 +54,7 @@ class WorkoutExerciseSerializer(serializers.ModelSerializer):
             "workout",
             "exercise",
             "exercise_name",
+            "exercise_slug",
             "exercise_image",
             "order",
             "target_sets",
@@ -61,6 +73,7 @@ class WorkoutExerciseSerializer(serializers.ModelSerializer):
             "rest_time",
         ]
 
+
 class WorkoutSetSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkoutSet
@@ -77,3 +90,9 @@ class WorkoutSetSerializer(serializers.ModelSerializer):
             if errors:
                 raise serializers.ValidationError(errors)
         return attrs
+
+
+class PreviousSetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkoutSet
+        fields = ["set_number", "weight", "reps", "rir"]

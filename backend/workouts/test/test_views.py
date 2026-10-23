@@ -1,4 +1,5 @@
 from datetime import timedelta
+from decimal import Decimal
 
 from rest_framework.test import APITestCase
 from rest_framework import status
@@ -7,7 +8,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from exercises.models import BodyPart, Exercise, Muscle
-from workouts.services import start_workout
+from workouts.services import finish_workout, start_workout
 from routines.models import Routine, RoutineDay, RoutineExercise
 from workouts.models import Workout, WorkoutExercise, WorkoutSet
 
@@ -187,5 +188,118 @@ class WorkoutFinishActionTests(APITestCase):
         url = reverse("workout-finish", kwargs={"pk": self.workout.pk})
 
         response = self.client.post(url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+class ActiveAndPreviousEndpointsTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="user1", email="user1@test.com", password="testpass123"
+        )
+        self.other_user = User.objects.create_user(
+            username="user2", email="user2@test.com", password="testpass123"
+        )
+
+        body_part = BodyPart.objects.create(name_es="Pecho", name_en="Chest", slug="chest")
+        muscle = Muscle.objects.create(name_es="Pectoral", name_en="Pectoralis", slug="pectoralis")
+        exercise = Exercise.objects.create(
+            slug="press-banca", name_es="Press banca", name_en="Bench press",
+            instructions_es=["Paso 1"], instructions_en=["Step 1"],
+            body_part=body_part, muscle=muscle,
+        )
+
+        routine = Routine.objects.create(user=self.user, name="Rutina", description="")
+        self.routine_day = RoutineDay.objects.create(routine=routine, name="Push", order=1)
+        RoutineExercise.objects.create(
+            routine_day=self.routine_day, exercise=exercise, order=1,
+            target_sets=3, min_reps=8, max_reps=12, target_rir=2, rest_time=90,
+        )
+
+    def complete_set(self, workout, set_number, weight, reps):
+        workout_set = WorkoutSet.objects.get(
+            workout_exercise__workout=workout, set_number=set_number
+        )
+        workout_set.weight = weight
+        workout_set.reps = reps
+        workout_set.completed = True
+        workout_set.save()
+
+    def previous_url(self, workout):
+        workout_exercise = WorkoutExercise.objects.get(workout=workout)
+        return reverse(
+            "workout-exercise-previous",
+            kwargs={"workout_pk": workout.pk, "pk": workout_exercise.pk},
+        )
+
+    def test_active_returns_null_without_active_workout(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(reverse("workout-active"))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNone(response.data)
+
+    def test_active_returns_workout_with_set_counts(self):
+        workout = start_workout(user=self.user, routine_day=self.routine_day)
+        self.complete_set(workout, set_number=1, weight=80, reps=8)
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(reverse("workout-active"))
+
+        self.assertEqual(response.data["id"], workout.id)
+        self.assertEqual(response.data["total_sets"], 3)
+        self.assertEqual(response.data["completed_sets"], 1)
+
+    def test_active_does_not_return_other_users_workout(self):
+        start_workout(user=self.user, routine_day=self.routine_day)
+        self.client.force_authenticate(user=self.other_user)
+
+        response = self.client.get(reverse("workout-active"))
+
+        self.assertIsNone(response.data)
+
+    def test_workout_exercise_includes_exercise_slug(self):
+        workout = start_workout(user=self.user, routine_day=self.routine_day)
+        workout_exercise = WorkoutExercise.objects.get(workout=workout)
+        self.client.force_authenticate(user=self.user)
+        url = reverse(
+            "workout-exercise-detail",
+            kwargs={"workout_pk": workout.pk, "pk": workout_exercise.pk},
+        )
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.data["exercise_slug"], "press-banca")
+
+    def test_previous_is_empty_the_first_time(self):
+        workout = start_workout(user=self.user, routine_day=self.routine_day)
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(self.previous_url(workout))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {"finished_at": None, "sets": []})
+
+    def test_previous_returns_completed_sets_of_last_workout(self):
+        old = start_workout(user=self.user, routine_day=self.routine_day)
+        self.complete_set(old, set_number=1, weight=80, reps=8)
+        self.complete_set(old, set_number=2, weight="82.5", reps=6)
+        finish_workout(old)
+        Workout.objects.filter(pk=old.pk).update(started_at=timezone.now() - timedelta(days=3))
+        current = start_workout(user=self.user, routine_day=self.routine_day)
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(self.previous_url(current))
+
+        self.assertIsNotNone(response.data["finished_at"])
+        sets = response.data["sets"]
+        self.assertEqual([s["set_number"] for s in sets], [1, 2])
+        self.assertEqual(Decimal(sets[1]["weight"]), Decimal("82.5"))
+
+    def test_other_user_cannot_get_previous(self):
+        workout = start_workout(user=self.user, routine_day=self.routine_day)
+        self.client.force_authenticate(user=self.other_user)
+
+        response = self.client.get(self.previous_url(workout))
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

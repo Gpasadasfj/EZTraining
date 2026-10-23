@@ -1,15 +1,20 @@
+from datetime import timedelta
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 from exercises.models import BodyPart, Muscle, Exercise
 from routines.models import Routine, RoutineDay, RoutineExercise
-from workouts.models import WorkoutExercise, WorkoutSet
-from workouts.services import start_workout
+from workouts.models import Workout, WorkoutExercise, WorkoutSet
+from workouts.services import finish_workout, get_previous_workout_exercise, start_workout
 
 User = get_user_model()
 
 
-class StartWorkoutTests(TestCase):
+class WorkoutTestData:
+    """Usuario con una rutina de un día y dos ejercicios, compartido por las clases de tests."""
+
     def setUp(self):
         self.user = User.objects.create_user(
             username="testuser",
@@ -75,6 +80,28 @@ class StartWorkoutTests(TestCase):
             rest_time=120,
         )
 
+    def complete_set(self, workout, exercise, set_number=1):
+        workout_set = WorkoutSet.objects.get(
+            workout_exercise__workout=workout,
+            workout_exercise__exercise=exercise,
+            set_number=set_number,
+        )
+        workout_set.weight = 80
+        workout_set.reps = 8
+        workout_set.rir = 2
+        workout_set.completed = True
+        workout_set.save()
+        return workout_set
+
+    def move_start(self, workout, days_ago):
+        # started_at es auto_now_add: solo se puede cambiar con update()
+        Workout.objects.filter(pk=workout.pk).update(
+            started_at=timezone.now() - timedelta(days=days_ago)
+        )
+        workout.refresh_from_db()
+
+
+class StartWorkoutTests(WorkoutTestData, TestCase):
     def test_start_workout_creates_workout_with_correct_data(self):
         workout = start_workout(user=self.user, routine_day=self.routine_day)
 
@@ -118,3 +145,103 @@ class StartWorkoutTests(TestCase):
             self.assertIsNone(workout_set.weight)
             self.assertIsNone(workout_set.reps)
             self.assertIsNone(workout_set.rir)
+
+
+class CloseActiveWorkoutTests(WorkoutTestData, TestCase):
+    def test_previous_active_workout_without_progress_is_deleted(self):
+        previous = start_workout(user=self.user, routine_day=self.routine_day)
+
+        start_workout(user=self.user, routine_day=self.routine_day)
+
+        self.assertFalse(Workout.objects.filter(pk=previous.pk).exists())
+        self.assertEqual(Workout.objects.filter(user=self.user, completed=False).count(), 1)
+
+    def test_previous_active_workout_with_completed_sets_is_finished(self):
+        previous = start_workout(user=self.user, routine_day=self.routine_day)
+        self.complete_set(previous, self.exercise_1)
+
+        start_workout(user=self.user, routine_day=self.routine_day)
+
+        previous.refresh_from_db()
+        self.assertTrue(previous.completed)
+        self.assertIsNotNone(previous.finished_at)
+        self.assertEqual(Workout.objects.filter(user=self.user, completed=False).count(), 1)
+
+    def test_set_with_weight_and_reps_counts_as_progress(self):
+        previous = start_workout(user=self.user, routine_day=self.routine_day)
+        workout_set = WorkoutSet.objects.filter(workout_exercise__workout=previous).first()
+        workout_set.weight = 80
+        workout_set.reps = 8
+        workout_set.save()
+
+        start_workout(user=self.user, routine_day=self.routine_day)
+
+        previous.refresh_from_db()
+        workout_set.refresh_from_db()
+        self.assertTrue(previous.completed)
+        self.assertTrue(workout_set.completed)
+
+    def test_completed_workouts_are_kept(self):
+        old = start_workout(user=self.user, routine_day=self.routine_day)
+        finish_workout(old)
+
+        start_workout(user=self.user, routine_day=self.routine_day)
+
+        self.assertTrue(Workout.objects.filter(pk=old.pk, completed=True).exists())
+
+    def test_other_users_active_workout_is_not_touched(self):
+        other_user = User.objects.create_user(
+            username="other", email="other@test.com", password="testpass123"
+        )
+        other_routine = Routine.objects.create(user=other_user, name="Otra", description="")
+        other_day = RoutineDay.objects.create(routine=other_routine, name="Pull", order=1)
+        other_workout = start_workout(user=other_user, routine_day=other_day)
+
+        start_workout(user=self.user, routine_day=self.routine_day)
+
+        self.assertTrue(Workout.objects.filter(pk=other_workout.pk, completed=False).exists())
+
+
+class PreviousWorkoutExerciseTests(WorkoutTestData, TestCase):
+    def finished_workout(self, days_ago, exercise):
+        workout = start_workout(user=self.user, routine_day=self.routine_day)
+        self.complete_set(workout, exercise)
+        finish_workout(workout)
+        self.move_start(workout, days_ago)
+        return workout
+
+    def workout_exercise(self, workout, exercise):
+        return WorkoutExercise.objects.get(workout=workout, exercise=exercise)
+
+    def test_returns_none_the_first_time(self):
+        current = start_workout(user=self.user, routine_day=self.routine_day)
+
+        previous = get_previous_workout_exercise(self.workout_exercise(current, self.exercise_1))
+
+        self.assertIsNone(previous)
+
+    def test_returns_most_recent_finished_workout(self):
+        self.finished_workout(days_ago=7, exercise=self.exercise_1)
+        newer = self.finished_workout(days_ago=2, exercise=self.exercise_1)
+        current = start_workout(user=self.user, routine_day=self.routine_day)
+
+        previous = get_previous_workout_exercise(self.workout_exercise(current, self.exercise_1))
+
+        self.assertEqual(previous.workout, newer)
+
+    def test_skips_workouts_without_completed_sets_of_that_exercise(self):
+        with_sets = self.finished_workout(days_ago=7, exercise=self.exercise_1)
+        self.finished_workout(days_ago=2, exercise=self.exercise_2)
+        current = start_workout(user=self.user, routine_day=self.routine_day)
+
+        previous = get_previous_workout_exercise(self.workout_exercise(current, self.exercise_1))
+
+        self.assertEqual(previous.workout, with_sets)
+
+    def test_ignores_workouts_started_later(self):
+        first = self.finished_workout(days_ago=7, exercise=self.exercise_1)
+        self.finished_workout(days_ago=2, exercise=self.exercise_1)
+
+        previous = get_previous_workout_exercise(self.workout_exercise(first, self.exercise_1))
+
+        self.assertIsNone(previous)

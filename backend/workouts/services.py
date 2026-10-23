@@ -1,6 +1,50 @@
 from django.db import transaction
+from django.db.models import Q
+from django.utils import timezone
 
+from users.models import User
 from workouts.models import Workout, WorkoutExercise, WorkoutSet
+
+
+def finish_workout(workout):
+    finished_at = timezone.now()
+
+    with transaction.atomic():
+        workout.finished_at = finished_at
+        workout.duration = finished_at - workout.started_at
+        workout.completed = True
+        workout.save(update_fields=["finished_at", "duration", "completed", "updated_at"])
+
+        # Las series con peso y reps cuentan aunque no se marcaran
+        WorkoutSet.objects.filter(
+            workout_exercise__workout=workout,
+            completed=False,
+            weight__isnull=False,
+            reps__isnull=False,
+        ).update(completed=True)
+
+    return workout
+
+
+@transaction.atomic
+def close_active_workouts(user):
+    '''
+    Solo puede haber un entreno activo. El que haya se guarda si tiene
+    progreso y si no se borra, para no dejar entrenos vacíos en el historial.
+    '''
+    User.objects.select_for_update().get(pk=user.pk)
+
+    for workout in Workout.objects.filter(user=user, completed=False):
+        # Mismo criterio que finish_workout: hecha o con peso y reps
+        has_progress = WorkoutSet.objects.filter(
+            Q(completed=True) | Q(weight__isnull=False, reps__isnull=False),
+            workout_exercise__workout=workout,
+        ).exists()
+
+        if has_progress:
+            finish_workout(workout)
+        else:
+            workout.delete()
 
 
 @transaction.atomic
@@ -10,6 +54,8 @@ def start_workout(user, routine_day):
     los datos de routine_day a workout_exercise y creando las series en base
     al target_sets.
     '''
+    close_active_workouts(user)
+
     workout = Workout.objects.create(
         user=user,
         routine_day=routine_day,
@@ -44,3 +90,21 @@ def start_workout(user, routine_day):
 
     return workout
 
+
+def get_previous_workout_exercise(workout_exercise):
+    '''
+    El mismo ejercicio en el último entreno terminado anterior a este,
+    ignorando los entrenos en los que no se completó ninguna serie suya.
+    '''
+    return (
+        WorkoutExercise.objects.filter(
+            workout__user_id=workout_exercise.workout.user_id,
+            workout__completed=True,
+            workout__started_at__lt=workout_exercise.workout.started_at,
+            exercise_id=workout_exercise.exercise_id,
+            workoutset__completed=True,
+        )
+        .select_related("workout")
+        .order_by("-workout__started_at")
+        .first()
+    )

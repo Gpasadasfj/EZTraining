@@ -1,6 +1,6 @@
 from django.db import transaction
+from django.db.models import Count, Q
 from django.db.models.aggregates import Max
-from django.utils import timezone
 from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -8,8 +8,14 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from core.permissions import IsOwner
-from workouts.services import start_workout
-from workouts.serializers import WorkoutExerciseSerializer, WorkoutSerializer, WorkoutSetSerializer
+from workouts.services import finish_workout, get_previous_workout_exercise, start_workout
+from workouts.serializers import (
+    ActiveWorkoutSerializer,
+    PreviousSetSerializer,
+    WorkoutExerciseSerializer,
+    WorkoutSerializer,
+    WorkoutSetSerializer,
+)
 from workouts.permisions import IsWorkoutExerciseOwner, IsWorkoutSetOwner
 from workouts.models import Workout, WorkoutExercise, WorkoutSet
 
@@ -37,26 +43,32 @@ class WorkoutViewSet(ModelViewSet):
         # ¡Ya estaba completado? -> error
         if workout.completed:
             raise serializers.ValidationError("Este entreno ya está completado.")
-        
-        # Calcular finished_at y duration
-        finished_at = timezone.now()
 
-
-        with transaction.atomic():
-            workout.finished_at = finished_at
-            workout.duration = finished_at - workout.started_at
-            workout.completed = True
-            workout.save(update_fields=["finished_at", "duration", "completed", "updated_at"])
-
-            # Completar las series que tengan peso y reps
-            WorkoutSet.objects.filter(
-                workout_exercise__workout=workout,
-                completed=False,
-                weight__isnull=False,
-                reps__isnull=False,
-            ).update(completed=True)
+        finish_workout(workout)
 
         serializer = self.get_serializer(workout)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=["get"])
+    def active(self, request):
+        workout = (
+            self.get_queryset()
+            .filter(completed=False)
+            .annotate(
+                total_sets=Count("workoutexercise__workoutset"),
+                completed_sets=Count(
+                    "workoutexercise__workoutset",
+                    filter=Q(workoutexercise__workoutset__completed=True),
+                ),
+            )
+            .order_by("-started_at")
+            .first()
+        )
+
+        if workout is None:
+            return Response(None)
+
+        serializer = ActiveWorkoutSerializer(workout, context=self.get_serializer_context())
         return Response(serializer.data)
 
 class WorkoutExerciseViewSet(
@@ -72,7 +84,7 @@ class WorkoutExerciseViewSet(
         return WorkoutExercise.objects.filter(
             workout__user=self.request.user,
             workout__id=self.kwargs["workout_pk"]
-        ).select_related("exercise")
+        ).select_related("exercise", "workout")
 
     def perform_update(self, serializer):
         instance = serializer.instance
@@ -93,6 +105,19 @@ class WorkoutExerciseViewSet(
                     conflicting.save(update_fields=["order"])
 
             serializer.save()
+
+    @action(detail=True, methods=["get"])
+    def previous(self, request, workout_pk=None, pk=None):
+        previous = get_previous_workout_exercise(self.get_object())
+
+        if previous is None:
+            return Response({"finished_at": None, "sets": []})
+
+        sets = previous.workoutset_set.filter(completed=True).order_by("set_number")
+        return Response({
+            "finished_at": previous.workout.finished_at,
+            "sets": PreviousSetSerializer(sets, many=True).data,
+        })
 
 class WorkoutSetViewSet(
     mixins.ListModelMixin,
