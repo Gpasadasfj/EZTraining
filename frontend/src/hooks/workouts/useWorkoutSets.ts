@@ -51,6 +51,8 @@ export function useUpdateWorkoutSet(workoutId: number, exerciseId: number) {
       queryClient.invalidateQueries({
         queryKey: ["workoutSet", workoutId, exerciseId],
       });
+      // El contador "3/17 series" del entreno activo cambia
+      queryClient.invalidateQueries({ queryKey: ["workouts", "active"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },
   });

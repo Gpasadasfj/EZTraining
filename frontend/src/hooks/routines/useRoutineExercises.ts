@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import routineExercisesRequest, {
   createRoutineExercisesRequest,
   deleteRoutineExercisesRequest,
-  routineExercisesDetailRequest,
   updateRoutineExercisesRequest,
 } from "../../api/routines/routineExercises";
 import type {

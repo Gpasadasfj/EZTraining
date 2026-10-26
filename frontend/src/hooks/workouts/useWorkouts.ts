@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import workoutsRequest, {
+  activeWorkoutRequest,
   finishWorkoutRequest,
   workoutsCreateRequest,
   workoutsDetailRequest,
@@ -24,6 +25,17 @@ export function useWorkoutsDetail(id: number) {
       return res.data;
     },
     enabled: !Number.isNaN(id),
+  });
+}
+
+// null si no hay entreno en curso
+export function useActiveWorkout() {
+  return useQuery({
+    queryKey: ["workouts", "active"],
+    queryFn: async () => {
+      const res = await activeWorkoutRequest();
+      return res.data;
+    },
   });
 }
 
@@ -52,6 +64,7 @@ export function useFinishWorkout() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },
   });
 }

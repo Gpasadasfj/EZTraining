@@ -2,6 +2,7 @@ import { useState } from "react";
 import ExerciseFiltersPanel from "../components/exerciseFiltersPanel";
 import { useExercisesInfinite } from "../hooks/useExercises";
 import type { ExerciseFilters } from "../types/exercises";
+import ExerciseThumb from "../components/exercises/exerciseThumb";
 
 export default function Exercises() {
   const [filters, setFilters] = useState<ExerciseFilters>({
@@ -35,7 +36,7 @@ export default function Exercises() {
       {exercises.map((ex) => (
         
         <div key={ex.id}>
-          <img src={ex.image} alt={ex.name_es} className="w-10 h-10"/>
+          <ExerciseThumb src={ex.image} size="sm" />
           {ex.name_es}
           </div>
       ))}

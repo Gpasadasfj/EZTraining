@@ -17,6 +17,10 @@ export function exercisesRequest(
   });
 }
 
+export function exerciseDetailRequest(slug: string) {
+  return api.get<Exercise>(`exercises/${slug}/`);
+}
+
 export function createExerciseRequest(data: CreateExercisePayload) {
   return api.post<Exercise>("exercises/", data);
 }

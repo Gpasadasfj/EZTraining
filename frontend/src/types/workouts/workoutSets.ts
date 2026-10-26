@@ -1,20 +1,31 @@
+// DRF devuelve los DecimalField como texto
 export interface WorkoutSet {
   id: number;
   workout_exercise: number;
   set_number: number;
   weight: string | null;
-  reps: number | null;
+  reps: string | null;
   rir: number | null;
   completed: boolean;
 }
 
-export type UpdateWorkoutSetPayload = Partial<
-  Pick<WorkoutSet, "weight" | "reps" | "rir" | "completed">
->;
+export interface UpdateWorkoutSetPayload {
+  weight?: string | null;
+  reps?: number | null;
+  rir?: number | null;
+  completed?: boolean;
+}
 
 export interface UpdateWorkoutSetVariables {
   setId: number;
   data: UpdateWorkoutSetPayload;
+}
+
+export type PreviousSet = Pick<WorkoutSet, "set_number" | "weight" | "reps" | "rir">;
+
+export interface PreviousSets {
+  finished_at: string | null;
+  sets: PreviousSet[];
 }
 
 export type SetStatus = "done" | "current" | "pending";

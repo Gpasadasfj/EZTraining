@@ -7,6 +7,7 @@ import {
 import {
   createExerciseRequest,
   equipmentRequest,
+  exerciseDetailRequest,
   exercisesRequest,
   musclesRequest,
   searchExercisesRequest,
@@ -25,6 +26,18 @@ export function useExercisesInfinite(filters: ExerciseFilters) {
     },
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.next,
+  });
+}
+
+// null: no se pide nada (ficha cerrada)
+export function useExerciseDetail(slug: string | null) {
+  return useQuery({
+    queryKey: ["exercises", "detail", slug],
+    queryFn: async () => {
+      const res = await exerciseDetailRequest(slug as string);
+      return res.data;
+    },
+    enabled: slug !== null,
   });
 }
 

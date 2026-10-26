@@ -1,6 +1,6 @@
 import Logo from "./layout/logo";
-import WorkoutExerciseCard from "./workoutExerciseCard";
-import SetRow from "./setRow";
+import WorkoutExerciseCard from "./workout/workoutExerciseCard";
+import SetRow from "./workout/setRow";
 import type { SetStatus } from "../types/workouts/workoutSets";
 
 const DEMO_EXERCISE = {

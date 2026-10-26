@@ -11,4 +11,9 @@ export interface Workout {
   updated_at: string;
 }
 
+export interface ActiveWorkout extends Workout {
+  total_sets: number;
+  completed_sets: number;
+}
+
 export type CreateWorkoutPayload = Pick<Workout, "routine_day">;

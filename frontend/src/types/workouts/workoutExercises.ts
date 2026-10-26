@@ -3,6 +3,7 @@ export interface WorkoutExercise {
   workout: number;
   exercise: number;
   exercise_name: string;
+  exercise_slug: string;
   exercise_image: string | null;
   order: number;
   target_sets: number;
