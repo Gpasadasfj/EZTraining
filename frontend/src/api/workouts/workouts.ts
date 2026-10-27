@@ -1,5 +1,10 @@
 import { type PaginatedResponse } from "../../types/paginated";
-import type { ActiveWorkout, CreateWorkoutPayload, Workout } from "../../types/workouts/workouts";
+import type {
+  ActiveWorkout,
+  CreateWorkoutPayload,
+  Workout,
+} from "../../types/workouts/workouts";
+import type { WorkoutSummary } from "../../types/workouts/workoutSummary";
 import api from "../axios";
 
 export default function workoutsRequest() {
@@ -12,6 +17,10 @@ export function workoutsDetailRequest(id: number) {
 
 export function activeWorkoutRequest() {
   return api.get<ActiveWorkout | null>("workouts/active/");
+}
+
+export function workoutSummaryRequest(id: number) {
+  return api.get<WorkoutSummary>(`workouts/${id}/summary/`);
 }
 
 export function workoutsCreateRequest(data: CreateWorkoutPayload) {

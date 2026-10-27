@@ -1,4 +1,4 @@
-// DRF devuelve los DecimalField como texto
+// DRF devuelve los DecimalField como texto: "80.00", "8.00"
 export interface WorkoutSet {
   id: number;
   workout_exercise: number;
@@ -21,11 +21,15 @@ export interface UpdateWorkoutSetVariables {
   data: UpdateWorkoutSetPayload;
 }
 
-export type PreviousSet = Pick<WorkoutSet, "set_number" | "weight" | "reps" | "rir">;
+// Solo los valores de una serie: para el último entreno y el resumen
+export type SetValues = Pick<
+  WorkoutSet,
+  "set_number" | "weight" | "reps" | "rir"
+>;
 
 export interface PreviousSets {
   finished_at: string | null;
-  sets: PreviousSet[];
+  sets: SetValues[];
 }
 
 export type SetStatus = "done" | "current" | "pending";

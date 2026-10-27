@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import workoutsRequest, {
   activeWorkoutRequest,
   finishWorkoutRequest,
+  workoutSummaryRequest,
   workoutsCreateRequest,
   workoutsDetailRequest,
 } from "../../api/workouts/workouts";
@@ -39,6 +40,17 @@ export function useActiveWorkout() {
   });
 }
 
+export function useWorkoutSummary(id: number) {
+  return useQuery({
+    queryKey: ["workouts", id, "summary"],
+    queryFn: async () => {
+      const res = await workoutSummaryRequest(id);
+      return res.data;
+    },
+    enabled: !Number.isNaN(id),
+  });
+}
+
 export function useWorkoutsCreate() {
   const queryClient = useQueryClient();
 
@@ -62,7 +74,9 @@ export function useFinishWorkout() {
       const res = await finishWorkoutRequest(id);
       return res.data;
     },
-    onSuccess: () => {
+    onSuccess: (workout) => {
+      // La respuesta ya es el entreno terminado: la página pasa al resumen sin esperar
+      queryClient.setQueryData(["workouts", workout.id], workout);
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },

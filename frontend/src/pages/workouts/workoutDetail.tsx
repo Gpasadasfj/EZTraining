@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ChevronLeft, Flag } from "lucide-react";
 import ConfirmDialog from "../../components/ui/confirmDialog";
 import useWorkoutExercises from "../../hooks/workouts/useWorkoutExercises";
@@ -8,17 +8,17 @@ import {
   useFinishWorkout,
   useWorkoutsDetail,
 } from "../../hooks/workouts/useWorkouts";
+import type { Rest } from "../../types/workouts/rest";
 import type { WorkoutExercise } from "../../types/workouts/workoutExercises";
+import WorkoutSummary from "../../components/workout/workoutSummary";
 import WorkoutClock from "../../components/workout/workoutClock";
 import WorkoutExerciseItem from "../../components/workout/workoutExerciseItem";
 import RestTimer from "../../components/workout/restTimer";
 import ExerciseInfoSheet from "../../components/workout/exerciseInfoSheet";
-import type { Rest } from "../../types/workouts/rest";
 
 export default function WorkoutDetail() {
   const { id } = useParams();
   const workoutId = Number(id);
-  const navigate = useNavigate();
 
   const {
     data: workout,
@@ -66,8 +66,9 @@ export default function WorkoutDetail() {
   const allDone =
     progress !== null && progress.total_sets > 0 && pendingSets === 0;
 
+  // Al terminar, la caché ya tiene el entreno completado y la página pasa al resumen
   const finishWorkout = () => {
-    finish.mutate(workoutId, { onSuccess: () => navigate("/") });
+    finish.mutate(workoutId, { onSuccess: () => window.scrollTo(0, 0) });
   };
 
   const handleFinishClick = () => {
@@ -79,22 +80,7 @@ export default function WorkoutDetail() {
   if (isError) return <p>Error: {error.message}</p>;
   if (!workout) return null;
 
-  if (workout.completed) {
-    return (
-      <div className="mx-auto grid max-w-2xl gap-3">
-        <h1 className="font-display text-4xl font-bold">Entreno terminado</h1>
-        <p className="text-fg-muted">
-          {workout.routine_name} · {workout.routine_day_name}
-        </p>
-        <Link
-          to="/"
-          className="font-semibold text-accent underline-offset-4 hover:underline"
-        >
-          Volver al inicio
-        </Link>
-      </div>
-    );
-  }
+  if (workout.completed) return <WorkoutSummary workoutId={workoutId} />;
 
   return (
     <div className="mx-auto grid max-w-2xl gap-4 pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-44">
