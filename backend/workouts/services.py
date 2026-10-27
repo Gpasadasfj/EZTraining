@@ -1,5 +1,5 @@
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Count, F, Prefetch, Q, Sum
 from django.utils import timezone
 
 from users.models import User
@@ -32,6 +32,8 @@ def close_active_workouts(user):
     Solo puede haber un entreno activo. El que haya se guarda si tiene
     progreso y si no se borra, para no dejar entrenos vacíos en el historial.
     '''
+    # Bloquea al usuario hasta el final de la transacción: si llegan dos
+    # "empezar" a la vez, el segundo espera a que el primero termine
     User.objects.select_for_update().get(pk=user.pk)
 
     for workout in Workout.objects.filter(user=user, completed=False):
@@ -107,4 +109,34 @@ def get_previous_workout_exercise(workout_exercise):
         .select_related("workout")
         .order_by("-workout__started_at")
         .first()
+    )
+
+
+def get_workout_summary(workout_id):
+    '''
+    El entreno con sus totales calculados en la base de datos y, por cada
+    ejercicio, solo sus series completadas en done_sets.
+    '''
+    done = Q(workoutexercise__workoutset__completed=True)
+
+    exercises = WorkoutExercise.objects.select_related("exercise").prefetch_related(
+        Prefetch(
+            "workoutset_set",
+            queryset=WorkoutSet.objects.filter(completed=True).order_by("set_number"),
+            to_attr="done_sets",
+        )
+    )
+
+    return (
+        Workout.objects.filter(pk=workout_id)
+        .annotate(
+            total_sets=Count("workoutexercise__workoutset"),
+            completed_sets=Count("workoutexercise__workoutset", filter=done),
+            volume=Sum(
+                F("workoutexercise__workoutset__weight") * F("workoutexercise__workoutset__reps"),
+                filter=done,
+            ),
+        )
+        .prefetch_related(Prefetch("workoutexercise_set", queryset=exercises))
+        .get()
     )

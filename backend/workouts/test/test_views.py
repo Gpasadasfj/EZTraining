@@ -303,3 +303,28 @@ class ActiveAndPreviousEndpointsTests(APITestCase):
         response = self.client.get(self.previous_url(workout))
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_summary_returns_totals_and_completed_sets(self):
+        workout = start_workout(user=self.user, routine_day=self.routine_day)
+        self.complete_set(workout, set_number=1, weight=80, reps=8)
+        self.complete_set(workout, set_number=2, weight="82.5", reps=6)
+        finish_workout(workout)
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(reverse("workout-summary", kwargs={"pk": workout.pk}))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["total_sets"], 3)
+        self.assertEqual(response.data["completed_sets"], 2)
+        # 80×8 + 82,5×6 = 640 + 495
+        self.assertEqual(Decimal(response.data["volume"]), Decimal("1135"))
+        self.assertEqual(len(response.data["exercises"][0]["sets"]), 2)
+        self.assertIsInstance(response.data["duration_seconds"], int)
+
+    def test_other_user_cannot_get_summary(self):
+        workout = start_workout(user=self.user, routine_day=self.routine_day)
+        self.client.force_authenticate(user=self.other_user)
+
+        response = self.client.get(reverse("workout-summary", kwargs={"pk": workout.pk}))
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

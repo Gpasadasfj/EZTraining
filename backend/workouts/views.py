@@ -8,13 +8,19 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from core.permissions import IsOwner
-from workouts.services import finish_workout, get_previous_workout_exercise, start_workout
+from workouts.services import (
+    finish_workout,
+    get_previous_workout_exercise,
+    get_workout_summary,
+    start_workout,
+)
 from workouts.serializers import (
     ActiveWorkoutSerializer,
-    PreviousSetSerializer,
+    SetValuesSerializer,
     WorkoutExerciseSerializer,
     WorkoutSerializer,
     WorkoutSetSerializer,
+    WorkoutSummarySerializer,
 )
 from workouts.permisions import IsWorkoutExerciseOwner, IsWorkoutSetOwner
 from workouts.models import Workout, WorkoutExercise, WorkoutSet
@@ -71,6 +77,12 @@ class WorkoutViewSet(ModelViewSet):
         serializer = ActiveWorkoutSerializer(workout, context=self.get_serializer_context())
         return Response(serializer.data)
 
+    @action(detail=True, methods=["get"])
+    def summary(self, request, pk=None):
+        # get_object comprueba que existe y que es tuyo (404 si no)
+        workout = get_workout_summary(self.get_object().pk)
+        return Response(WorkoutSummarySerializer(workout).data)
+
 class WorkoutExerciseViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
@@ -116,7 +128,7 @@ class WorkoutExerciseViewSet(
         sets = previous.workoutset_set.filter(completed=True).order_by("set_number")
         return Response({
             "finished_at": previous.workout.finished_at,
-            "sets": PreviousSetSerializer(sets, many=True).data,
+            "sets": SetValuesSerializer(sets, many=True).data,
         })
 
 class WorkoutSetViewSet(

@@ -92,7 +92,47 @@ class WorkoutSetSerializer(serializers.ModelSerializer):
         return attrs
 
 
-class PreviousSetSerializer(serializers.ModelSerializer):
+class SetValuesSerializer(serializers.ModelSerializer):
+    """Solo los valores de una serie: para el último entreno y el resumen."""
+
     class Meta:
         model = WorkoutSet
         fields = ["set_number", "weight", "reps", "rir"]
+
+
+class SummaryExerciseSerializer(serializers.ModelSerializer):
+    exercise_name = serializers.CharField(source="exercise.name_es", read_only=True)
+    # done_sets lo crea el Prefetch de get_workout_summary
+    sets = SetValuesSerializer(source="done_sets", many=True, read_only=True)
+
+    class Meta:
+        model = WorkoutExercise
+        fields = ["id", "exercise_name", "target_sets", "sets"]
+
+
+class WorkoutSummarySerializer(serializers.ModelSerializer):
+    # Vienen anotados en get_workout_summary
+    total_sets = serializers.IntegerField(read_only=True)
+    completed_sets = serializers.IntegerField(read_only=True)
+    volume = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
+    duration_seconds = serializers.SerializerMethodField()
+    exercises = SummaryExerciseSerializer(source="workoutexercise_set", many=True, read_only=True)
+
+    class Meta:
+        model = Workout
+        fields = [
+            "id",
+            "routine_name",
+            "routine_day_name",
+            "started_at",
+            "finished_at",
+            "completed",
+            "duration_seconds",
+            "total_sets",
+            "completed_sets",
+            "volume",
+            "exercises",
+        ]
+
+    def get_duration_seconds(self, obj):
+        return int(obj.duration.total_seconds()) if obj.duration else None

@@ -1,4 +1,5 @@
 from datetime import timedelta
+from decimal import Decimal
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model
@@ -7,7 +8,7 @@ from django.utils import timezone
 from exercises.models import BodyPart, Muscle, Exercise
 from routines.models import Routine, RoutineDay, RoutineExercise
 from workouts.models import Workout, WorkoutExercise, WorkoutSet
-from workouts.services import finish_workout, get_previous_workout_exercise, start_workout
+from workouts.services import finish_workout, get_previous_workout_exercise, get_workout_summary, start_workout
 
 User = get_user_model()
 
@@ -245,3 +246,36 @@ class PreviousWorkoutExerciseTests(WorkoutTestData, TestCase):
         previous = get_previous_workout_exercise(self.workout_exercise(first, self.exercise_1))
 
         self.assertIsNone(previous)
+
+
+class WorkoutSummaryTests(WorkoutTestData, TestCase):
+    def test_counts_sets_and_volume_of_completed_sets(self):
+        workout = start_workout(user=self.user, routine_day=self.routine_day)
+        # complete_set guarda 80 kg × 8 reps
+        self.complete_set(workout, self.exercise_1, set_number=1)
+        self.complete_set(workout, self.exercise_1, set_number=2)
+
+        summary = get_workout_summary(workout.pk)
+
+        self.assertEqual(summary.total_sets, 7)
+        self.assertEqual(summary.completed_sets, 2)
+        self.assertEqual(summary.volume, Decimal("1280"))
+
+    def test_lists_only_completed_sets_in_order(self):
+        workout = start_workout(user=self.user, routine_day=self.routine_day)
+        self.complete_set(workout, self.exercise_1, set_number=2)
+        self.complete_set(workout, self.exercise_1, set_number=1)
+
+        summary = get_workout_summary(workout.pk)
+        first, second = summary.workoutexercise_set.all()
+
+        self.assertEqual([s.set_number for s in first.done_sets], [1, 2])
+        self.assertEqual(second.done_sets, [])
+
+    def test_volume_is_none_without_completed_sets(self):
+        workout = start_workout(user=self.user, routine_day=self.routine_day)
+
+        summary = get_workout_summary(workout.pk)
+
+        self.assertEqual(summary.completed_sets, 0)
+        self.assertIsNone(summary.volume)
