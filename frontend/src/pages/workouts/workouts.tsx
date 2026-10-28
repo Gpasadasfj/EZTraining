@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { isAxiosError } from "axios";
 import { Play } from "lucide-react";
 import ConfirmDialog from "../../components/ui/confirmDialog";
 import DayRow from "../../components/workout/dayRow";
@@ -12,6 +11,7 @@ import {
   useWorkoutsCreate,
 } from "../../hooks/workouts/useWorkouts";
 import WorkoutHeroCard from "../../components/workout/workoutHeroCard";
+import { getStartWorkoutError } from "../../utils/workoutErrors";
 
 interface PendingStart {
   dayId: number;
@@ -23,15 +23,6 @@ const primaryButton =
 
 const chipClass =
   "inline-flex h-10 shrink-0 items-center gap-2 rounded-full border border-line px-4 text-sm font-medium whitespace-nowrap text-fg-muted transition-colors hover:border-line-strong hover:text-fg aria-pressed:border-primary/60 aria-pressed:bg-primary-soft aria-pressed:text-accent";
-
-// El backend explica el motivo en routine_day (día vacío, día de otro usuario…)
-const getCreateError = (error: unknown) => {
-  if (isAxiosError<{ routine_day?: string[] }>(error)) {
-    const message = error.response?.data?.routine_day?.[0];
-    if (message) return message;
-  }
-  return "No se pudo empezar el entreno. Inténtalo de nuevo.";
-};
 
 export default function Workouts() {
   const navigate = useNavigate();
@@ -151,7 +142,7 @@ export default function Workouts() {
 
       {isCreateError && (
         <p role="alert" className="text-sm text-red-400">
-          {getCreateError(createError)}
+          {getStartWorkoutError(createError)}
         </p>
       )}
 

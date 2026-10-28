@@ -6,6 +6,7 @@ import WeekCard from "../components/dashboard/weekWorkoutsCard";
 import WeightCard from "../components/dashboard/weightCard";
 import useDashboard from "../hooks/useDashboard";
 import useMe from "../hooks/useMe";
+import { useActiveWorkout } from "../hooks/workouts/useWorkouts";
 
 const gridClass =
   "grid grid-cols-[minmax(0,1fr)] gap-3.5 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:gap-4";
@@ -34,8 +35,11 @@ function DashboardSkeleton() {
 export default function Dashboard() {
   const { data, isLoading, isError, refetch, isFetching } = useDashboard();
   const { data: me } = useMe();
+  const { data: activeWorkout, isLoading: isLoadingActive } =
+    useActiveWorkout();
 
-  if (isLoading) return <DashboardSkeleton />;
+  // Se espera también al entreno activo para que la tarjeta no salte de "Próximo" a "En curso"
+  if (isLoading || isLoadingActive) return <DashboardSkeleton />;
 
   if (isError || !data) {
     return (
@@ -71,7 +75,10 @@ export default function Dashboard() {
       />
 
       <div className={gridClass}>
-        <NextWorkoutCard nextWorkout={data.next_workout} />
+        <NextWorkoutCard
+          nextWorkout={data.next_workout}
+          activeWorkout={activeWorkout ?? null}
+        />
 
         <WeekCard
           done={data.workouts_this_week}
