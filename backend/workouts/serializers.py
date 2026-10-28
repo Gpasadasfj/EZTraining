@@ -25,6 +25,11 @@ class WorkoutSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if value.routine.user != request.user:
             raise serializers.ValidationError("Este día de rutina no te pertenece.")
+        # Se comprueba antes de perform_create: si falla, el entreno activo no se toca
+        if not value.routine_exercises.exists():
+            raise serializers.ValidationError(
+                "Este día no tiene ejercicios. Añádelos desde la rutina antes de empezar."
+            )
         return value
 
     def __init__(self, instance=None, data=empty, **kwargs):

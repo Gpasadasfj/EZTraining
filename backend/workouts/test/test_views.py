@@ -24,8 +24,21 @@ class WorkoutViewSetTests(APITestCase):
             username="user2", email="user2@test.com", password="testpass123"
         )
 
+        body_part = BodyPart.objects.create(name_es="Pecho", name_en="Chest", slug="chest")
+        muscle = Muscle.objects.create(name_es="Pectoral", name_en="Pectoralis", slug="pectoralis")
+        exercise = Exercise.objects.create(
+            slug="press-banca", name_es="Press banca", name_en="Bench press",
+            instructions_es=["Paso 1"], instructions_en=["Step 1"],
+            body_part=body_part, muscle=muscle,
+        )
+
         self.routine = Routine.objects.create(user=self.user, name="Rutina", description="")
         self.routine_day = RoutineDay.objects.create(routine=self.routine, name="Push", order=1)
+        RoutineExercise.objects.create(
+            routine_day=self.routine_day, exercise=exercise, order=1,
+            target_sets=3, min_reps=8, max_reps=12, target_rir=2, rest_time=90,
+        )
+        self.empty_day = RoutineDay.objects.create(routine=self.routine, name="Pull", order=2)
 
         self.other_routine = Routine.objects.create(user=self.other_user, name="Otra rutina", description="")
         self.other_routine_day = RoutineDay.objects.create(routine=self.other_routine, name="Pull", order=1)
@@ -53,6 +66,18 @@ class WorkoutViewSetTests(APITestCase):
         response = self.client.post(url, {"routine_day": self.other_routine_day.id})
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_cannot_start_workout_from_day_without_exercises(self):
+        active = start_workout(user=self.user, routine_day=self.routine_day)
+        self.client.force_authenticate(user=self.user)
+        url = reverse("workout-list")
+
+        response = self.client.post(url, {"routine_day": self.empty_day.id})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("routine_day", response.data)
+        # El entreno activo sigue intacto
+        self.assertTrue(Workout.objects.filter(pk=active.pk, completed=False).exists())
 
     def test_user_cannot_see_another_users_workout(self):
         other_workout = Workout.objects.create(user=self.other_user, routine_day=self.other_routine_day)
