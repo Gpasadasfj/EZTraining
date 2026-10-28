@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
 import { Play } from "lucide-react";
 import ConfirmDialog from "../../components/ui/confirmDialog";
+import DayRow from "../../components/workout/dayRow";
 import useDashboard from "../../hooks/useDashboard";
 import useRoutines from "../../hooks/routines/useRoutines";
 import useRoutineDays from "../../hooks/routines/useRoutineDays";
@@ -10,7 +12,6 @@ import {
   useWorkoutsCreate,
 } from "../../hooks/workouts/useWorkouts";
 import WorkoutHeroCard from "../../components/workout/workoutHeroCard";
-import DayRow from "../../components/workout/dayRow";
 
 interface PendingStart {
   dayId: number;
@@ -23,6 +24,15 @@ const primaryButton =
 const chipClass =
   "inline-flex h-10 shrink-0 items-center gap-2 rounded-full border border-line px-4 text-sm font-medium whitespace-nowrap text-fg-muted transition-colors hover:border-line-strong hover:text-fg aria-pressed:border-primary/60 aria-pressed:bg-primary-soft aria-pressed:text-accent";
 
+// El backend explica el motivo en routine_day (día vacío, día de otro usuario…)
+const getCreateError = (error: unknown) => {
+  if (isAxiosError<{ routine_day?: string[] }>(error)) {
+    const message = error.response?.data?.routine_day?.[0];
+    if (message) return message;
+  }
+  return "No se pudo empezar el entreno. Inténtalo de nuevo.";
+};
+
 export default function Workouts() {
   const navigate = useNavigate();
   const { data: routines, isLoading, isError, error } = useRoutines();
@@ -33,6 +43,7 @@ export default function Workouts() {
     isPending,
     variables,
     isError: isCreateError,
+    error: createError,
   } = useWorkoutsCreate();
 
   const [selectedRoutineId, setSelectedRoutineId] = useState<number | null>(
@@ -140,7 +151,7 @@ export default function Workouts() {
 
       {isCreateError && (
         <p role="alert" className="text-sm text-red-400">
-          No se pudo empezar el entreno. Inténtalo de nuevo.
+          {getCreateError(createError)}
         </p>
       )}
 
@@ -163,7 +174,7 @@ export default function Workouts() {
           <div
             role="group"
             aria-label="Rutina"
-            className="scrollbar-none -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-wrap lg:px-0"
+            className="-mx-4 flex scrollbar-none gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-wrap lg:px-0"
           >
             {routineList.map((routine) => (
               <button

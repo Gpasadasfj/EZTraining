@@ -1,9 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import workoutSetsRequest, {
+  saveSetDraftsRequest,
   updateWorkoutSetRequest,
   workoutSetDetailRequest,
 } from "../../api/workouts/workoutSets";
-import type { UpdateWorkoutSetVariables } from "../../types/workouts/workoutSets";
+import type {
+  SetDraft,
+  UpdateWorkoutSetVariables,
+} from "../../types/workouts/workoutSets";
 
 export default function useWorkoutSets(workoutId: number, exerciseId: number) {
   return useQuery({
@@ -54,6 +58,18 @@ export function useUpdateWorkoutSet(workoutId: number, exerciseId: number) {
       // El contador "3/17 series" del entreno activo cambia
       queryClient.invalidateQueries({ queryKey: ["workouts", "active"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+  });
+}
+
+export function useSaveSetDrafts(workoutId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (drafts: Record<number, SetDraft>) =>
+      saveSetDraftsRequest(workoutId, drafts),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["workoutSet", workoutId] });
     },
   });
 }

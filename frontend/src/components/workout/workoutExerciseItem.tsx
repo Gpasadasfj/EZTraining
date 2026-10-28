@@ -7,33 +7,26 @@ import useWorkoutSets, {
 import { usePreviousWorkoutExercise } from "../../hooks/workouts/useWorkoutExercises";
 import type { WorkoutExercise } from "../../types/workouts/workoutExercises";
 import type {
+  SetDraft,
   SetField,
   SetStatus,
   WorkoutSet,
 } from "../../types/workouts/workoutSets";
 import { formatDecimal, formatReps, formatRest } from "../../utils/format";
+import { toForm, toSetValues } from "../../utils/setForm";
 import WorkoutExerciseCard from "./workoutExerciseCard";
 import SetRow from "./setRow";
-
-type SetForm = Record<SetField, string>;
 
 interface WorkoutExerciseItemProps {
   workoutId: number;
   exercise: WorkoutExercise;
+  // Lo escrito y sin guardar de todo el entreno, por id de serie
+  drafts: Record<number, SetDraft>;
+  onDraftChange: (setId: number, draft: SetDraft) => void;
+  onDraftSaved: (setId: number) => void;
   onSetCompleted: (exercise: WorkoutExercise) => void;
   onShowInfo: (slug: string) => void;
 }
-
-// Valores guardados en el backend → texto para los inputs
-const toForm = (set: WorkoutSet): SetForm => ({
-  weight: formatDecimal(set.weight),
-  reps: formatDecimal(set.reps),
-  rir: set.rir?.toString() ?? "",
-});
-
-// Texto del input → número o null para el backend
-const toNumber = (value: string) =>
-  value === "" ? null : Number(value.replace(",", "."));
 
 const formatDay = (iso: string) =>
   new Date(iso).toLocaleDateString("es-ES", { day: "numeric", month: "short" });
@@ -44,10 +37,12 @@ const toolClass =
 export default function WorkoutExerciseItem({
   workoutId,
   exercise,
+  drafts,
+  onDraftChange,
+  onDraftSaved,
   onSetCompleted,
   onShowInfo,
 }: WorkoutExerciseItemProps) {
-  const [forms, setForms] = useState<Record<number, SetForm>>({});
   const [showPrevious, setShowPrevious] = useState(false);
 
   const { data, isLoading, isError } = useWorkoutSets(workoutId, exercise.id);
@@ -70,7 +65,7 @@ export default function WorkoutExerciseItem({
   const currentIndex = sets.findIndex((set) => !set.completed);
   const allDone = sets.length > 0 && currentIndex === -1;
 
-  const getForm = (set: WorkoutSet) => forms[set.id] ?? toForm(set);
+  const getForm = (set: WorkoutSet) => drafts[set.id]?.form ?? toForm(set);
 
   const statusOf = (set: WorkoutSet, index: number): SetStatus => {
     if (set.completed) return "done";
@@ -78,10 +73,10 @@ export default function WorkoutExerciseItem({
   };
 
   const handleChange = (set: WorkoutSet, field: SetField, value: string) => {
-    setForms((prev) => ({
-      ...prev,
-      [set.id]: { ...(prev[set.id] ?? toForm(set)), [field]: value },
-    }));
+    onDraftChange(set.id, {
+      exerciseId: exercise.id,
+      form: { ...getForm(set), [field]: value },
+    });
   };
 
   const handleSave = (set: WorkoutSet) => {
@@ -91,18 +86,17 @@ export default function WorkoutExerciseItem({
       return;
     }
 
-    const form = getForm(set);
     mutate(
       {
         setId: set.id,
-        data: {
-          weight: form.weight.replace(",", "."),
-          reps: toNumber(form.reps),
-          rir: toNumber(form.rir),
-          completed: true,
+        data: { ...toSetValues(getForm(set)), completed: true },
+      },
+      {
+        onSuccess: () => {
+          onDraftSaved(set.id);
+          onSetCompleted(exercise);
         },
       },
-      { onSuccess: () => onSetCompleted(exercise) },
     );
   };
 

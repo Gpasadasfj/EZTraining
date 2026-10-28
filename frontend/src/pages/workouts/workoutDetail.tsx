@@ -1,8 +1,11 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Flag } from "lucide-react";
+import { saveSetDraftsRequest } from "../../api/workouts/workoutSets";
 import ConfirmDialog from "../../components/ui/confirmDialog";
 import useWorkoutExercises from "../../hooks/workouts/useWorkoutExercises";
+import { useSaveSetDrafts } from "../../hooks/workouts/useWorkoutSets";
 import {
   useActiveWorkout,
   useFinishWorkout,
@@ -10,6 +13,7 @@ import {
 } from "../../hooks/workouts/useWorkouts";
 import type { Rest } from "../../types/workouts/rest";
 import type { WorkoutExercise } from "../../types/workouts/workoutExercises";
+import type { SetDraft } from "../../types/workouts/workoutSets";
 import WorkoutSummary from "../../components/workout/workoutSummary";
 import WorkoutClock from "../../components/workout/workoutClock";
 import WorkoutExerciseItem from "../../components/workout/workoutExerciseItem";
@@ -19,6 +23,7 @@ import ExerciseInfoSheet from "../../components/workout/exerciseInfoSheet";
 export default function WorkoutDetail() {
   const { id } = useParams();
   const workoutId = Number(id);
+  const queryClient = useQueryClient();
 
   const {
     data: workout,
@@ -29,10 +34,57 @@ export default function WorkoutDetail() {
   const { data: exercises } = useWorkoutExercises(workoutId);
   const { data: active } = useActiveWorkout();
   const finish = useFinishWorkout();
+  const saveDrafts = useSaveSetDrafts(workoutId);
 
   const [rest, setRest] = useState<Rest | null>(null);
   const [infoSlug, setInfoSlug] = useState<string | null>(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  // Series escritas y sin guardar de todas las tarjetas, por id de serie
+  const [drafts, setDrafts] = useState<Record<number, SetDraft>>({});
+
+  const changeDraft = (setId: number, draft: SetDraft) => {
+    setDrafts((prev) => ({ ...prev, [setId]: draft }));
+  };
+
+  const removeDraft = (setId: number) => {
+    setDrafts((prev) => {
+      const next = { ...prev };
+      delete next[setId];
+      return next;
+    });
+  };
+
+  // Al salir de la página se guardan las series escritas. El cleanup lee la ref
+  // porque necesita los borradores del último render, no los del primero
+  const draftsRef = useRef(drafts);
+  useEffect(() => {
+    draftsRef.current = drafts;
+  }, [drafts]);
+
+  useEffect(() => {
+    return () => {
+      const pending = draftsRef.current;
+      if (Object.keys(pending).length === 0) return;
+
+      // Ya no hay pantalla donde mostrar un error, así que solo se intenta
+      saveSetDraftsRequest(workoutId, pending)
+        .then(() =>
+          queryClient.invalidateQueries({
+            queryKey: ["workoutSet", workoutId],
+          }),
+        )
+        .catch(() => {});
+    };
+  }, [workoutId, queryClient]);
+
+  // Al cerrar la pestaña o recargar no se pueden guardar los borradores: el navegador avisa
+  useEffect(() => {
+    if (Object.keys(drafts).length === 0) return;
+
+    const warn = (event: BeforeUnloadEvent) => event.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [drafts]);
 
   // Se guarda cuándo acaba, no cuántos segundos quedan: así no se desajusta
   // aunque el navegador ralentice los intervalos con la pestaña en segundo plano
@@ -65,10 +117,17 @@ export default function WorkoutDetail() {
     : 0;
   const allDone =
     progress !== null && progress.total_sets > 0 && pendingSets === 0;
+  const isFinishing = saveDrafts.isPending || finish.isPending;
 
-  // Al terminar, la caché ya tiene el entreno completado y la página pasa al resumen
+  // Primero se guardan los borradores; después, finish marca como hechas
+  // las series con peso y reps y la caché ya pasa al resumen
   const finishWorkout = () => {
-    finish.mutate(workoutId, { onSuccess: () => window.scrollTo(0, 0) });
+    saveDrafts.mutate(drafts, {
+      onSuccess: () => {
+        setDrafts({});
+        finish.mutate(workoutId, { onSuccess: () => window.scrollTo(0, 0) });
+      },
+    });
   };
 
   const handleFinishClick = () => {
@@ -130,6 +189,9 @@ export default function WorkoutDetail() {
           key={exercise.id}
           workoutId={workoutId}
           exercise={exercise}
+          drafts={drafts}
+          onDraftChange={changeDraft}
+          onDraftSaved={removeDraft}
           onSetCompleted={startRest}
           onShowInfo={setInfoSlug}
         />
@@ -147,16 +209,16 @@ export default function WorkoutDetail() {
             />
           )}
 
-          {finish.isError && (
+          {(saveDrafts.isError || finish.isError) && (
             <p role="alert" className="text-center text-sm text-red-400">
-              No se pudo terminar el entreno.
+              No se pudo terminar el entreno. Inténtalo de nuevo.
             </p>
           )}
 
           <button
             type="button"
             onClick={handleFinishClick}
-            disabled={finish.isPending}
+            disabled={isFinishing}
             className={`inline-flex h-12 w-full items-center justify-center gap-2 rounded-button font-semibold transition-colors disabled:opacity-60 ${
               allDone
                 ? "bg-primary text-on-primary hover:bg-primary-hover"
@@ -164,7 +226,7 @@ export default function WorkoutDetail() {
             }`}
           >
             <Flag className="size-5" aria-hidden="true" />
-            Terminar entreno
+            {isFinishing ? "Terminando…" : "Terminar entreno"}
           </button>
         </div>
       </div>
@@ -174,12 +236,13 @@ export default function WorkoutDetail() {
         title="¿Terminar el entreno?"
         confirmLabel="Terminar"
         cancelLabel="Seguir"
-        isPending={finish.isPending}
+        isPending={isFinishing}
         onCancel={() => setIsConfirmOpen(false)}
         onConfirm={finishWorkout}
       >
-        Te quedan <b className="text-fg">{pendingSets} series</b> sin completar.
-        No contarán para tus récords ni tu volumen.
+        Te quedan <b className="text-fg">{pendingSets} series</b> sin marcar.
+        Las que tengan peso y repeticiones se guardarán como hechas; las vacías
+        no contarán.
       </ConfirmDialog>
 
       <ExerciseInfoSheet slug={infoSlug} onClose={() => setInfoSlug(null)} />

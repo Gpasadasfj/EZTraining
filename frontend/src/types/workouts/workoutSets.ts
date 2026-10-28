@@ -22,10 +22,7 @@ export interface UpdateWorkoutSetVariables {
 }
 
 // Solo los valores de una serie: para el último entreno y el resumen
-export type SetValues = Pick<
-  WorkoutSet,
-  "set_number" | "weight" | "reps" | "rir"
->;
+export type SetValues = Pick<WorkoutSet, "set_number" | "weight" | "reps" | "rir">;
 
 export interface PreviousSets {
   finished_at: string | null;
@@ -34,3 +31,12 @@ export interface PreviousSets {
 
 export type SetStatus = "done" | "current" | "pending";
 export type SetField = "weight" | "reps" | "rir";
+
+// Lo que hay escrito en los inputs de una serie
+export type SetForm = Record<SetField, string>;
+
+// Una serie escrita y sin guardar; exerciseId hace falta para la URL de la petición
+export interface SetDraft {
+  exerciseId: number;
+  form: SetForm;
+}
