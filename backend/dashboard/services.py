@@ -2,7 +2,7 @@ from datetime import timedelta
 from django.utils import timezone
 from django.db.models import F, Count,  Sum
 
-from routines.services import get_last_workout
+from routines.services import get_active_routine, get_last_workout
 from routines.models import RoutineDay
 from workouts.models import Workout, WorkoutSet
 
@@ -10,14 +10,15 @@ def init_dashboard(user):
     # Inicializar dashboard
     workouts = get_workouts_this_week(user)
     last_workout = get_last_workout(user)
+    routine = get_active_routine(user)
 
-    number_of_workouts_this_week, target_workouts, workout_days = get_number_and_target_of_workouts_this_week(workouts, last_workout)
+    number_of_workouts_this_week, target_workouts, workout_days = get_number_and_target_of_workouts_this_week(workouts, routine)
 
     volume_this_week = get_volume_this_week(workouts)
 
     current_weight, target_weight = get_current_and_target_weight(user)
 
-    next_workout = get_next_workout(last_workout)
+    next_workout = get_next_workout(routine, last_workout)
 
     personal_records = get_personal_records(user)
 
@@ -50,7 +51,7 @@ def get_workouts_this_week(user):
 
 
 
-def get_number_and_target_of_workouts_this_week(workouts, last_workout):
+def get_number_and_target_of_workouts_this_week(workouts, routine):
     # Entrenos realizados y objetivo de esta semana.
     number_of_workouts_this_week = workouts.count() # Entrenos realizados
 
@@ -59,11 +60,10 @@ def get_number_and_target_of_workouts_this_week(workouts, last_workout):
         for workout in workouts
     }) # Días de entreno
     
-    # Si todavía no hay entrenos devolvemos None
-    if last_workout is None or last_workout.routine_day is None:
+    # Sin rutina no hay objetivo
+    if routine is None:
         return number_of_workouts_this_week, None , workout_days
     
-    routine = last_workout.routine_day.routine
     target_workouts = RoutineDay.objects.filter( 
         routine=routine
         ).count() # Objetivo de entrenos sacado de los dias de entreno
@@ -88,20 +88,25 @@ def get_current_and_target_weight(user):
 
     return current_weight, target_weight
 
-def get_next_workout(last_workout):
+def get_next_workout(routine, last_workout):
     # Siguiente entreno
-    if last_workout is None or last_workout.routine_day is None:
+    if routine is None:
         return None
 
-    routine = last_workout.routine_day.routine
-    last_order = last_workout.routine_day.order
+    # Solo días que se pueden empezar: los vacíos se saltan
+    days = (
+        RoutineDay.objects.filter(routine=routine, routine_exercises__isnull=False)
+        .distinct()
+        .order_by("order")
+    )
 
-    next_workout = RoutineDay.objects.filter(
-        routine=routine, order__gt=last_order
-    ).order_by("order").first()
-
-    if next_workout is None:
-        next_workout = RoutineDay.objects.filter(routine=routine).order_by("order").first()
+    # Si el último entreno fue de esta rutina, toca el día siguiente
+    # (o vuelta al primero); si no, se empieza por el primero
+    last_day = last_workout.routine_day if last_workout is not None else None
+    if last_day is not None and last_day.routine_id == routine.id:
+        next_workout = days.filter(order__gt=last_day.order).first() or days.first()
+    else:
+        next_workout = days.first()
 
     if next_workout is None:
         return None
@@ -113,7 +118,7 @@ def get_next_workout(last_workout):
 
     data = {
         "routine_day" : next_workout.id,
-        "routine_name" : next_workout.routine.name,
+        "routine_name" : routine.name,
         "name" : next_workout.name,
         "exercises_count": stats["exercises_count"],
         "sets_count": stats["sets_count"] or 0,

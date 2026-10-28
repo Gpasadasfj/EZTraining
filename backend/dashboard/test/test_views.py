@@ -57,6 +57,10 @@ class DashboardViewTests(APITestCase):
             routine_day=day_1, exercise=exercise, order=1,
             target_sets=1, min_reps=8, max_reps=12, target_rir=2, rest_time=90,
         )
+        RoutineExercise.objects.create(
+            routine_day=day_2, exercise=exercise, order=1,
+            target_sets=1, min_reps=8, max_reps=12, target_rir=2, rest_time=90,
+        )
 
         workout = start_workout(user=self.user, routine_day=day_1)
         Workout.objects.filter(pk=workout.pk).update(completed=True, finished_at=timezone.now())

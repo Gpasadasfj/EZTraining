@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from exercises.models import BodyPart, Muscle, Exercise
-from routines.models import Routine, RoutineDay
+from routines.models import Routine, RoutineDay, RoutineExercise
 from workouts.models import Workout, WorkoutExercise, WorkoutSet
 from dashboard.services import (
     get_next_workout,
@@ -26,6 +26,27 @@ class GetNextWorkoutTests(TestCase):
             password="testpass123",
         )
 
+        body_part = BodyPart.objects.create(name_es="Pecho", name_en="Chest", slug="chest")
+        muscle = Muscle.objects.create(name_es="Pectoral", name_en="Pectoralis", slug="pectoralis")
+        self.exercise_1 = Exercise.objects.create(
+            slug="press-banca",
+            name_es="Press banca",
+            name_en="Bench press",
+            instructions_es=["Paso 1"],
+            instructions_en=["Step 1"],
+            body_part=body_part,
+            muscle=muscle,
+        )
+        self.exercise_2 = Exercise.objects.create(
+            slug="press-inclinado",
+            name_es="Press inclinado",
+            name_en="Incline press",
+            instructions_es=["Paso 1"],
+            instructions_en=["Step 1"],
+            body_part=body_part,
+            muscle=muscle,
+        )
+
         self.routine = Routine.objects.create(
             user=self.user,
             name="Rutina fuerza",
@@ -36,10 +57,32 @@ class GetNextWorkoutTests(TestCase):
         self.day_2 = RoutineDay.objects.create(routine=self.routine, name="Pull", order=2)
         self.day_3 = RoutineDay.objects.create(routine=self.routine, name="Legs", order=3)
 
-    def test_returns_none_when_there_is_no_last_workout(self):
-        result = get_next_workout(None)
+        # Los días sin ejercicios se saltan, así que cada día necesita al menos uno
+        for day in (self.day_1, self.day_2, self.day_3):
+            self.add_exercise(day, self.exercise_1, order=1, target_sets=3)
+
+    def add_exercise(self, day, exercise, order, target_sets):
+        RoutineExercise.objects.create(
+            routine_day=day,
+            exercise=exercise,
+            order=order,
+            target_sets=target_sets,
+            min_reps=8,
+            max_reps=12,
+            target_rir=2,
+            rest_time=90,
+        )
+
+    def test_returns_none_when_there_is_no_routine(self):
+        result = get_next_workout(None, None)
 
         self.assertIsNone(result)
+
+    def test_returns_first_day_when_there_is_no_last_workout(self):
+        result = get_next_workout(self.routine, None)
+
+        self.assertEqual(result["routine_day"], self.day_1.id)
+        self.assertEqual(result["name"], "Push")
 
     def test_returns_next_day_in_order(self):
         last_workout = Workout.objects.create(
@@ -48,7 +91,7 @@ class GetNextWorkoutTests(TestCase):
             completed=True,
         )
 
-        result = get_next_workout(last_workout)
+        result = get_next_workout(self.routine, last_workout)
 
         self.assertEqual(result["routine_day"], self.day_2.id)
         self.assertEqual(result["name"], "Pull")
@@ -61,22 +104,49 @@ class GetNextWorkoutTests(TestCase):
             completed=True,
         )
 
-        result = get_next_workout(last_workout)
+        result = get_next_workout(self.routine, last_workout)
 
         self.assertEqual(result["routine_day"], self.day_1.id)
         self.assertEqual(result["name"], "Push")
 
-    def test_returns_zero_counts_when_next_day_has_no_exercises(self):
+    def test_skips_days_without_exercises(self):
+        RoutineDay.objects.create(routine=self.routine, name="Core", order=4)
+        last_workout = Workout.objects.create(
+            user=self.user,
+            routine_day=self.day_3,
+            completed=True,
+        )
+
+        result = get_next_workout(self.routine, last_workout)
+
+        # Después de Legs iría Core, pero está vacío: vuelve a Push
+        self.assertEqual(result["name"], "Push")
+
+    def test_starts_from_first_day_when_last_workout_is_from_another_routine(self):
+        other_routine = Routine.objects.create(user=self.user, name="Otra", description="")
+        other_day = RoutineDay.objects.create(routine=other_routine, name="Full body", order=5)
+        last_workout = Workout.objects.create(
+            user=self.user,
+            routine_day=other_day,
+            completed=True,
+        )
+
+        result = get_next_workout(self.routine, last_workout)
+
+        self.assertEqual(result["name"], "Push")
+
+    def test_counts_exercises_and_sets_of_next_day(self):
+        self.add_exercise(self.day_2, self.exercise_2, order=2, target_sets=4)
         last_workout = Workout.objects.create(
             user=self.user,
             routine_day=self.day_1,
             completed=True,
         )
 
-        result = get_next_workout(last_workout)
+        result = get_next_workout(self.routine, last_workout)
 
-        self.assertEqual(result["exercises_count"], 0)
-        self.assertEqual(result["sets_count"], 0)
+        self.assertEqual(result["exercises_count"], 2)
+        self.assertEqual(result["sets_count"], 7)
 
 
 class GetPersonalRecordsTests(TestCase):
@@ -266,7 +336,7 @@ class GetNumberAndTargetOfWorkoutsThisWeekTests(TestCase):
         self.day_2 = RoutineDay.objects.create(routine=self.routine, name="Pull", order=2)
         self.day_3 = RoutineDay.objects.create(routine=self.routine, name="Legs", order=3)
 
-    def test_returns_none_target_when_there_is_no_last_workout(self):
+    def test_returns_none_target_when_there_is_no_routine(self):
         workouts = get_workouts_this_week(self.user)
 
         number, target, days = get_number_and_target_of_workouts_this_week(workouts, None)
@@ -275,23 +345,12 @@ class GetNumberAndTargetOfWorkoutsThisWeekTests(TestCase):
         self.assertIsNone(target)
         self.assertEqual(days, [])
 
-    def test_returns_none_target_when_last_workout_has_no_routine_day(self):
-        Workout.objects.create(user=self.user, routine_day=None, completed=True)
-        workouts = get_workouts_this_week(self.user)
-        last_workout = Workout.objects.filter(user=self.user, completed=True).order_by("-started_at").first()
-
-        number, target, days = get_number_and_target_of_workouts_this_week(workouts, last_workout)
-
-        self.assertEqual(number, 1)
-        self.assertIsNone(target)
-
     def test_returns_target_based_on_routine_days_count(self):
         Workout.objects.create(user=self.user, routine_day=self.day_1, completed=True)
         Workout.objects.create(user=self.user, routine_day=self.day_2, completed=True)
         workouts = get_workouts_this_week(self.user)
-        last_workout = Workout.objects.filter(user=self.user, completed=True).order_by("-started_at").first()
 
-        number, target, days = get_number_and_target_of_workouts_this_week(workouts, last_workout)
+        number, target, days = get_number_and_target_of_workouts_this_week(workouts, self.routine)
 
         self.assertEqual(number, 2)
         self.assertEqual(target, 3)
