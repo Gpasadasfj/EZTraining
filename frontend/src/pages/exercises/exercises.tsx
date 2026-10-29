@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { LoaderCircle, Plus, Search, SlidersHorizontal, X } from "lucide-react";
 import ConfirmDialog from "../../components/ui/confirmDialog";
-import ExerciseFiltersSheet from "../../components/exercises/exerciseFiltersSheet";
+import ExerciseFiltersSheet from "../../components/exercises/exerciseFilterSheet";
 import ExerciseRow from "../../components/exercises/exerciseRow";
 import ExerciseInfoSheet from "../../components/workout/exerciseInfoSheet";
 import useDebouncedValue from "../../hooks/useDebouncedValue";

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Dumbbell, Pencil, Trash2, X } from "lucide-react";
 import { useExerciseDetail } from "../../hooks/useExercises";
 import type { Exercise } from "../../types/exercises";
+import { getSteps } from "../../utils/exercise";
 
 interface ExerciseInfoSheetProps {
   slug: string | null;
@@ -51,7 +52,7 @@ export default function ExerciseInfoSheet({
     if (!slug && dialog.open) dialog.close();
   }, [slug]);
 
-  const steps = exercise?.instructions_es ?? [];
+  const steps = getSteps(exercise?.instructions_es);
   const canManage = exercise?.is_custom && onEdit && onDelete;
 
   return (

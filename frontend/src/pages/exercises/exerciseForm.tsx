@@ -19,6 +19,7 @@ import {
 } from "../../hooks/useExercises";
 import type { Exercise } from "../../types/exercises";
 import { capitalize } from "../../utils/format";
+import { getSteps } from "../../utils/exercise";
 
 interface FormValues {
   name: string;
@@ -43,13 +44,16 @@ const fieldClass =
 const toggle = (list: number[], id: number) =>
   list.includes(id) ? list.filter((item) => item !== id) : [...list, id];
 
-const toValues = (exercise: Exercise): FormValues => ({
-  name: exercise.name_es,
-  muscle: exercise.muscle_id,
-  secondaryMuscles: exercise.secondary_muscle_ids,
-  equipment: exercise.equipment_ids,
-  steps: exercise.instructions_es.length > 0 ? exercise.instructions_es : [""],
-});
+const toValues = (exercise: Exercise): FormValues => {
+  const steps = getSteps(exercise.instructions_es);
+  return {
+    name: exercise.name_es,
+    muscle: exercise.muscle_id,
+    secondaryMuscles: exercise.secondary_muscle_ids,
+    equipment: exercise.equipment_ids,
+    steps: steps.length > 0 ? steps : [""],
+  };
+};
 
 function ExerciseForm({ exercise, initial }: ExerciseFormProps) {
   const navigate = useNavigate();
@@ -67,7 +71,7 @@ function ExerciseForm({ exercise, initial }: ExerciseFormProps) {
   const nameError = isAxiosError<{ name?: string[] }>(save.error)
     ? save.error.response?.data?.name?.[0]
     : undefined;
-    
+
   const canSubmit =
     values.name.trim().length > 0 && values.muscle !== null && !save.isPending;
 

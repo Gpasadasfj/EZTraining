@@ -2,7 +2,9 @@ export interface Exercise {
   id: number;
   slug: string;
   name_es: string;
-  instructions_es: string[];
+  // El catálogo importado las trae como objeto {"1": "...", "2": "..."};
+  // los ejercicios propios, como lista
+  instructions_es: string[] | Record<string, string>;
   image: string | null;
   body_part: string | null; // los ejercicios propios no tienen
   muscle: string;

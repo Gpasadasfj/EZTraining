@@ -1,6 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import ExerciseThumb from "./exerciseThumb";
 import type { Exercise } from "../../types/exercises";
+import { getSteps } from "../../utils/exercise";
 
 interface ExerciseRowProps {
   exercise: Exercise;
@@ -10,7 +11,8 @@ interface ExerciseRowProps {
 export default function ExerciseRow({ exercise, onOpen }: ExerciseRowProps) {
   // En los tuyos se avisa de que faltan instrucciones, para que sepas cuáles completar
   const missingSteps =
-    exercise.is_custom && exercise.instructions_es.length === 0;
+    exercise.is_custom && getSteps(exercise.instructions_es).length === 0;
+
   const detail = missingSteps
     ? "Sin instrucciones"
     : exercise.equipment.join(", ");
