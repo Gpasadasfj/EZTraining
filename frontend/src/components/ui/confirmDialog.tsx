@@ -6,10 +6,16 @@ interface ConfirmDialogProps {
   children: ReactNode;
   confirmLabel: string;
   cancelLabel: string;
+  tone?: "primary" | "danger";
   isPending?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }
+
+const confirmClass = {
+  primary: "bg-primary text-on-primary hover:bg-primary-hover",
+  danger: "bg-red-500/15 text-red-400 hover:bg-red-500/25",
+};
 
 export default function ConfirmDialog({
   open,
@@ -17,6 +23,7 @@ export default function ConfirmDialog({
   children,
   confirmLabel,
   cancelLabel,
+  tone = "primary",
   isPending,
   onConfirm,
   onCancel,
@@ -77,7 +84,7 @@ export default function ConfirmDialog({
             type="button"
             onClick={onConfirm}
             disabled={isPending}
-            className="h-11 flex-auto rounded-button bg-primary px-4 font-semibold whitespace-nowrap text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
+            className={`h-11 flex-auto rounded-button px-4 font-semibold whitespace-nowrap transition-colors disabled:opacity-60 ${confirmClass[tone]}`}
           >
             {confirmLabel}
           </button>

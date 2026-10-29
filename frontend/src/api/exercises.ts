@@ -3,17 +3,20 @@ import type {
   Exercise,
   ExerciseFilters,
   FilterOption,
+  UpdateExercisePayload,
 } from "../types/exercises";
 import type { PaginatedResponse } from "../types/paginated";
 import api from "./axios";
 
+// pageUrl: la URL "next" que devuelve DRF, que ya incluye filtros y búsqueda
 export function exercisesRequest(
   pageUrl: string | null,
   filters: ExerciseFilters,
+  search = "",
 ) {
   if (pageUrl) return api.get<PaginatedResponse<Exercise>>(pageUrl);
   return api.get<PaginatedResponse<Exercise>>("exercises/", {
-    params: buildExerciseParams("", filters),
+    params: buildExerciseParams(search, filters),
   });
 }
 
@@ -23,6 +26,14 @@ export function exerciseDetailRequest(slug: string) {
 
 export function createExerciseRequest(data: CreateExercisePayload) {
   return api.post<Exercise>("exercises/", data);
+}
+
+export function updateExerciseRequest(slug: string, data: UpdateExercisePayload) {
+  return api.patch<Exercise>(`exercises/${slug}/`, data);
+}
+
+export function deleteExerciseRequest(slug: string) {
+  return api.delete(`exercises/${slug}/`);
 }
 
 function buildExerciseParams(search: string, filters: ExerciseFilters) {

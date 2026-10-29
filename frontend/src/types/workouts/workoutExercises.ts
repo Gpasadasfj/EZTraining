@@ -1,9 +1,9 @@
 export interface WorkoutExercise {
   id: number;
   workout: number;
-  exercise: number;
-  exercise_name: string;
-  exercise_slug: string;
+  exercise: number | null; // null si el ejercicio se ha borrado
+  exercise_name: string; // copia guardada en el entreno: siempre existe
+  exercise_slug: string | null;
   exercise_image: string | null;
   order: number;
   target_sets: number;

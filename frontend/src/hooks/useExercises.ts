@@ -6,22 +6,25 @@ import {
 } from "@tanstack/react-query";
 import {
   createExerciseRequest,
+  deleteExerciseRequest,
   equipmentRequest,
   exerciseDetailRequest,
   exercisesRequest,
   musclesRequest,
   searchExercisesRequest,
+  updateExerciseRequest,
 } from "../api/exercises";
 import type {
   CreateExercisePayload,
   ExerciseFilters,
+  UpdateExerciseVariables,
 } from "../types/exercises";
 
-export function useExercisesInfinite(filters: ExerciseFilters) {
+export function useExercisesInfinite(filters: ExerciseFilters, search = "") {
   return useInfiniteQuery({
-    queryKey: ["exercises", filters],
+    queryKey: ["exercises", filters, search],
     queryFn: async ({ pageParam }) => {
-      const res = await exercisesRequest(pageParam, filters);
+      const res = await exercisesRequest(pageParam, filters, search);
       return res.data;
     },
     initialPageParam: null as string | null,
@@ -90,6 +93,41 @@ export function useCreateExercise() {
     // Con return, la mutación no termina hasta que se refrescan las listas.
     onSuccess: () => {
       return queryClient.invalidateQueries({ queryKey: ["exercises"] });
+    },
+  });
+}
+
+export function useUpdateExercise() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ slug, data }: UpdateExerciseVariables) => {
+      const res = await updateExerciseRequest(slug, data);
+      return res.data;
+    },
+    onSuccess: (exercise) => {
+      // La respuesta ya es el ejercicio actualizado: la ficha lo muestra sin pedirlo otra vez
+      queryClient.setQueryData(["exercises", "detail", exercise.slug], exercise);
+      queryClient.invalidateQueries({ queryKey: ["exercises"] });
+      // Los días de rutina muestran el nombre del ejercicio
+      queryClient.invalidateQueries({ queryKey: ["routineExercise"] });
+    },
+  });
+}
+
+export function useDeleteExercise() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (slug: string) => deleteExerciseRequest(slug),
+    onSuccess: (_response, slug) => {
+      // Primero se quita su detalle; si no, invalidar "exercises" lo volvería a pedir (404)
+      queryClient.removeQueries({ queryKey: ["exercises", "detail", slug] });
+      queryClient.invalidateQueries({ queryKey: ["exercises"] });
+      // Se ha quitado de las rutinas: cambian sus días, sus contadores y el entreno que toca
+      queryClient.invalidateQueries({ queryKey: ["routineExercise"] });
+      queryClient.invalidateQueries({ queryKey: ["routine"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },
   });
 }

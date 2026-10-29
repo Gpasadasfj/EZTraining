@@ -1,11 +1,15 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Dumbbell, X } from "lucide-react";
+import { Dumbbell, Pencil, Trash2, X } from "lucide-react";
 import { useExerciseDetail } from "../../hooks/useExercises";
+import type { Exercise } from "../../types/exercises";
 
 interface ExerciseInfoSheetProps {
   slug: string | null;
   onClose: () => void;
+  // Solo en la sección Ejercicios: en el entreno la ficha es de solo lectura
+  onEdit?: (exercise: Exercise) => void;
+  onDelete?: (exercise: Exercise) => void;
 }
 
 function SheetImage({ src, alt }: { src: string | null; alt: string }) {
@@ -32,6 +36,8 @@ function SheetImage({ src, alt }: { src: string | null; alt: string }) {
 export default function ExerciseInfoSheet({
   slug,
   onClose,
+  onEdit,
+  onDelete,
 }: ExerciseInfoSheetProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -45,8 +51,8 @@ export default function ExerciseInfoSheet({
     if (!slug && dialog.open) dialog.close();
   }, [slug]);
 
-  // Sirve tanto si llegan como lista como si llegan como objeto {"1": "...", "2": "..."}
-  const steps = exercise ? Object.values(exercise.instructions_es ?? {}) : [];
+  const steps = exercise?.instructions_es ?? [];
+  const canManage = exercise?.is_custom && onEdit && onDelete;
 
   return (
     <dialog
@@ -102,6 +108,11 @@ export default function ExerciseInfoSheet({
             </div>
 
             <div className="flex flex-wrap gap-1.5">
+              {exercise.is_custom && (
+                <span className="rounded-full bg-white/8 px-2.5 py-1 text-xs font-semibold text-fg">
+                  Tuyo
+                </span>
+              )}
               <span className="rounded-full bg-primary-soft px-2.5 py-1 text-xs font-semibold text-accent">
                 {exercise.muscle}
               </span>
@@ -140,25 +151,46 @@ export default function ExerciseInfoSheet({
                     </li>
                   ))}
                 </ol>
+              ) : exercise.is_custom && !canManage ? (
+                <p className="text-sm text-fg-muted">
+                  Este ejercicio es tuyo y aún no tiene instrucciones.{" "}
+                  <Link
+                    to="/exercises"
+                    className="font-semibold text-accent underline-offset-4 hover:underline"
+                  >
+                    Añádelas desde Ejercicios
+                  </Link>
+                  .
+                </p>
               ) : (
                 <p className="text-sm text-fg-muted">
-                  {exercise.is_custom ? (
-                    <>
-                      Este ejercicio es tuyo y aún no tiene instrucciones.{" "}
-                      <Link
-                        to="/exercises"
-                        className="font-semibold text-accent underline-offset-4 hover:underline"
-                      >
-                        Añádelas desde Ejercicios
-                      </Link>
-                      .
-                    </>
-                  ) : (
-                    "Este ejercicio no tiene instrucciones."
-                  )}
+                  {exercise.is_custom
+                    ? "Aún no tiene instrucciones. Puedes añadirlas desde «Editar»."
+                    : "Este ejercicio no tiene instrucciones."}
                 </p>
               )}
             </section>
+
+            {canManage && (
+              <div className="flex gap-2 border-t border-line pt-4">
+                <button
+                  type="button"
+                  onClick={() => onEdit(exercise)}
+                  className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-button bg-surface-hover font-semibold transition-colors hover:bg-line-strong"
+                >
+                  <Pencil className="size-4" aria-hidden="true" />
+                  Editar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onDelete(exercise)}
+                  className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-button bg-red-500/10 font-semibold text-red-400 transition-colors hover:bg-red-500/20"
+                >
+                  <Trash2 className="size-4" aria-hidden="true" />
+                  Borrar
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>

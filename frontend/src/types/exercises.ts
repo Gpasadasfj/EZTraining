@@ -2,12 +2,15 @@ export interface Exercise {
   id: number;
   slug: string;
   name_es: string;
-  instructions_es: Record<string, string>;
+  instructions_es: string[];
   image: string | null;
-  body_part: string;
+  body_part: string | null; // los ejercicios propios no tienen
   muscle: string;
+  muscle_id: number;
   secondary_muscles: string[];
+  secondary_muscle_ids: number[];
   equipment: string[];
+  equipment_ids: number[];
   is_custom: boolean;
 }
 
@@ -24,7 +27,18 @@ export interface ExerciseFilters {
   custom?: boolean;
 }
 
+// Lo que se envía al crear: el selector de rutinas solo manda nombre y músculo
 export interface CreateExercisePayload {
   name: string;
   muscle: number;
+  secondary_muscles?: number[];
+  equipment?: number[];
+  instructions?: string[];
+}
+
+export type UpdateExercisePayload = Partial<CreateExercisePayload>;
+
+export interface UpdateExerciseVariables {
+  slug: string;
+  data: UpdateExercisePayload;
 }

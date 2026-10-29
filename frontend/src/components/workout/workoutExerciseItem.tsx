@@ -147,6 +147,8 @@ export default function WorkoutExerciseItem({
     <ExerciseThumb src={exercise.exercise_image} />
   );
 
+  const slug = exercise.exercise_slug;
+
   const actions = (
     <>
       <button
@@ -161,16 +163,19 @@ export default function WorkoutExerciseItem({
       >
         <History className="size-5" aria-hidden="true" />
       </button>
-      <button
-        type="button"
-        onClick={() => onShowInfo(exercise.exercise_slug)}
-        aria-haspopup="dialog"
-        aria-label={`Información de ${exercise.exercise_name}`}
-        title="Información"
-        className={toolClass}
-      >
-        <Info className="size-5" aria-hidden="true" />
-      </button>
+      {/* Si el ejercicio se ha borrado no hay ficha que abrir */}
+      {slug && (
+        <button
+          type="button"
+          onClick={() => onShowInfo(slug)}
+          aria-haspopup="dialog"
+          aria-label={`Información de ${exercise.exercise_name}`}
+          title="Información"
+          className={toolClass}
+        >
+          <Info className="size-5" aria-hidden="true" />
+        </button>
+      )}
     </>
   );
 

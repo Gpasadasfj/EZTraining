@@ -7,6 +7,10 @@ export default function AppLayout() {
   const isWizard = pathname === "/routines/new";
   // Durante un entreno, el hueco de abajo es para el descanso y "Terminar entreno"
   const isWorkout = useMatch("/workouts/:id") !== null;
+  // En el formulario de ejercicio, para "Cancelar" y "Guardar"
+  const isNewExercise = useMatch("/exercises/new") !== null;
+  const isEditExercise = useMatch("/exercises/:slug/edit") !== null;
+  const hideNav = isWizard || isWorkout || isNewExercise || isEditExercise;
 
   return (
     <div className="relative isolate min-h-dvh overflow-x-clip bg-canvas">
@@ -20,7 +24,7 @@ export default function AppLayout() {
         <Outlet />
       </main>
 
-      {!isWizard && !isWorkout && <MobileNav />}
+      {!hideNav && <MobileNav />}
     </div>
   );
 }
