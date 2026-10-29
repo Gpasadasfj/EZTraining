@@ -8,11 +8,11 @@ from rest_framework.test import APIClient
 from exercises.models import BodyPart, Exercise, Muscle
 from exercises.permissions import IsOwnerOrReadOnly
 from routines.models import Routine, RoutineDay, RoutineExercise
-from workouts.models import Workout, WorkoutExercise
+from workouts.models import WorkoutExercise, WorkoutSet
+from workouts.services import finish_workout, start_workout
 
 User = get_user_model()
 
-# Ajusta esta ruta si en tu urls.py es distinta
 EXERCISES_URL = "/api/exercises/"
 
 
@@ -214,34 +214,47 @@ class ExerciseDeleteTest(CustomExerciseBaseTest):
         self.routine = Routine.objects.create(user=self.ana, name="Push Pull Legs", description="")
         self.day = RoutineDay.objects.create(routine=self.routine, name="Pierna", order=1)
 
+    def add_to_day(self):
+        return RoutineExercise.objects.create(
+            routine_day=self.day, exercise=self.ana_exercise, order=1,
+            target_sets=3, min_reps=8, max_reps=12, target_rir=2, rest_time=90,
+        )
+
     def test_delete_unused_own_exercise(self):
         response = self.client.delete(detail_url(self.ana_exercise))
 
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Exercise.objects.filter(id=self.ana_exercise.id).exists())
 
-    def test_delete_exercise_used_in_routine_returns_409(self):
-        RoutineExercise.objects.create(
-            routine_day=self.day, exercise=self.ana_exercise, order=1,
-            target_sets=3, min_reps=8, max_reps=12, target_rir=2, rest_time=90,
-        )
+    def test_delete_exercise_used_in_routine_removes_it_from_routine(self):
+        routine_exercise = self.add_to_day()
 
         response = self.client.delete(detail_url(self.ana_exercise))
 
-        self.assertEqual(response.status_code, 409)
-        self.assertTrue(Exercise.objects.filter(id=self.ana_exercise.id).exists())
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(RoutineExercise.objects.filter(id=routine_exercise.id).exists())
+        # El día de la rutina se queda, solo sin ese ejercicio
+        self.assertTrue(RoutineDay.objects.filter(id=self.day.id).exists())
 
-    def test_delete_exercise_used_in_workout_returns_409(self):
-        workout = Workout.objects.create(user=self.ana, routine_day=self.day)
-        WorkoutExercise.objects.create(
-            workout=workout, exercise=self.ana_exercise, order=1,
-            target_sets=3, min_reps=8, max_reps=12, target_rir=2, rest_time=90,
+    def test_delete_exercise_used_in_workout_keeps_history(self):
+        self.add_to_day()
+        workout = start_workout(user=self.ana, routine_day=self.day)
+        workout_exercise = WorkoutExercise.objects.get(workout=workout)
+        WorkoutSet.objects.filter(workout_exercise=workout_exercise, set_number=1).update(
+            weight=60, reps=10, completed=True
         )
+        finish_workout(workout)
 
         response = self.client.delete(detail_url(self.ana_exercise))
 
-        self.assertEqual(response.status_code, 409)
-        self.assertTrue(WorkoutExercise.objects.filter(exercise=self.ana_exercise).exists())
+        self.assertEqual(response.status_code, 204)
+        workout_exercise.refresh_from_db()
+        # El entreno se queda con el nombre copiado y sus series
+        self.assertIsNone(workout_exercise.exercise)
+        self.assertEqual(workout_exercise.exercise_name, "Hip thrust con banda")
+        self.assertTrue(
+            WorkoutSet.objects.filter(workout_exercise=workout_exercise, completed=True).exists()
+        )
 
     def test_delete_catalog_exercise_is_forbidden(self):
         response = self.client.delete(detail_url(self.catalog))

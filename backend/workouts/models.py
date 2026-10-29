@@ -36,10 +36,15 @@ class WorkoutExercise(models.Model):
         Workout,
         on_delete=models.CASCADE
     )
+    # El entreno es un registro: si borras el ejercicio, las series se quedan
+    # y el nombre se conserva en exercise_name
     exercise = models.ForeignKey(
         Exercise,
-        on_delete=models.PROTECT
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
+    exercise_name = models.CharField(max_length=255, blank=True, default="")
     order = models.PositiveIntegerField()
     target_sets = models.PositiveIntegerField()
     min_reps = models.PositiveIntegerField()

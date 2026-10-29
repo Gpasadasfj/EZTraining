@@ -48,9 +48,9 @@ class ActiveWorkoutSerializer(WorkoutSerializer):
 
 
 class WorkoutExerciseSerializer(serializers.ModelSerializer):
-    exercise_name = serializers.CharField(source="exercise.name_es", read_only=True)
-    exercise_slug = serializers.CharField(source="exercise.slug", read_only=True)
-    exercise_image = serializers.ImageField(source="exercise.image", read_only=True)
+    # allow_null: si el ejercicio se ha borrado, salen como null en vez de desaparecer del JSON
+    exercise_slug = serializers.CharField(source="exercise.slug", read_only=True, allow_null=True)
+    exercise_image = serializers.ImageField(source="exercise.image", read_only=True, allow_null=True)
 
     class Meta:
         model = WorkoutExercise
@@ -71,6 +71,7 @@ class WorkoutExerciseSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "workout",
             "exercise",
+            "exercise_name",
             "target_sets",
             "min_reps",
             "max_reps",
@@ -106,7 +107,6 @@ class SetValuesSerializer(serializers.ModelSerializer):
 
 
 class SummaryExerciseSerializer(serializers.ModelSerializer):
-    exercise_name = serializers.CharField(source="exercise.name_es", read_only=True)
     # done_sets lo crea el Prefetch de get_workout_summary
     sets = SetValuesSerializer(source="done_sets", many=True, read_only=True)
 

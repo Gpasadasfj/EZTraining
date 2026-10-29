@@ -50,7 +50,7 @@ class RoutineExercise(models.Model):
     )
     exercise = models.ForeignKey(
         Exercise,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
     )
     order = models.PositiveSmallIntegerField()
     target_sets = models.PositiveSmallIntegerField()

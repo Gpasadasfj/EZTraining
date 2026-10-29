@@ -67,10 +67,12 @@ def start_workout(user, routine_day):
     workout_sets = [] # Lista de todos los workout_sets para despues hacer
                       # bulk_create()
 
-    for routine_exercise in routine_day.routine_exercises.all().order_by("order"): # Copiar los datos de routine_day a routine_exercise
+    routine_exercises = routine_day.routine_exercises.select_related("exercise").order_by("order")
+    for routine_exercise in routine_exercises: # Copiar los datos de routine_day a routine_exercise
         workout_exercise = WorkoutExercise.objects.create(
             workout=workout,
             exercise=routine_exercise.exercise,
+            exercise_name=routine_exercise.exercise.name_es,
             order=routine_exercise.order,
             target_sets=routine_exercise.target_sets,
             min_reps=routine_exercise.min_reps,
@@ -98,6 +100,10 @@ def get_previous_workout_exercise(workout_exercise):
     El mismo ejercicio en el último entreno terminado anterior a este,
     ignorando los entrenos en los que no se completó ninguna serie suya.
     '''
+    # Ejercicio borrado: no hay con qué comparar
+    if workout_exercise.exercise_id is None:
+        return None
+
     return (
         WorkoutExercise.objects.filter(
             workout__user_id=workout_exercise.workout.user_id,
@@ -110,7 +116,6 @@ def get_previous_workout_exercise(workout_exercise):
         .order_by("-workout__started_at")
         .first()
     )
-
 
 def get_workout_summary(workout_id):
     '''

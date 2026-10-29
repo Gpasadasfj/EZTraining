@@ -147,6 +147,16 @@ class StartWorkoutTests(WorkoutTestData, TestCase):
             self.assertIsNone(workout_set.reps)
             self.assertIsNone(workout_set.rir)
 
+    def test_start_workout_copies_exercise_name(self):
+        workout = start_workout(user=self.user, routine_day=self.routine_day)
+
+        names = list(
+            WorkoutExercise.objects.filter(workout=workout)
+            .order_by("order")
+            .values_list("exercise_name", flat=True)
+        )
+        self.assertEqual(names, ["Press banca", "Press inclinado"])
+
 
 class CloseActiveWorkoutTests(WorkoutTestData, TestCase):
     def test_previous_active_workout_without_progress_is_deleted(self):

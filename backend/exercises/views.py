@@ -1,8 +1,6 @@
 import django_filters
-from django.db.models import ProtectedError
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
-from rest_framework.exceptions import APIException
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 
@@ -14,12 +12,6 @@ from exercises.serializers import (
     ExerciseWriteSerializer,
     MuscleSerializer,
 )
-
-
-class ExerciseInUse(APIException):
-    status_code = 409
-    default_detail = "Este ejercicio se usa en tus rutinas o entrenos y no se puede borrar."
-    default_code = "exercise_in_use"
 
 
 class ExerciseFilter(django_filters.FilterSet):
@@ -77,6 +69,8 @@ class ExerciseListView(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
 
+# Borrar un ejercicio propio lo quita de las rutinas (CASCADE) y deja
+# los entrenos hechos con su nombre copiado (SET_NULL)
 class ExerciseDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     lookup_field = "slug"
@@ -88,12 +82,6 @@ class ExerciseDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method in ("PUT", "PATCH"):
             return ExerciseWriteSerializer
         return ExerciseSerializer
-
-    def perform_destroy(self, instance):
-        try:
-            instance.delete()
-        except ProtectedError:
-            raise ExerciseInUse()
 
 
 class MuscleListView(generics.ListAPIView):
