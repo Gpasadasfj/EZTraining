@@ -113,6 +113,14 @@ class ExerciseVisibilityTest(CustomExerciseBaseTest):
         response = self.client.get(EXERCISES_URL)
         self.assertIn(response.status_code, (401, 403))
 
+    def test_retrieve_includes_ids_for_editing(self):
+        response = self.client.get(detail_url(self.ana_exercise))
+
+        self.assertEqual(response.data["muscle"], "Pectoral")
+        self.assertEqual(response.data["muscle_id"], self.muscle.id)
+        self.assertEqual(response.data["secondary_muscle_ids"], [])
+        self.assertEqual(response.data["equipment_ids"], [])
+
 
 class ExerciseCreateTest(CustomExerciseBaseTest):
     def test_create_assigns_request_user_as_owner(self):

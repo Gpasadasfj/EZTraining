@@ -17,6 +17,14 @@ class ExerciseSerializer(serializers.ModelSerializer):
     muscle = serializers.StringRelatedField()
     secondary_muscles = serializers.StringRelatedField(many=True)
     equipment = serializers.StringRelatedField(many=True)
+    # Los mismos datos como ids, para rellenar el formulario de edición
+    muscle_id = serializers.PrimaryKeyRelatedField(source="muscle", read_only=True)
+    secondary_muscle_ids = serializers.PrimaryKeyRelatedField(
+        source="secondary_muscles", many=True, read_only=True
+    )
+    equipment_ids = serializers.PrimaryKeyRelatedField(
+        source="equipment", many=True, read_only=True
+    )
     is_custom = serializers.BooleanField(read_only=True)
 
     class Meta:
@@ -29,8 +37,11 @@ class ExerciseSerializer(serializers.ModelSerializer):
             "image",
             "body_part",
             "muscle",
+            "muscle_id",
             "secondary_muscles",
+            "secondary_muscle_ids",
             "equipment",
+            "equipment_ids",
             "is_custom",
         ]
 
