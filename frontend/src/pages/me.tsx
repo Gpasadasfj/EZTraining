@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useMe, { useUpdateMe } from "../hooks/useMe";
+import useMe, { useUpdateMe } from "../hooks/me/useMe";
 import WeightLog from "./weightLog";
 
 export default function Me() {
@@ -9,20 +9,25 @@ export default function Me() {
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [height, setHeight] = useState("");
-  const [targetWeight, setTargetWeight] = useState("")
+  const [targetWeight, setTargetWeight] = useState("");
 
   useEffect(() => {
     if (data) {
       setName(data.first_name);
       setLastName(data.last_name);
       setHeight(data.height);
-      setTargetWeight(data.target_weight)
+      setTargetWeight(data.target_weight);
     }
   }, [data]);
 
   const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
-    mutate({ first_name: name, last_name: lastName, height: height, target_weight: targetWeight });
+    mutate({
+      first_name: name,
+      last_name: lastName,
+      height: height,
+      target_weight: targetWeight,
+    });
   };
 
   if (isLoading) return <p>Cargando...</p>;

@@ -11,8 +11,10 @@ import {
   exerciseDetailRequest,
   exercisesRequest,
   musclesRequest,
+  removeExerciseImageRequest,
   searchExercisesRequest,
   updateExerciseRequest,
+  uploadExerciseImageRequest,
 } from "../api/exercises";
 import type {
   CreateExercisePayload,
@@ -128,6 +130,36 @@ export function useDeleteExercise() {
       queryClient.invalidateQueries({ queryKey: ["routineExercise"] });
       queryClient.invalidateQueries({ queryKey: ["routine"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+  });
+}
+
+export function useUploadExerciseImage() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ slug, file }: { slug: string; file: File }) => {
+      const res = await uploadExerciseImageRequest(slug, file);
+      return res.data;
+    },
+    onSuccess: (exercise) => {
+      queryClient.setQueryData(["exercises", "detail", exercise.slug], exercise);
+      queryClient.invalidateQueries({ queryKey: ["exercises"] });
+    },
+  });
+}
+
+export function useRemoveExerciseImage() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (slug: string) => {
+      const res = await removeExerciseImageRequest(slug);
+      return res.data;
+    },
+    onSuccess: (exercise) => {
+      queryClient.setQueryData(["exercises", "detail", exercise.slug], exercise);
+      queryClient.invalidateQueries({ queryKey: ["exercises"] });
     },
   });
 }

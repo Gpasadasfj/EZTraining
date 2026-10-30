@@ -2,14 +2,14 @@ import type React from "react";
 import useWeightLog, {
   useCreateWeightLog,
   useDeleteWeightLog,
-} from "../hooks/useWeightLog";
+} from "../hooks/me/useWeightLog";
 import { type WeightLog } from "../types/users";
 import { useState } from "react";
 
 export type WeightLogItemProps = {
-    log: WeightLog;
-    isDeleting: boolean;
-    onDelete: (id: number) => void;
+  log: WeightLog;
+  isDeleting: boolean;
+  onDelete: (id: number) => void;
 };
 
 export default function WeightLog() {
@@ -39,7 +39,9 @@ export default function WeightLog() {
           value={weightValue}
           onChange={(e) => setWeightValue(e.target.value)}
         />
-        <button type="submit" disabled={isCreating}>Registrar</button>
+        <button type="submit" disabled={isCreating}>
+          Registrar
+        </button>
       </form>
 
       <ul>
@@ -60,7 +62,9 @@ function WeightLogItem({ log, onDelete, isDeleting }: WeightLogItemProps) {
   return (
     <li>
       {log.weight} kg - {log.recorded_at}
-      <button disabled={isDeleting} onClick={() => onDelete(log.id)}>Borrar</button>
+      <button disabled={isDeleting} onClick={() => onDelete(log.id)}>
+        Borrar
+      </button>
     </li>
   );
 }

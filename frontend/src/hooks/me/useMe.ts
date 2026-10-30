@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import meRequest, { updateMeRequest } from "../api/user";
-import type { UpdateUserPayload } from "../types/users";
+import meRequest, { updateMeRequest } from "../../api/user";
+import type { UpdateUserPayload } from "../../types/users";
 
 export default function useMe() {
   return useQuery({

@@ -3,8 +3,8 @@ import {
   createWeightLogRequest,
   deleteWeightLogRequest,
   weightLogRequest,
-} from "../api/user";
-import type { CreateWeightLogPayload } from "../types/users";
+} from "../../api/user";
+import type { CreateWeightLogPayload } from "../../types/users";
 
 export default function useWeightLog() {
   return useQuery({

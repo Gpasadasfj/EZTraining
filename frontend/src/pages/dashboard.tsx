@@ -5,7 +5,7 @@ import RecordsCard from "../components/dashboard/recordsCard";
 import WeekCard from "../components/dashboard/weekWorkoutsCard";
 import WeightCard from "../components/dashboard/weightCard";
 import useDashboard from "../hooks/useDashboard";
-import useMe from "../hooks/useMe";
+import useMe from "../hooks/me/useMe";
 import { useActiveWorkout } from "../hooks/workouts/useWorkouts";
 
 const gridClass =

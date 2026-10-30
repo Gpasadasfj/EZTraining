@@ -66,3 +66,14 @@ export function musclesRequest() {
 export function equipmentRequest() {
   return api.get<FilterOption[]>("exercises/equipment/");
 }
+
+// FormData: axios lo envía como multipart y el navegador pone la cabecera con el "boundary"
+export function uploadExerciseImageRequest(slug: string, file: File) {
+  const data = new FormData();
+  data.append("image", file);
+  return api.put<Exercise>(`exercises/${slug}/image/`, data);
+}
+
+export function removeExerciseImageRequest(slug: string) {
+  return api.delete<Exercise>(`exercises/${slug}/image/`);
+}
