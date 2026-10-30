@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import status
 from rest_framework.decorators import APIView
 from rest_framework.generics import DestroyAPIView, ListCreateAPIView
@@ -119,3 +120,13 @@ class WeightLogDeleteView(DestroyAPIView):
 
     def get_queryset(self):
         return WeightLog.objects.filter(user=self.request.user)
+
+    @transaction.atomic
+    def perform_destroy(self, instance):
+        instance.delete()
+
+        # El peso actual es siempre el del último registro que queda (o ninguno)
+        user = self.request.user
+        latest = WeightLog.objects.filter(user=user).first()
+        user.current_weight = latest.weight if latest else None
+        user.save(update_fields=["current_weight"])

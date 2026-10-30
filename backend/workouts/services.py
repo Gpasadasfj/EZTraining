@@ -117,13 +117,28 @@ def get_previous_workout_exercise(workout_exercise):
         .first()
     )
 
+def with_set_totals(queryset):
+    '''
+    Añade a cada entreno total_sets, completed_sets y volume
+    (peso × reps de las series completadas), calculados en la base de datos.
+    '''
+    done = Q(workoutexercise__workoutset__completed=True)
+
+    return queryset.annotate(
+        total_sets=Count("workoutexercise__workoutset"),
+        completed_sets=Count("workoutexercise__workoutset", filter=done),
+        volume=Sum(
+            F("workoutexercise__workoutset__weight") * F("workoutexercise__workoutset__reps"),
+            filter=done,
+        ),
+    )
+
+
 def get_workout_summary(workout_id):
     '''
     El entreno con sus totales calculados en la base de datos y, por cada
     ejercicio, solo sus series completadas en done_sets.
     '''
-    done = Q(workoutexercise__workoutset__completed=True)
-
     exercises = WorkoutExercise.objects.select_related("exercise").prefetch_related(
         Prefetch(
             "workoutset_set",
@@ -133,15 +148,7 @@ def get_workout_summary(workout_id):
     )
 
     return (
-        Workout.objects.filter(pk=workout_id)
-        .annotate(
-            total_sets=Count("workoutexercise__workoutset"),
-            completed_sets=Count("workoutexercise__workoutset", filter=done),
-            volume=Sum(
-                F("workoutexercise__workoutset__weight") * F("workoutexercise__workoutset__reps"),
-                filter=done,
-            ),
-        )
+        with_set_totals(Workout.objects.filter(pk=workout_id))
         .prefetch_related(Prefetch("workoutexercise_set", queryset=exercises))
         .get()
     )

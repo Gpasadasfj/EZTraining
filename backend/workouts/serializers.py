@@ -141,3 +141,28 @@ class WorkoutSummarySerializer(serializers.ModelSerializer):
 
     def get_duration_seconds(self, obj):
         return int(obj.duration.total_seconds()) if obj.duration else None
+
+
+class WorkoutHistorySerializer(serializers.ModelSerializer):
+    # Vienen anotados por with_set_totals
+    total_sets = serializers.IntegerField(read_only=True)
+    completed_sets = serializers.IntegerField(read_only=True)
+    volume = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
+    duration_seconds = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Workout
+        fields = [
+            "id",
+            "routine_name",
+            "routine_day_name",
+            "started_at",
+            "finished_at",
+            "duration_seconds",
+            "total_sets",
+            "completed_sets",
+            "volume",
+        ]
+
+    def get_duration_seconds(self, obj):
+        return int(obj.duration.total_seconds()) if obj.duration else None

@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.db.models import Count, Q
 from django.db.models.aggregates import Max
 from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import action
@@ -13,11 +12,13 @@ from workouts.services import (
     get_previous_workout_exercise,
     get_workout_summary,
     start_workout,
+    with_set_totals,
 )
 from workouts.serializers import (
     ActiveWorkoutSerializer,
     SetValuesSerializer,
     WorkoutExerciseSerializer,
+    WorkoutHistorySerializer,
     WorkoutSerializer,
     WorkoutSetSerializer,
     WorkoutSummarySerializer,
@@ -58,15 +59,7 @@ class WorkoutViewSet(ModelViewSet):
     @action(detail=False, methods=["get"])
     def active(self, request):
         workout = (
-            self.get_queryset()
-            .filter(completed=False)
-            .annotate(
-                total_sets=Count("workoutexercise__workoutset"),
-                completed_sets=Count(
-                    "workoutexercise__workoutset",
-                    filter=Q(workoutexercise__workoutset__completed=True),
-                ),
-            )
+            with_set_totals(self.get_queryset().filter(completed=False))
             .order_by("-started_at")
             .first()
         )
@@ -76,6 +69,17 @@ class WorkoutViewSet(ModelViewSet):
 
         serializer = ActiveWorkoutSerializer(workout, context=self.get_serializer_context())
         return Response(serializer.data)
+
+    @action(detail=False, methods=["get"])
+    def history(self, request):
+        # Solo los terminados, del más reciente al más antiguo y paginados
+        workouts = with_set_totals(
+            self.get_queryset().filter(completed=True)
+        ).order_by("-started_at")
+
+        page = self.paginate_queryset(workouts)
+        serializer = WorkoutHistorySerializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=["get"])
     def summary(self, request, pk=None):

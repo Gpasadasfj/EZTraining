@@ -353,3 +353,40 @@ class ActiveAndPreviousEndpointsTests(APITestCase):
         response = self.client.get(reverse("workout-summary", kwargs={"pk": workout.pk}))
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_history_lists_only_finished_workouts_newest_first(self):
+        older = start_workout(user=self.user, routine_day=self.routine_day)
+        finish_workout(older)
+        Workout.objects.filter(pk=older.pk).update(started_at=timezone.now() - timedelta(days=3))
+        newer = start_workout(user=self.user, routine_day=self.routine_day)
+        finish_workout(newer)
+        start_workout(user=self.user, routine_day=self.routine_day)  # en curso: no sale
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(reverse("workout-history"))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 2)
+        self.assertEqual([w["id"] for w in response.data["results"]], [newer.id, older.id])
+
+    def test_history_includes_set_totals_and_volume(self):
+        workout = start_workout(user=self.user, routine_day=self.routine_day)
+        self.complete_set(workout, set_number=1, weight=80, reps=8)
+        finish_workout(workout)
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(reverse("workout-history"))
+
+        item = response.data["results"][0]
+        self.assertEqual(item["total_sets"], 3)
+        self.assertEqual(item["completed_sets"], 1)
+        self.assertEqual(Decimal(item["volume"]), Decimal("640"))
+        self.assertIsInstance(item["duration_seconds"], int)
+
+    def test_history_excludes_other_users_workouts(self):
+        finish_workout(start_workout(user=self.user, routine_day=self.routine_day))
+        self.client.force_authenticate(user=self.other_user)
+
+        response = self.client.get(reverse("workout-history"))
+
+        self.assertEqual(response.data["count"], 0)
