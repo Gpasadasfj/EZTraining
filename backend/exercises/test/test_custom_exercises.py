@@ -1,7 +1,10 @@
 from types import SimpleNamespace
+from io import BytesIO
+from PIL import Image
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from rest_framework.test import APIClient
 
@@ -298,3 +301,53 @@ class IsOwnerOrReadOnlyTest(CustomExerciseBaseTest):
     def test_cannot_write_catalog_or_other_users_exercise(self):
         self.assertFalse(self.check("PATCH", self.ana, self.catalog))
         self.assertFalse(self.check("DELETE", self.ana, self.luis_exercise))
+
+
+def make_image(name="foto.png", fmt="PNG", size=(2000, 1000)):
+        buffer = BytesIO()
+        Image.new("RGB", size, "orange").save(buffer, format=fmt)
+        return SimpleUploadedFile(name, buffer.getvalue(), content_type=f"image/{fmt.lower()}")
+
+def image_url(exercise):
+        return f"{detail_url(exercise)}image/"
+
+class ExerciseImageTest(CustomExerciseBaseTest):
+    def test_owner_uploads_image_reduced_to_1024(self):
+        response = self.client.put(image_url(self.ana_exercise), {"image": make_image()}, format="multipart")
+
+        self.assertEqual(response.status_code, 200)
+        self.ana_exercise.refresh_from_db()
+        self.assertTrue(self.ana_exercise.image.name.endswith(".webp"))
+        with Image.open(self.ana_exercise.image) as saved:
+            # Reduce sin deformar: el lado largo queda en 1024
+            self.assertEqual(saved.size, (1024, 512))
+
+    def test_cannot_change_catalog_image(self):
+        response = self.client.put(image_url(self.catalog), {"image": make_image()}, format="multipart")
+        self.assertEqual(response.status_code, 403)
+
+    def test_cannot_change_other_users_image(self):
+        response = self.client.put(image_url(self.luis_exercise), {"image": make_image()}, format="multipart")
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_image(self):
+        self.client.put(image_url(self.ana_exercise), {"image": make_image()}, format="multipart")
+        self.ana_exercise.refresh_from_db()
+        name = self.ana_exercise.image.name
+
+        response = self.client.delete(image_url(self.ana_exercise))
+
+        self.assertEqual(response.status_code, 200)
+        self.ana_exercise.refresh_from_db()
+        self.assertFalse(self.ana_exercise.image)
+        self.assertFalse(self.ana_exercise.image.storage.exists(name))
+
+    def test_deleting_exercise_deletes_its_image_file(self):
+        self.client.put(image_url(self.ana_exercise), {"image": make_image()}, format="multipart")
+        self.ana_exercise.refresh_from_db()
+        name = self.ana_exercise.image.name
+        storage = self.ana_exercise.image.storage
+
+        self.client.delete(detail_url(self.ana_exercise))
+
+        self.assertFalse(storage.exists(name))

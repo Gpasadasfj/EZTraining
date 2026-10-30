@@ -3,8 +3,11 @@ from uuid import uuid4
 from django.utils.text import slugify
 from rest_framework import serializers
 
+from core.images import process_image
 from exercises.models import Equipment, Exercise, Muscle
 
+
+EXERCISE_IMAGE_MAX_SIDE = 1024
 
 def build_custom_slug(name):
     # SlugField tiene max_length=50: 40 del nombre + guion + 8 aleatorios
@@ -68,7 +71,6 @@ class ExerciseWriteSerializer(serializers.ModelSerializer):
         fields = [
             "name",
             "instructions",
-            "image",
             "muscle",
             "secondary_muscles",
             "equipment",
@@ -110,3 +112,9 @@ class EquipmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Equipment
         fields = ["id", "name"]
+
+class ExerciseImageSerializer(serializers.Serializer):
+    image = serializers.ImageField()
+
+    def validate_image(self, value):
+        return process_image(value, EXERCISE_IMAGE_MAX_SIDE)

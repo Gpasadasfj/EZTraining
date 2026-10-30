@@ -132,6 +132,12 @@ else:
             }
         }
 
+# En los tests los archivos se guardan en memoria: no ensucian la carpeta media
+if "test" in sys.argv:
+    STORAGES = {
+        "default": {"BACKEND": "django.core.files.storage.InMemoryStorage"},
+        "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

@@ -2,12 +2,16 @@ import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.filters import SearchFilter
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
+from core.images import remove_image, replace_image
 from exercises.models import Equipment, Exercise, Muscle
 from exercises.permissions import IsOwnerOrReadOnly
 from exercises.serializers import (
     EquipmentSerializer,
+    ExerciseImageSerializer,
     ExerciseSerializer,
     ExerciseWriteSerializer,
     MuscleSerializer,
@@ -82,6 +86,40 @@ class ExerciseDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method in ("PUT", "PATCH"):
             return ExerciseWriteSerializer
         return ExerciseSerializer
+
+    def perform_destroy(self, instance):
+        # Borrar la fila no borra el archivo: hay que quitarlo del disco a mano
+        image = instance.image
+        instance.delete()
+        if image:
+            image.storage.delete(image.name)
+
+
+class ExerciseImageView(generics.GenericAPIView):
+    """PUT sube o cambia la foto de un ejercicio propio; DELETE la quita."""
+
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    serializer_class = ExerciseImageSerializer
+    parser_classes = [MultiPartParser]
+    lookup_field = "slug"
+
+    def get_queryset(self):
+        return visible_exercises(self.request.user)
+
+    def put(self, request, slug):
+        exercise = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        replace_image(exercise, "image", serializer.validated_data["image"])
+
+        return Response(ExerciseSerializer(exercise, context=self.get_serializer_context()).data)
+
+    def delete(self, request, slug):
+        exercise = self.get_object()
+        remove_image(exercise, "image")
+
+        return Response(ExerciseSerializer(exercise, context=self.get_serializer_context()).data)
 
 
 class MuscleListView(generics.ListAPIView):

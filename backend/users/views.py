@@ -1,22 +1,31 @@
 from rest_framework import status
 from rest_framework.decorators import APIView
 from rest_framework.generics import DestroyAPIView, ListCreateAPIView
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from core.images import remove_image, replace_image
 from core.permissions import IsOwner
 from core.mixins import OwnerCreateMixin
 from users.models import WeightLog
 
-from .serializers import RegisterSerializer, LogoutSerializer, UserSerializer, WeightLogSerializer
+from .serializers import (
+    AvatarSerializer,
+    LogoutSerializer,
+    RegisterSerializer,
+    UserSerializer,
+    WeightLogSerializer,
+)
 
 class RegisterView(APIView):
 
     permission_classes = [AllowAny]
 
     def post(self, request):
+        # Acepta JSON o multipart: con foto, el frontend envía un FormData
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -46,7 +55,8 @@ class LogoutView(APIView):
 class MeView(APIView):
 
     def get(self, request):
-        serializer = UserSerializer(request.user)
+        # Con el request en el contexto, las URLs de las fotos salen completas
+        serializer = UserSerializer(request.user, context={"request": request})
 
         return Response(serializer.data)
 
@@ -54,7 +64,8 @@ class MeView(APIView):
         serializer = UserSerializer(
             request.user,
             data=request.data,
-            partial=True
+            partial=True,
+            context={"request": request},
         )
 
         if serializer.is_valid():
@@ -66,6 +77,26 @@ class MeView(APIView):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+
+class AvatarView(APIView):
+    """PUT sube o cambia la foto de perfil; DELETE la quita."""
+
+    parser_classes = [MultiPartParser]
+
+    def put(self, request):
+        serializer = AvatarSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        replace_image(request.user, "avatar", serializer.validated_data["avatar"])
+
+        return Response(UserSerializer(request.user, context={"request": request}).data)
+
+    def delete(self, request):
+        remove_image(request.user, "avatar")
+
+        return Response(UserSerializer(request.user, context={"request": request}).data)
+
 
 class WeightLogView(OwnerCreateMixin, ListCreateAPIView):
     serializer_class = WeightLogSerializer
