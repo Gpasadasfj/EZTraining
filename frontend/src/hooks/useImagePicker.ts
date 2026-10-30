@@ -50,3 +50,5 @@ export default function useImagePicker(initialUrl: string | null = null) {
 
   return { file, preview, removed, error, pick, remove };
 }
+
+export type ImagePicker = ReturnType<typeof useImagePicker>;
