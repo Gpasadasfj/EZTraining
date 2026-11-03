@@ -16,6 +16,7 @@ import AuthLayout from "./layouts/AuthLayout";
 import RoutineWizard from "./pages/routines/wizard/routineWizard";
 import RoutineEdit from "./pages/routines/routineEdit";
 import RoutineDayEdit from "./pages/routines/routinesDays/routineDaysEdit";
+import NotFound from "./pages/notFound";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
         <Route path="/routines/:id/days/:dayId" element={<RoutineDayEdit />} />
         <Route path="/workouts" element={<Workouts />} />
         <Route path="/workouts/:id" element={<WorkoutDetail />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

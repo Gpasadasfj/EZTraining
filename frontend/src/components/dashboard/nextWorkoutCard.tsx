@@ -228,19 +228,22 @@ export default function NextWorkoutCard({
         className="absolute inset-x-0 top-2 h-19 lg:top-6 lg:h-20"
       />
 
-      <div className="absolute top-4.5 left-5 lg:top-6 lg:left-7">
-        {activeWorkout ? (
-          <span className={`${chipBase} bg-green-500/15 text-green-400`}>
-            En curso
+      {/* Con próximo entreno no hay chip: el título ya dice "Próximo entreno" */}
+      {activeWorkout ? (
+        <span
+          className={`${chipBase} absolute top-4.5 left-5 bg-green-500/15 text-green-400 lg:top-6 lg:left-7`}
+        >
+          En curso
+        </span>
+      ) : (
+        !nextWorkout && (
+          <span
+            className={`${chipBase} absolute top-4.5 left-5 bg-orange-500/15 text-orange-400 lg:top-6 lg:left-7`}
+          >
+            Primer paso
           </span>
-        ) : (
-          nextWorkout && (
-            <span className={`${chipBase} bg-orange-500/15 text-orange-400`}>
-              Primer paso
-            </span>
-          )
-        )}
-      </div>
+        )
+      )}
 
       {/* Prioridad: terminar lo empezado, después el día que toca */}
       {activeWorkout ? (
