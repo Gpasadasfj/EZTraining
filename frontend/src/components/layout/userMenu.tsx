@@ -1,18 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ChevronDown, LogOut, User } from "lucide-react";
-import { logout } from "../../services/auth";
+import Avatar from "../me/avatar";
+import useLogout from "../../hooks/me/useLogout";
 import useMe from "../../hooks/me/useMe";
-import { useQueryClient } from "@tanstack/react-query";
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const logout = useLogout();
   const { data: me } = useMe();
-
-  const initial = me?.username.charAt(0).toUpperCase();
 
   useEffect(() => {
     if (!open) return;
@@ -33,12 +30,6 @@ export default function UserMenu() {
     };
   }, [open]);
 
-  function handleLogout() {
-    logout();
-    queryClient.clear();
-    navigate("/login");
-  }
-
   return (
     <div ref={menuRef} className="relative">
       <button
@@ -49,9 +40,7 @@ export default function UserMenu() {
         aria-label="Menú de usuario"
         className="flex items-center gap-1.5 rounded-full border border-line py-1 pr-2.5 pl-1 text-fg-muted transition-colors duration-150 hover:border-line-strong hover:text-fg"
       >
-        <span className="grid size-8 place-items-center rounded-full bg-primary-soft text-accent">
-          {initial ?? <User className="size-4.5" aria-hidden="true" />}
-        </span>
+        <Avatar user={me} className="size-8 text-sm" />
         {me && (
           <span className="max-w-32 truncate text-sm font-medium text-fg">
             {me.username}
@@ -93,7 +82,7 @@ export default function UserMenu() {
         <div className="my-1 h-px bg-line" />
         <button
           type="button"
-          onClick={handleLogout}
+          onClick={logout}
           className="flex h-10 w-full items-center gap-2.5 rounded-lg px-3 text-sm text-danger transition-colors hover:bg-danger/10"
         >
           <LogOut className="size-4" aria-hidden="true" />

@@ -1,81 +1,61 @@
-import { useEffect, useState } from "react";
-import useMe, { useUpdateMe } from "../hooks/me/useMe";
-import WeightLog from "./weightLog";
+import { useState } from "react";
+import { LogOut } from "lucide-react";
+import AvatarSheet from "../components/me/avatarSheet";
+import EditProfileSheet from "../components/me/editProfileSheet";
+import ProfileHeader from "../components/me/profileHeader";
+import WeightProgressCard from "../components/me/weightProgressCard";
+import WeightSheet from "../components/me/weightSheet";
+import WorkoutHistoryCard from "../components/me/workoutHistoryCard";
+import useLogout from "../hooks/me/useLogout";
+import useMe from "../hooks/me/useMe";
+
+type OpenSheet = "weight" | "edit" | "photo" | null;
 
 export default function Me() {
-  const { data, isLoading, isError, error } = useMe();
-  const { mutate, isPending } = useUpdateMe();
+  const { data: me, isLoading, isError } = useMe();
+  const logout = useLogout();
+  // Solo puede haber una hoja abierta a la vez
+  const [sheet, setSheet] = useState<OpenSheet>(null);
+  const closeSheet = () => setSheet(null);
 
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [height, setHeight] = useState("");
-  const [targetWeight, setTargetWeight] = useState("");
+  if (isLoading) return <p className="text-fg-muted">Cargando tu perfil…</p>;
+  if (isError || !me)
+    return <p className="text-fg-muted">No se pudo cargar tu perfil.</p>;
 
-  useEffect(() => {
-    if (data) {
-      setName(data.first_name);
-      setLastName(data.last_name);
-      setHeight(data.height);
-      setTargetWeight(data.target_weight);
-    }
-  }, [data]);
-
-  const handleSubmit = (e: React.SubmitEvent) => {
-    e.preventDefault();
-    mutate({
-      first_name: name,
-      last_name: lastName,
-      height: height,
-      target_weight: targetWeight,
-    });
-  };
-
-  if (isLoading) return <p>Cargando...</p>;
-  if (isError) return <p>Error: {error.message}</p>;
-  if (!data) return null;
+  const currentWeight = me.current_weight ? Number(me.current_weight) : null;
+  const targetWeight = me.target_weight ? Number(me.target_weight) : null;
 
   return (
-    <div>
-      <ul>
-        {Object.entries(data).map(([key, value]) => (
-          <li key={key}>
-            {key}:{" "}
-            {typeof value === "object" ? JSON.stringify(value) : String(value)}
-          </li>
-        ))}
-      </ul>
+    <div className="mx-auto grid max-w-5xl gap-4 lg:gap-5">
+      <ProfileHeader
+        me={me}
+        onEditPhoto={() => setSheet("photo")}
+        onEdit={() => setSheet("edit")}
+      />
 
-      <form onSubmit={handleSubmit}>
-        <p>Nombre</p>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+      <div className="grid items-start gap-4 lg:grid-cols-2 lg:gap-5">
+        <WeightProgressCard
+          targetWeight={targetWeight}
+          onRegister={() => setSheet("weight")}
+          onSetGoal={() => setSheet("edit")}
         />
-        <p>Apellidos</p>
-        <input
-          type="text"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
-        <p>Estatura</p>
-        <input
-          type="number"
-          value={height}
-          onChange={(e) => setHeight(e.target.value)}
-        />
-        <p>Peso objetivo</p>
-        <input
-          type="number"
-          value={targetWeight}
-          onChange={(e) => setTargetWeight(e.target.value)}
-        />
-        <button type="submit" disabled={isPending}>
-          Enviar
-        </button>
-      </form>
+        <WorkoutHistoryCard />
+      </div>
 
-      <WeightLog />
+      <button
+        type="button"
+        onClick={logout}
+        className="inline-flex h-11 items-center gap-2 justify-self-center rounded-button px-4.5 font-semibold text-danger transition-colors hover:bg-danger/10"
+      >
+        <LogOut className="size-4.5" aria-hidden="true" />
+        Cerrar sesión
+      </button>
+
+      {sheet === "weight" && (
+        <WeightSheet lastWeight={currentWeight} onClose={closeSheet} />
+      )}
+      {sheet === "edit" && <EditProfileSheet me={me} onClose={closeSheet} />}
+      {sheet === "photo" && <AvatarSheet me={me} onClose={closeSheet} />}
     </div>
   );
 }

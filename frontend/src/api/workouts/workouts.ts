@@ -3,6 +3,7 @@ import type {
   ActiveWorkout,
   CreateWorkoutPayload,
   Workout,
+  WorkoutHistoryItem,
 } from "../../types/workouts/workouts";
 import type { WorkoutSummary } from "../../types/workouts/workoutSummary";
 import api from "../axios";
@@ -29,4 +30,8 @@ export function workoutsCreateRequest(data: CreateWorkoutPayload) {
 
 export function finishWorkoutRequest(id: number) {
   return api.post<Workout>(`workouts/${id}/finish/`);
+}
+
+export function workoutHistoryRequest(pageUrl: string | null = null) {
+  return api.get<PaginatedResponse<WorkoutHistoryItem>>(pageUrl ?? "workouts/history/");
 }

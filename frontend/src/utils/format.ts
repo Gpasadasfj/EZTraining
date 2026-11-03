@@ -44,3 +44,22 @@ export function formatDuration(totalSeconds: number) {
     ? `${hours}:${String(mins).padStart(2, "0")}:${secs}`
     : `${mins}:${secs}`;
 }
+
+// 82.3 → "82,3" · con 2 decimales, 1.78 → "1,78"
+export const formatNumber = (value: number, maxDecimals = 1) =>
+  value.toLocaleString("es-ES", { maximumFractionDigits: maxDecimals });
+
+// "82,5" o "82.5" → 82.5 · vacío o no numérico → null
+export const parseDecimal = (text: string) => {
+  const clean = text.trim().replace(",", ".");
+  if (clean === "") return null;
+  const value = Number(clean);
+  return Number.isNaN(value) ? null : value;
+};
+
+// "2026-10-14" → "14 oct"
+export const formatShortDate = (date: string) =>
+  new Date(date).toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "short",
+  });

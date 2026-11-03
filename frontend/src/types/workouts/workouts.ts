@@ -17,3 +17,15 @@ export interface ActiveWorkout extends Workout {
 }
 
 export type CreateWorkoutPayload = Pick<Workout, "routine_day">;
+
+export interface WorkoutHistoryItem {
+  id: number;
+  routine_name: string;
+  routine_day_name: string | null;
+  started_at: string;
+  finished_at: string;
+  duration_seconds: number | null;
+  total_sets: number;
+  completed_sets: number;
+  volume: string | null; // null si no hay series completadas (Sum de nada)
+}

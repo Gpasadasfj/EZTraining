@@ -5,6 +5,12 @@ const MAX_SIZE = 5 * 1024 * 1024; // el mismo límite que el backend
 
 export const IMAGE_ACCEPT = ACCEPTED_TYPES.join(",");
 
+export function validateImage(file: File): string | null {
+  if (!ACCEPTED_TYPES.includes(file.type)) return "Solo se admiten imágenes JPG, PNG o WebP.";
+  if (file.size > MAX_SIZE) return "La imagen no puede pesar más de 5 MB.";
+  return null;
+}
+
 // initialUrl: la foto que ya está guardada (o null si no hay)
 export default function useImagePicker(initialUrl: string | null = null) {
   const [file, setFile] = useState<File | null>(null);
@@ -26,12 +32,9 @@ export default function useImagePicker(initialUrl: string | null = null) {
     event.target.value = "";
     if (!next) return;
 
-    if (!ACCEPTED_TYPES.includes(next.type)) {
-      setError("Solo se admiten imágenes JPG, PNG o WebP.");
-      return;
-    }
-    if (next.size > MAX_SIZE) {
-      setError("La imagen no puede pesar más de 5 MB.");
+    const invalid = validateImage(next);
+    if (invalid) {
+      setError(invalid);
       return;
     }
 

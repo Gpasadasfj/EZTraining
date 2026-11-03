@@ -1,4 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   createWeightLogRequest,
   deleteWeightLogRequest,
@@ -7,39 +11,45 @@ import {
 import type { CreateWeightLogPayload } from "../../types/users";
 
 export default function useWeightLog() {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ["weight-log"],
-    queryFn: async () => {
-      const res = await weightLogRequest();
+    queryFn: async ({ pageParam }) => {
+      const res = await weightLogRequest(pageParam);
       return res.data;
     },
+    initialPageParam: null as string | null,
+    // null: no hay más páginas
+    getNextPageParam: (lastPage) => lastPage.next,
   });
 }
 
-export function useCreateWeightLog() {
+// Un registro nuevo o borrado cambia el peso actual del usuario y el del dashboard
+function useInvalidateWeight() {
   const queryClient = useQueryClient();
+  return () => {
+    queryClient.invalidateQueries({ queryKey: ["weight-log"] });
+    queryClient.invalidateQueries({ queryKey: ["me"] });
+    queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+  };
+}
+
+export function useCreateWeightLog() {
+  const invalidate = useInvalidateWeight();
 
   return useMutation({
-    mutationFn: async (weight: CreateWeightLogPayload) => {
-      const res = await createWeightLogRequest(weight);
+    mutationFn: async (data: CreateWeightLogPayload) => {
+      const res = await createWeightLogRequest(data);
       return res.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["weight-log"] });
-    },
+    onSuccess: invalidate,
   });
 }
 
 export function useDeleteWeightLog() {
-  const queryClient = useQueryClient();
+  const invalidate = useInvalidateWeight();
 
   return useMutation({
-    mutationFn: async (id: number) => {
-      const res = await deleteWeightLogRequest(id);
-      return res.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["weight-log"] });
-    },
+    mutationFn: (id: number) => deleteWeightLogRequest(id),
+    onSuccess: invalidate,
   });
 }

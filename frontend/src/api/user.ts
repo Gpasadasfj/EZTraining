@@ -1,9 +1,9 @@
 import { type PaginatedResponse } from "../types/paginated";
 import {
-  type WeightLog,
+  type CreateWeightLogPayload,
   type UpdateUserPayload,
   type User,
-  type CreateWeightLogPayload,
+  type WeightLog,
 } from "../types/users";
 import api from "./axios";
 
@@ -15,8 +15,19 @@ export function updateMeRequest(data: UpdateUserPayload) {
   return api.patch<User>("users/me/", data);
 }
 
-export function weightLogRequest() {
-  return api.get<PaginatedResponse<WeightLog>>("users/weight-logs/");
+export function uploadAvatarRequest(file: File) {
+  const data = new FormData();
+  data.append("avatar", file);
+  return api.put<User>("users/me/avatar/", data);
+}
+
+export function removeAvatarRequest() {
+  return api.delete("users/me/avatar/");
+}
+
+// pageUrl: el "next" de la página anterior (null = la primera)
+export function weightLogRequest(pageUrl: string | null = null) {
+  return api.get<PaginatedResponse<WeightLog>>(pageUrl ?? "users/weight-logs/");
 }
 
 export function createWeightLogRequest(data: CreateWeightLogPayload) {

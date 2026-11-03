@@ -1,5 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import meRequest, { updateMeRequest } from "../../api/user";
+import meRequest, {
+  removeAvatarRequest,
+  updateMeRequest,
+  uploadAvatarRequest,
+} from "../../api/user";
 import type { UpdateUserPayload } from "../../types/users";
 
 export default function useMe() {
@@ -20,10 +24,28 @@ export function useUpdateMe() {
       const res = await updateMeRequest(data);
       return res.data;
     },
-    onSuccess: () => {
-      // Avisa a TanStack Query de que estos datos ya no están actualizados
-      queryClient.invalidateQueries({ queryKey: ["me"] });
+    onSuccess: (user) => {
+      // El PATCH ya devuelve el usuario actualizado: no hace falta volver a pedirlo
+      queryClient.setQueryData(["me"], user);
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },
+  });
+}
+
+export function useUploadAvatar() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (file: File) => uploadAvatarRequest(file),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["me"] }),
+  });
+}
+
+export function useRemoveAvatar() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => removeAvatarRequest(),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["me"] }),
   });
 }

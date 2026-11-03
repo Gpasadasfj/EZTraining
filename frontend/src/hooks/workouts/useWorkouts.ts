@@ -1,7 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import workoutsRequest, {
   activeWorkoutRequest,
   finishWorkoutRequest,
+  workoutHistoryRequest,
   workoutSummaryRequest,
   workoutsCreateRequest,
   workoutsDetailRequest,
@@ -80,5 +81,18 @@ export function useFinishWorkout() {
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },
+  });
+}
+
+export function useWorkoutHistory() {
+  return useInfiniteQuery({
+    // Empieza por ["workouts"]: useFinishWorkout ya lo invalida al terminar un entreno
+    queryKey: ["workouts", "history"],
+    queryFn: async ({ pageParam }) => {
+      const res = await workoutHistoryRequest(pageParam);
+      return res.data;
+    },
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.next,
   });
 }
