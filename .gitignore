@@ -13,7 +13,9 @@ __pycache__/
 venv/
 .venv/
 env/
+.env/
 ENV/
+env.production
 
 # Django
 *.log
@@ -84,3 +86,6 @@ htmlcov/
 
 *.tmp
 *.temp
+media
+
+.claude
