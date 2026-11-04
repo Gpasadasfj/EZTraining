@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useRoutineDays from "../../../hooks/routines/useRoutineDays";
 import type { RoutineDay } from "../../../types/routines/routineDays";
-
-import { WizardActionsSlot, WizardHeader } from "./wizardUi";
+import { WizardActionsSlot } from "./wizardContext";
+import { WizardHeader } from "./wizardUi";
 import type { RoutineValues, WizardStep } from "../../../types/routines/wizard";
 import StepRoutine from "./stepRoutine";
 import StepDays from "./stepDays";

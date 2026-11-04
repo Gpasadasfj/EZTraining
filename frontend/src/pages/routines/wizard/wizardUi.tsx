@@ -1,12 +1,10 @@
-import { createContext, useContext } from "react";
+import { useContext } from "react";
 import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { WizardActionsSlot } from "./wizardContext";
 
 export const fieldClass =
   "w-full rounded-lg border border-line bg-surface px-3.5 text-base text-fg placeholder:text-fg-subtle outline-none transition focus:border-primary focus:ring-3 focus:ring-primary/20 lg:bg-canvas";
-
-/* Hueco donde se pintan los botones de abajo, fuera de la animación */
-export const WizardActionsSlot = createContext<HTMLElement | null>(null);
 
 /* ---------- Cabecera: salir, paso actual y barra de progreso ---------- */
 
