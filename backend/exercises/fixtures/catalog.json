@@ -1,0 +1,1824 @@
+[
+{
+  "model": "exercises.bodypart",
+  "pk": 2,
+  "fields": {
+    "name_es": "Pecho",
+    "name_en": "Chest",
+    "slug": "chest"
+  }
+},
+{
+  "model": "exercises.bodypart",
+  "pk": 3,
+  "fields": {
+    "name_es": "Espalda",
+    "name_en": "Back",
+    "slug": "back"
+  }
+},
+{
+  "model": "exercises.bodypart",
+  "pk": 4,
+  "fields": {
+    "name_es": "Brazos",
+    "name_en": "Arms",
+    "slug": "arms"
+  }
+},
+{
+  "model": "exercises.bodypart",
+  "pk": 5,
+  "fields": {
+    "name_es": "Piernas",
+    "name_en": "Legs",
+    "slug": "legs"
+  }
+},
+{
+  "model": "exercises.bodypart",
+  "pk": 6,
+  "fields": {
+    "name_es": "Hombros",
+    "name_en": "Shoulders",
+    "slug": "shoulders"
+  }
+},
+{
+  "model": "exercises.bodypart",
+  "pk": 7,
+  "fields": {
+    "name_es": "Gemelos",
+    "name_en": "Calves",
+    "slug": "calves"
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 1,
+  "fields": {
+    "name_es": "Pecho",
+    "name_en": "Chest",
+    "slug": "chest"
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 2,
+  "fields": {
+    "name_es": "Deltoides",
+    "name_en": "Shoulders",
+    "slug": "shoulders"
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 3,
+  "fields": {
+    "name_es": "Tríceps",
+    "name_en": "Triceps",
+    "slug": "triceps"
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 4,
+  "fields": {
+    "name_es": "Dorsales",
+    "name_en": "Lats",
+    "slug": "lats"
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 5,
+  "fields": {
+    "name_es": "Bíceps",
+    "name_en": "Biceps",
+    "slug": "biceps"
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 6,
+  "fields": {
+    "name_es": "Braquial",
+    "name_en": "Brachialis",
+    "slug": "brachialis"
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 7,
+  "fields": {
+    "name_es": "Isquiotibiales",
+    "name_en": "Hamstrings",
+    "slug": "hamstrings"
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 8,
+  "fields": {
+    "name_es": "Glúteos",
+    "name_en": "Glutes",
+    "slug": "glutes"
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 9,
+  "fields": {
+    "name_es": "Cuádriceps",
+    "name_en": "Quads",
+    "slug": "quads"
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 10,
+  "fields": {
+    "name_es": "Gemelos",
+    "name_en": "Calves",
+    "slug": "calves"
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 11,
+  "fields": {
+    "name_es": "Abdominales",
+    "name_en": "Abs",
+    "slug": "abs"
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 12,
+  "fields": {
+    "name_es": "Trapecio",
+    "name_en": "Trapezius",
+    "slug": "trapezius"
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 13,
+  "fields": {
+    "name_es": "Sóleo",
+    "name_en": "Soleus",
+    "slug": "soleus"
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 2,
+  "fields": {
+    "name_es": "Barra",
+    "name_en": "Barbell",
+    "slug": "barbell"
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 3,
+  "fields": {
+    "name_es": "Banco",
+    "name_en": "Bench",
+    "slug": "bench"
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 4,
+  "fields": {
+    "name_es": "Mancuerna",
+    "name_en": "Dumbbell",
+    "slug": "dumbbell"
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 5,
+  "fields": {
+    "name_es": "Máquina de cable",
+    "name_en": "Cable machine",
+    "slug": "cable-machine"
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 6,
+  "fields": {
+    "name_es": "Barra Z",
+    "name_en": "SZ-Bar",
+    "slug": "sz-bar"
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 7,
+  "fields": {
+    "name_es": "Sin equipamiento",
+    "name_en": "none (bodyweight exercise)",
+    "slug": "none-bodyweight-exercise"
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 8,
+  "fields": {
+    "name_es": "Barra de dominadas",
+    "name_en": "Pull-up bar",
+    "slug": "pull-up-bar"
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 1,
+  "fields": {
+    "source_id": "73",
+    "owner": null,
+    "slug": "bench-press",
+    "name_es": "Press de Banca",
+    "name_en": "Bench Press",
+    "instructions_es": {
+      "1": "Túmbate en un banco plano con los ojos bajo la barra, los pies apoyados en el suelo y los omóplatos juntos.",
+      "2": "Agarra la barra algo más ancho que los hombros y sácala del soporte con los brazos extendidos.",
+      "3": "Inspira profundamente y baja la barra de forma controlada hasta la parte media del pecho.",
+      "4": "Mantén los codos formando un ángulo de unos 45 a 75 grados con el torso.",
+      "5": "Deja que la barra toque ligeramente el pecho sin rebotarla.",
+      "6": "Empuja la barra hacia arriba en línea recta hasta extender del todo los brazos.",
+      "7": "Mantén los glúteos pegados al banco y los pies firmes durante toda la serie.",
+      "8": "Devuelve la barra al soporte con cuidado al terminar la última repetición."
+    },
+    "instructions_en": {
+      "1": "Lie on a flat bench with your eyes under the bar, your feet flat on the floor and your shoulder blades pulled together.",
+      "2": "Grip the bar slightly wider than shoulder width and unrack it with your arms fully extended.",
+      "3": "Take a deep breath and lower the bar under control to the middle of your chest.",
+      "4": "Keep your elbows at roughly 45 to 75 degrees from your torso.",
+      "5": "Let the bar touch your chest lightly without bouncing it.",
+      "6": "Press the bar back up in a straight line until your arms are fully extended.",
+      "7": "Keep your glutes on the bench and your feet planted throughout the set.",
+      "8": "Rack the bar carefully once you finish your last repetition."
+    },
+    "image": "exercises/barbell-bench-press.webp",
+    "body_part": 2,
+    "muscle": 1,
+    "secondary_muscles": [
+      2,
+      3
+    ],
+    "equipment": [
+      2,
+      3
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 2,
+  "fields": {
+    "source_id": "83",
+    "owner": null,
+    "slug": "bent-over-rowing",
+    "name_es": "Remo Inclinado con Barra (agarre prono)",
+    "name_en": "Bent Over Rowing",
+    "instructions_es": {
+      "1": "Colócate de pie con los pies a la anchura de la cadera y agarra la barra con agarre prono, algo más ancho que los hombros.",
+      "2": "Flexiona ligeramente las rodillas e inclina el torso hacia delante desde la cadera, entre unos 45 grados y la posición paralela al suelo.",
+      "3": "Mantén la espalda recta y el cuello alineado con la columna, con la barra colgando por debajo de los hombros.",
+      "4": "Tira de la barra hacia la parte baja de las costillas llevando los codos hacia atrás y juntando los omóplatos.",
+      "5": "Haz una breve pausa cuando la barra llegue al torso.",
+      "6": "Baja la barra lentamente hasta extender de nuevo los brazos por completo.",
+      "7": "Mantén el torso quieto durante todo el movimiento, sin usar impulso para subir el peso."
+    },
+    "instructions_en": {
+      "1": "Stand with your feet hip-width apart and hold the bar with an overhand grip, slightly wider than shoulder width.",
+      "2": "Bend your knees slightly and hinge forward at the hips, leaning your torso between about 45 degrees and parallel to the floor.",
+      "3": "Keep your back flat and your neck in line with your spine, with the bar hanging below your shoulders.",
+      "4": "Pull the bar toward your lower ribs by driving your elbows back and squeezing your shoulder blades together.",
+      "5": "Pause briefly when the bar reaches your torso.",
+      "6": "Lower the bar slowly until your arms are fully extended again.",
+      "7": "Keep your torso still throughout the movement, without using momentum to lift the weight."
+    },
+    "image": "exercises/barbell-bent-over-row.webp",
+    "body_part": 3,
+    "muscle": 4,
+    "secondary_muscles": [
+      2,
+      5
+    ],
+    "equipment": [
+      2
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 3,
+  "fields": {
+    "source_id": "91",
+    "owner": null,
+    "slug": "biceps-curls-with-barbell",
+    "name_es": "Curl de bíceps con barra",
+    "name_en": "Biceps Curls With Barbell",
+    "instructions_es": {
+      "1": "Ponte de pie con los pies a la anchura de los hombros y agarra la barra con agarre supino, con las manos separadas a la anchura de los hombros.",
+      "2": "Deja la barra colgando delante de los muslos, con los brazos extendidos y los codos pegados al cuerpo.",
+      "3": "Mantén los brazos superiores quietos y sube la barra flexionando los codos.",
+      "4": "Eleva la barra hasta la altura del pecho y contrae el bíceps en la parte alta.",
+      "5": "Baja la barra lentamente hasta extender de nuevo los brazos por completo.",
+      "6": "Mantén la espalda recta y evita balancear el torso para subir el peso."
+    },
+    "instructions_en": {
+      "1": "Stand upright with your feet shoulder-width apart and hold the bar with an underhand grip, hands about shoulder-width apart.",
+      "2": "Let the bar hang in front of your thighs with your arms extended and your elbows close to your sides.",
+      "3": "Keep your upper arms still and curl the bar up by bending your elbows.",
+      "4": "Raise the bar until it reaches about chest height and squeeze your biceps at the top.",
+      "5": "Lower the bar slowly until your arms are fully extended again.",
+      "6": "Keep your back straight and avoid swinging your torso to lift the weight."
+    },
+    "image": "exercises/barbell-biceps-curl.webp",
+    "body_part": 4,
+    "muscle": 5,
+    "secondary_muscles": [
+      6
+    ],
+    "equipment": [
+      2
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 4,
+  "fields": {
+    "source_id": "1801",
+    "owner": null,
+    "slug": "barbell-full-squat",
+    "name_es": "Sentadilla profunda con barra",
+    "name_en": "Barbell Full Squat",
+    "instructions_es": {
+      "1": "Coloca una barra sobre la parte superior de la espalda, apoyada en el trapecio, y sácala del soporte con los pies a la anchura de los hombros.",
+      "2": "Apunta los dedos de los pies ligeramente hacia afuera y activa el core.",
+      "3": "Mantén el pecho arriba y la mirada al frente al iniciar el descenso.",
+      "4": "Flexiona la cadera y las rodillas al mismo tiempo, bajando el cuerpo de forma controlada.",
+      "5": "Continúa bajando hasta que el pliegue de la cadera quede por debajo del nivel de la rodilla, manteniendo los talones apoyados en el suelo.",
+      "6": "Mantén las rodillas alineadas con la dirección de los pies durante todo el movimiento.",
+      "7": "Empuja con los talones y la parte media del pie para volver a subir, extendiendo cadera y rodillas a la vez.",
+      "8": "Vuelve a la posición inicial con la cadera completamente extendida.",
+      "9": "Repite las repeticiones deseadas manteniendo la columna en posición neutra."
+    },
+    "instructions_en": {
+      "1": "Position a barbell across your upper back, resting on your trapezius, and unrack it with your feet shoulder-width apart.",
+      "2": "Point your toes slightly outward and brace your core.",
+      "3": "Keep your chest up and your gaze forward as you begin the descent.",
+      "4": "Bend your hips and knees simultaneously, lowering your body in a controlled manner.",
+      "5": "Continue descending until your hip crease drops below your knee level, keeping your heels flat on the floor.",
+      "6": "Keep your knees tracking in line with your toes throughout the movement.",
+      "7": "Drive through your heels and midfoot to stand back up, extending your hips and knees together.",
+      "8": "Return to the starting position with your hips fully extended.",
+      "9": "Repeat for the desired number of repetitions while maintaining a neutral spine."
+    },
+    "image": "exercises/barbell-full-squat.webp",
+    "body_part": 5,
+    "muscle": 9,
+    "secondary_muscles": [
+      7,
+      8,
+      10,
+      11
+    ],
+    "equipment": [
+      2
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 5,
+  "fields": {
+    "source_id": "1642",
+    "owner": null,
+    "slug": "hip-thrust",
+    "name_es": "Hip Thrust",
+    "name_en": "Hip Thrust",
+    "instructions_es": {
+      "1": "Siéntate en el suelo con la parte alta de la espalda apoyada en el borde de un banco y una barra sobre las caderas, usando una almohadilla para mayor comodidad.",
+      "2": "Coloca los pies planos en el suelo, separados a la anchura de la cadera y con las rodillas flexionadas.",
+      "3": "Sujeta la barra con ambas manos para que no se mueva y activa el core.",
+      "4": "Empuja con los talones y eleva la cadera hasta que el torso y los muslos queden en línea recta.",
+      "5": "Contrae los glúteos con fuerza arriba y mantén la barbilla ligeramente metida.",
+      "6": "Baja la cadera de forma controlada hasta quedar justo por encima del suelo.",
+      "7": "Repite las repeticiones deseadas sin arquear la zona lumbar en la parte alta."
+    },
+    "instructions_en": {
+      "1": "Sit on the floor with your upper back resting against the edge of a bench and a barbell across your hips, using a pad for comfort.",
+      "2": "Place your feet flat on the floor about hip-width apart, with your knees bent.",
+      "3": "Hold the bar steady with both hands and brace your core.",
+      "4": "Drive through your heels and lift your hips until your torso and thighs form a straight line.",
+      "5": "Squeeze your glutes hard at the top and keep your chin slightly tucked.",
+      "6": "Lower your hips under control until they are just above the floor.",
+      "7": "Repeat for the desired number of repetitions without arching your lower back at the top."
+    },
+    "image": "exercises/barbell-hip-thrust.webp",
+    "body_part": 5,
+    "muscle": 8,
+    "secondary_muscles": [
+      9
+    ],
+    "equipment": [
+      2
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 6,
+  "fields": {
+    "source_id": "566",
+    "owner": null,
+    "slug": "shoulder-press-barbell",
+    "name_es": "Press militar con barra",
+    "name_en": "Shoulder Press, Barbell",
+    "instructions_es": {
+      "1": "Coloca la barra en un rack a la altura de la parte alta del pecho y agárrala algo más ancho que los hombros, con las palmas hacia delante.",
+      "2": "Saca la barra del soporte y da un paso atrás, apoyándola sobre los hombros y las clavículas con los codos ligeramente por delante de la barra.",
+      "3": "Colócate con los pies a la anchura de los hombros, aprieta los glúteos y activa el core.",
+      "4": "Inspira y empuja la barra hacia arriba en línea recta, echando la cabeza ligeramente hacia atrás para dejar pasar la barra.",
+      "5": "Adelanta la cabeza cuando la barra supere la frente y bloquea los codos con la barra sobre la mitad de los pies.",
+      "6": "Baja la barra de forma controlada hasta las clavículas, manteniendo las costillas hacia abajo y sin arquear la espalda.",
+      "7": "Repite las repeticiones deseadas con las muñecas rectas y las piernas y la cadera firmes."
+    },
+    "instructions_en": {
+      "1": "Set the bar on a rack at about upper-chest height and grip it slightly wider than shoulder width with your palms facing forward.",
+      "2": "Unrack the bar and step back, holding it on your front shoulders and collarbone with your elbows slightly in front of the bar.",
+      "3": "Stand with your feet about shoulder-width apart, squeeze your glutes and brace your core.",
+      "4": "Take a breath and press the bar straight up, moving your head slightly back so the bar can travel in a vertical line.",
+      "5": "Push your head forward once the bar passes your forehead and lock out your elbows with the bar over the middle of your feet.",
+      "6": "Lower the bar under control back to your collarbone, keeping your ribs down and avoiding leaning back.",
+      "7": "Repeat for the desired number of repetitions, keeping your wrists straight and your legs and hips firm."
+    },
+    "image": "exercises/barbell-shoulder-press.webp",
+    "body_part": 6,
+    "muscle": 2,
+    "secondary_muscles": [],
+    "equipment": [
+      2
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 7,
+  "fields": {
+    "source_id": "323",
+    "owner": null,
+    "slug": "cable-cross-over",
+    "name_es": "Aperturas en polea",
+    "name_en": "Cable Cross-over",
+    "instructions_es": {
+      "1": "Ajusta las dos poleas de la máquina en una posición alta y coloca un agarre individual en cada cable.",
+      "2": "Agarra un asa con cada mano, da un paso al frente entre las torres y coloca un pie ligeramente adelantado para mantener la estabilidad.",
+      "3": "Inclina el torso ligeramente hacia delante y abre los brazos hacia los lados con una ligera flexión de codos, sintiendo el estiramiento en el pecho.",
+      "4": "Mantén el pecho alto y los hombros bajos y hacia atrás, lejos de las orejas.",
+      "5": "Junta las manos delante de la parte baja del pecho describiendo un arco amplio, manteniendo la misma flexión de codos.",
+      "6": "Contrae el pecho brevemente cuando las manos se encuentren.",
+      "7": "Vuelve a abrir los brazos despacio por el mismo arco hasta sentir el estiramiento en el pecho, sin dejar que el peso lleve los hombros hacia delante.",
+      "8": "Repite las repeticiones deseadas con un peso que puedas controlar."
+    },
+    "instructions_en": {
+      "1": "Set both pulleys of a cable machine at a high position and attach a single handle to each cable.",
+      "2": "Grab a handle in each hand, step forward between the towers and place one foot slightly ahead of the other to stay stable.",
+      "3": "Lean your torso slightly forward and open your arms out to your sides with a soft bend in your elbows, feeling a stretch across your chest.",
+      "4": "Keep your chest up and your shoulders pulled down and back, away from your ears.",
+      "5": "Bring your hands together in front of your lower chest in a wide arc, keeping the same bend in your elbows.",
+      "6": "Squeeze your chest briefly when your hands meet.",
+      "7": "Return your arms slowly along the same arc until you feel a stretch in your chest, without letting the weight pull your shoulders forward.",
+      "8": "Repeat for the desired number of repetitions with a weight you can control."
+    },
+    "image": "exercises/cable-cross-over-variation.webp",
+    "body_part": 2,
+    "muscle": 1,
+    "secondary_muscles": [
+      2
+    ],
+    "equipment": [
+      5
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 8,
+  "fields": {
+    "source_id": "1519",
+    "owner": null,
+    "slug": "overhead-triceps-extension",
+    "name_es": "Extensión de tríceps por encima de la cabeza",
+    "name_en": "Overhead Triceps Extension",
+    "instructions_es": {
+      "1": "Fija una cuerda a una polea baja, agarra los extremos con ambas manos y colócate de espaldas a la máquina.",
+      "2": "Da un paso adelante con una pierna adelantada para mantener el cable en tensión, e inclina ligeramente el torso hacia delante con el core activado.",
+      "3": "Eleva los brazos por encima de la cabeza y flexiona los codos para que la cuerda quede detrás de la cabeza, con los brazos pegados a las orejas y apuntando hacia arriba.",
+      "4": "Mantén los brazos superiores quietos y extiende los codos para empujar la cuerda hacia arriba y hacia delante hasta estirar los brazos.",
+      "5": "Contrae el tríceps un momento en la parte alta.",
+      "6": "Baja la cuerda lentamente detrás de la cabeza flexionando los codos, hasta sentir el estiramiento en el tríceps.",
+      "7": "Repite las repeticiones deseadas sin abrir los codos hacia los lados ni levantar las costillas."
+    },
+    "instructions_en": {
+      "1": "Attach a rope to a low pulley, grab the ends with both hands and stand facing away from the machine.",
+      "2": "Step forward into a staggered stance so the cable stays under tension, and lean your torso slightly forward with your core braced.",
+      "3": "Raise your arms overhead and bend your elbows so the rope sits behind your head, with your upper arms close to your ears and pointing up.",
+      "4": "Keep your upper arms still and extend your elbows to push the rope up and forward until your arms are straight.",
+      "5": "Squeeze your triceps for a moment at the top.",
+      "6": "Lower the rope back behind your head slowly by bending your elbows, until you feel a stretch in your triceps.",
+      "7": "Repeat for the desired number of repetitions without letting your elbows flare out or your ribs lift."
+    },
+    "image": "exercises/cable-overhead-tricep-extension.webp",
+    "body_part": 4,
+    "muscle": 3,
+    "secondary_muscles": [],
+    "equipment": [
+      5
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 9,
+  "fields": {
+    "source_id": "1117",
+    "owner": null,
+    "slug": "seated-cable-row",
+    "name_es": "Remo gironda agarre cerrado",
+    "name_en": "Seated Cable Row",
+    "instructions_es": {
+      "1": "Coloca un agarre en V en una polea baja, siéntate con los pies en los apoyos y las rodillas ligeramente flexionadas.",
+      "2": "Agarra el asa con agarre neutro, con las palmas enfrentadas, y siéntate erguido con los brazos extendidos.",
+      "3": "Mantén el torso erguido o ligeramente inclinado hacia delante, con el pecho alto, la espalda recta y el core activado.",
+      "4": "Tira del asa hacia la parte baja del abdomen llevando los codos hacia atrás, pegados a los costados.",
+      "5": "Junta los omóplatos al final del recorrido sin inclinarte hacia atrás.",
+      "6": "Devuelve el asa lentamente hasta estirar los brazos, dejando que los omóplatos se separen un poco.",
+      "7": "Repite las repeticiones deseadas sin balancear el torso ni encoger los hombros."
+    },
+    "instructions_en": {
+      "1": "Attach a V-handle to a low pulley, sit on the bench with your feet on the footplates and keep your knees slightly bent.",
+      "2": "Grab the handle with a neutral grip, palms facing each other, and sit tall with your arms extended.",
+      "3": "Keep your torso upright or leaning slightly forward, with your chest up, your back straight and your core braced.",
+      "4": "Pull the handle toward your lower abdomen by driving your elbows back along your sides.",
+      "5": "Squeeze your shoulder blades together at the end of the pull without leaning back.",
+      "6": "Return the handle slowly until your arms are straight, letting your shoulder blades spread slightly.",
+      "7": "Repeat for the desired number of repetitions without rocking your torso or shrugging your shoulders."
+    },
+    "image": "exercises/cable-seated-row.webp",
+    "body_part": 3,
+    "muscle": 4,
+    "secondary_muscles": [
+      5,
+      12
+    ],
+    "equipment": [
+      5
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 10,
+  "fields": {
+    "source_id": "348",
+    "owner": null,
+    "slug": "lateral-raises",
+    "name_es": "Elevación lateral con mancuernas",
+    "name_en": "Lateral Raises",
+    "instructions_es": {
+      "1": "Ponte de pie con los pies a la anchura de los hombros, con una mancuerna en cada mano a los lados del cuerpo y las palmas mirando hacia ti.",
+      "2": "Flexiona ligeramente las rodillas, activa el core y mantén los hombros bajos y relajados.",
+      "3": "Eleva ambos brazos hacia los lados, llevando los codos por delante de las manos y manteniendo una ligera flexión en ellos.",
+      "4": "Detente cuando las manos lleguen aproximadamente a la altura de los hombros.",
+      "5": "Haz una breve pausa sin encoger los hombros hacia las orejas.",
+      "6": "Baja las mancuernas lentamente hasta los costados.",
+      "7": "Repite las repeticiones deseadas con un peso lo bastante ligero para no balancear el cuerpo."
+    },
+    "instructions_en": {
+      "1": "Stand tall with your feet shoulder-width apart, holding a dumbbell in each hand at your sides with your palms facing your body.",
+      "2": "Soften your knees, brace your core and keep your shoulders down and relaxed.",
+      "3": "Raise both arms out to your sides, leading with your elbows and keeping a slight bend in them.",
+      "4": "Stop when your hands reach about shoulder height.",
+      "5": "Pause briefly without shrugging your shoulders toward your ears.",
+      "6": "Lower the dumbbells slowly back to your sides.",
+      "7": "Repeat for the desired number of repetitions with a weight light enough to avoid swinging your body."
+    },
+    "image": "exercises/dumbbell-lateral-raise.webp",
+    "body_part": 6,
+    "muscle": 2,
+    "secondary_muscles": [],
+    "equipment": [
+      4
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 11,
+  "fields": {
+    "source_id": "1651",
+    "owner": null,
+    "slug": "dumbbell-rear-lunge",
+    "name_es": "Zancada hacia atrás con mancuernas",
+    "name_en": "Dumbbell Rear Lunge",
+    "instructions_es": {
+      "1": "Ponte de pie con una mancuerna en cada mano a los lados del cuerpo y los pies a la anchura de la cadera.",
+      "2": "Activa el core, mantén el pecho alto y da un paso controlado hacia atrás con una pierna.",
+      "3": "Baja el cuerpo flexionando ambas rodillas hasta que el muslo delantero quede aproximadamente paralelo al suelo y la rodilla trasera quede justo por encima del suelo.",
+      "4": "Mantén la rodilla delantera sobre el tobillo, el talón delantero apoyado y el torso erguido.",
+      "5": "Empuja con el talón del pie delantero para volver a la posición inicial, llevando la pierna trasera hacia delante hasta juntarla.",
+      "6": "Repite con la otra pierna alternando lados, o completa todas las repeticiones con una pierna antes de cambiar.",
+      "7": "Deja las mancuernas colgando a los lados durante todo el movimiento, sin que se balanceen."
+    },
+    "instructions_en": {
+      "1": "Stand upright holding a dumbbell in each hand at your sides, with your feet hip-width apart.",
+      "2": "Brace your core, keep your chest up and take a controlled step backward with one leg.",
+      "3": "Lower your body by bending both knees until your front thigh is roughly parallel to the floor and your back knee hovers just above the ground.",
+      "4": "Keep your front knee over your ankle, your front heel planted and your torso upright.",
+      "5": "Push through the heel of your front foot to return to standing, bringing your back leg forward to meet it.",
+      "6": "Repeat on the other leg, alternating sides, or complete all repetitions on one leg before switching.",
+      "7": "Keep the dumbbells hanging at your sides throughout without letting them swing."
+    },
+    "image": "exercises/dumbbell-lunge.webp",
+    "body_part": 5,
+    "muscle": 8,
+    "secondary_muscles": [
+      9,
+      13
+    ],
+    "equipment": [
+      4
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 12,
+  "fields": {
+    "source_id": "272",
+    "owner": null,
+    "slug": "hammer-curls",
+    "name_es": "Curl Martillo",
+    "name_en": "Hammer Curls",
+    "instructions_es": {
+      "1": "Ponte de pie con los pies a la anchura de los hombros y las rodillas ligeramente flexionadas, con una mancuerna en cada mano y las palmas enfrentadas.",
+      "2": "Mantén los codos pegados al torso y las muñecas rectas.",
+      "3": "Sube las mancuernas flexionando los codos, manteniendo las palmas enfrentadas durante todo el recorrido.",
+      "4": "Eleva las mancuernas hasta la altura de los hombros y contrae el bíceps y el antebrazo en la parte alta.",
+      "5": "Baja las mancuernas lentamente hasta extender del todo los brazos.",
+      "6": "Repite las repeticiones deseadas sin balancear el torso ni adelantar los brazos superiores."
+    },
+    "instructions_en": {
+      "1": "Stand with your feet shoulder-width apart and your knees slightly bent, holding a dumbbell in each hand with your palms facing each other.",
+      "2": "Keep your elbows close to your torso and your wrists straight.",
+      "3": "Curl the dumbbells up by bending your elbows, keeping your palms facing each other the whole time.",
+      "4": "Raise the dumbbells to about shoulder height and squeeze your biceps and forearms at the top.",
+      "5": "Lower the dumbbells slowly until your arms are fully extended.",
+      "6": "Repeat for the desired number of repetitions without swinging your torso or moving your upper arms forward."
+    },
+    "image": "exercises/hammer-curl.webp",
+    "body_part": 4,
+    "muscle": 5,
+    "secondary_muscles": [],
+    "equipment": [
+      4
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 13,
+  "fields": {
+    "source_id": "314",
+    "owner": null,
+    "slug": "typewriter-push-up",
+    "name_es": "Flexión tipo máquina de escribir",
+    "name_en": "Typewriter Push-Up",
+    "instructions_es": {
+      "1": "Colócate en plancha alta con las manos más separadas que los hombros y los pies juntos, con el cuerpo en línea recta de la cabeza a los talones.",
+      "2": "Activa el core y aprieta los glúteos para que la cadera no se hunda.",
+      "3": "Baja el pecho hacia la mano derecha flexionando el codo derecho, mientras el brazo izquierdo permanece estirado.",
+      "4": "Mantente abajo y desliza el pecho hacia la mano izquierda, estirando el brazo derecho a medida que flexionas el codo izquierdo.",
+      "5": "Mantén el pecho cerca del suelo y los codos apuntando ligeramente hacia atrás, sin abrirlos hacia los lados.",
+      "6": "Vuelve a deslizarte hacia el lado derecho del mismo modo, con un movimiento fluido y sin precipitarte.",
+      "7": "Empuja hacia arriba para volver a la posición inicial al terminar las repeticiones.",
+      "8": "Si la versión completa te resulta muy difícil, hazla apoyando las rodillas o con las manos sobre una superficie elevada."
+    },
+    "instructions_en": {
+      "1": "Start in a high plank with your hands wider than shoulder width and your feet together, with your body in a straight line from head to heels.",
+      "2": "Brace your core and squeeze your glutes to keep your hips from sagging.",
+      "3": "Lower your chest toward your right hand by bending your right elbow while your left arm stays straight.",
+      "4": "Stay low and slide your chest across toward your left hand, straightening your right arm as you bend your left elbow.",
+      "5": "Keep your chest close to the floor and your elbows pointing slightly back instead of flaring out to the sides.",
+      "6": "Slide back to the right side in the same way, moving smoothly and without rushing.",
+      "7": "Push back up to the starting position when you finish your repetitions.",
+      "8": "If the full version is too hard, do it from your knees or with your hands on an elevated surface."
+    },
+    "image": "exercises/isometric-wipers.webp",
+    "body_part": 2,
+    "muscle": 1,
+    "secondary_muscles": [
+      11
+    ],
+    "equipment": []
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 14,
+  "fields": {
+    "source_id": "369",
+    "owner": null,
+    "slug": "leg-extension",
+    "name_es": "Extensión de cuádriceps",
+    "name_en": "Leg Extension",
+    "instructions_es": {
+      "1": "Siéntate en la máquina con la espalda pegada al respaldo y ajusta el asiento para que las rodillas queden alineadas con el eje de giro.",
+      "2": "Coloca el rodillo inferior justo por encima de los tobillos y sujeta las asas laterales.",
+      "3": "Activa el core y mantén la cadera pegada al asiento.",
+      "4": "Extiende las rodillas para subir el rodillo hasta que las piernas queden casi rectas, sin bloquear las rodillas.",
+      "5": "Contrae el cuádriceps un momento en la parte alta.",
+      "6": "Baja el rodillo lentamente, durante unos dos o tres segundos, hasta que las rodillas queden flexionadas a unos 90 grados.",
+      "7": "Repite las repeticiones deseadas sin usar impulso."
+    },
+    "instructions_en": {
+      "1": "Sit on the machine with your back flat against the pad and adjust the seat so your knees line up with the machine's pivot point.",
+      "2": "Place the lower pad just above your ankles and hold the side handles.",
+      "3": "Brace your core and keep your hips pressed into the seat.",
+      "4": "Extend your knees to lift the pad until your legs are almost straight, without locking out your knees.",
+      "5": "Squeeze your quadriceps for a moment at the top.",
+      "6": "Lower the pad slowly, taking about two to three seconds, until your knees are bent to about 90 degrees.",
+      "7": "Repeat for the desired number of repetitions without using momentum."
+    },
+    "image": "exercises/leg-extension.webp",
+    "body_part": 5,
+    "muscle": 9,
+    "secondary_muscles": [],
+    "equipment": []
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 15,
+  "fields": {
+    "source_id": "371",
+    "owner": null,
+    "slug": "leg-press",
+    "name_es": "Prensa de piernas",
+    "name_en": "Leg Press",
+    "instructions_es": {
+      "1": "Siéntate en la máquina con la espalda y la cabeza apoyadas en el respaldo y la zona lumbar pegada al asiento.",
+      "2": "Coloca los pies en el centro de la plataforma, separados a la anchura de los hombros y con las puntas ligeramente hacia fuera.",
+      "3": "Libera los seguros y sujeta las asas laterales, con las piernas extendidas pero sin bloquear las rodillas.",
+      "4": "Baja la plataforma lentamente flexionando las rodillas hasta unos 90 grados, siempre que la zona lumbar permanezca apoyada.",
+      "5": "Empuja con todo el pie, sobre todo con los talones, para subir la plataforma sin bloquear las rodillas.",
+      "6": "Mantén las rodillas apuntando en la misma dirección que los pies durante todo el movimiento.",
+      "7": "Repite las repeticiones deseadas y vuelve a colocar los seguros al terminar."
+    },
+    "instructions_en": {
+      "1": "Sit on the machine with your back and head against the pad and your lower back pressed into the seat.",
+      "2": "Place your feet on the middle of the platform about shoulder-width apart, with your toes pointing slightly outward.",
+      "3": "Release the safety handles and hold the side handles, with your legs extended but your knees not locked.",
+      "4": "Lower the platform slowly by bending your knees to about 90 degrees, as long as your lower back stays on the pad.",
+      "5": "Push through your whole foot, especially your heels, to press the platform back up without locking your knees.",
+      "6": "Keep your knees pointing in the same direction as your toes throughout the movement.",
+      "7": "Repeat for the desired number of repetitions and engage the safety handles when you finish."
+    },
+    "image": "exercises/leg-press.webp",
+    "body_part": 5,
+    "muscle": 9,
+    "secondary_muscles": [
+      7,
+      8,
+      10
+    ],
+    "equipment": []
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 16,
+  "fields": {
+    "source_id": "364",
+    "owner": null,
+    "slug": "leg-curl",
+    "name_es": "Curl femoral",
+    "name_en": "Leg Curl",
+    "instructions_es": {
+      "1": "Ajusta la máquina para que las rodillas queden alineadas con su eje de giro y el rodillo descanse justo por encima de los talones.",
+      "2": "Túmbate boca abajo en el banco con las piernas totalmente extendidas y sujeta las asas.",
+      "3": "Mantén la cadera pegada al banco y el core activado.",
+      "4": "Sube las piernas flexionando las rodillas hasta que los talones se acerquen a los glúteos y las rodillas lleguen a unos 90 grados o más.",
+      "5": "Contrae los isquiotibiales un momento en la parte alta.",
+      "6": "Baja el rodillo lentamente, durante dos o tres segundos, hasta que las piernas queden casi rectas, sin dejar que las placas se apoyen.",
+      "7": "Repite las repeticiones deseadas sin levantar la cadera ni usar impulso."
+    },
+    "instructions_en": {
+      "1": "Adjust the machine so your knees line up with its pivot point and the roller pad rests just above your heels.",
+      "2": "Lie face down on the bench with your legs fully extended and hold the handles.",
+      "3": "Keep your hips pressed into the bench and your core braced.",
+      "4": "Curl your legs up by bending your knees until your heels move toward your glutes and your knees reach about 90 degrees or more.",
+      "5": "Squeeze your hamstrings briefly at the top.",
+      "6": "Lower the pad slowly over two to three seconds until your legs are almost straight, without letting the weight stack rest.",
+      "7": "Repeat for the desired number of repetitions without lifting your hips or using momentum."
+    },
+    "image": "exercises/lying-leg-curl.webp",
+    "body_part": 5,
+    "muscle": 7,
+    "secondary_muscles": [
+      8
+    ],
+    "equipment": []
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 17,
+  "fields": {
+    "source_id": "1696",
+    "owner": null,
+    "slug": "pull-ups-neutral-grip",
+    "name_es": "Dominadas (agarre neutro)",
+    "name_en": "Pull-Ups (Neutral Grip)",
+    "instructions_es": {
+      "1": "Agarra las asas de agarre neutro de una estación de dominadas con las palmas enfrentadas y las manos a la anchura de los hombros.",
+      "2": "Cuélgate con los brazos completamente extendidos y los hombros ligeramente hacia abajo, con las piernas rectas o cruzadas detrás de ti.",
+      "3": "Activa el core y mantén el cuerpo en línea recta.",
+      "4": "Lleva los omóplatos hacia abajo y atrás para iniciar el movimiento.",
+      "5": "Sube tirando con los codos hacia las caderas hasta que la barbilla supere las asas.",
+      "6": "Haz una breve pausa arriba con el pecho alto y los codos cerca del cuerpo.",
+      "7": "Baja lentamente hasta extender de nuevo los brazos por completo.",
+      "8": "Repite las repeticiones deseadas sin balancearte ni usar impulso."
+    },
+    "instructions_en": {
+      "1": "Grab the neutral-grip handles of a pull-up station with your palms facing each other and your hands about shoulder-width apart.",
+      "2": "Hang with your arms fully extended and your shoulders slightly pulled down, keeping your legs straight or crossed behind you.",
+      "3": "Brace your core and keep your body in a straight line.",
+      "4": "Pull your shoulder blades down and back to start the movement.",
+      "5": "Pull yourself up by driving your elbows down toward your hips until your chin passes the handles.",
+      "6": "Pause for a moment at the top with your chest up and your elbows close to your body.",
+      "7": "Lower yourself slowly until your arms are fully extended again.",
+      "8": "Repeat for the desired number of repetitions without swinging or kipping."
+    },
+    "image": "exercises/pull-up-neutral-grip.webp",
+    "body_part": 3,
+    "muscle": 4,
+    "secondary_muscles": [
+      5,
+      6,
+      12
+    ],
+    "equipment": [
+      8
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 18,
+  "fields": {
+    "source_id": "475",
+    "owner": null,
+    "slug": "pull-ups",
+    "name_es": "Dominadas",
+    "name_en": "Pull-ups",
+    "instructions_es": {
+      "1": "Agarra la barra de dominadas con agarre prono, palmas hacia delante, algo más ancho que los hombros.",
+      "2": "Cuélgate con los brazos completamente extendidos y los omóplatos ligeramente hacia abajo.",
+      "3": "Activa el core y mantén las piernas rectas o cruzadas detrás de ti.",
+      "4": "Lleva los omóplatos hacia abajo y atrás y tira de los codos hacia las caderas para subir.",
+      "5": "Continúa hasta que la barbilla supere la barra, llevando el pecho hacia ella.",
+      "6": "Baja lentamente hasta extender de nuevo los brazos por completo.",
+      "7": "Repite las repeticiones deseadas sin balancearte ni patalear."
+    },
+    "instructions_en": {
+      "1": "Grab the pull-up bar with an overhand grip, palms facing away from you, slightly wider than shoulder width.",
+      "2": "Hang with your arms fully extended and your shoulder blades slightly pulled down.",
+      "3": "Brace your core and keep your legs straight or crossed behind you.",
+      "4": "Pull your shoulder blades down and back, then drive your elbows down toward your hips to pull yourself up.",
+      "5": "Keep going until your chin clears the bar, with your chest reaching toward it.",
+      "6": "Lower yourself slowly until your arms are fully extended again.",
+      "7": "Repeat for the desired number of repetitions without swinging or kicking your legs."
+    },
+    "image": "exercises/pull-up.webp",
+    "body_part": 3,
+    "muscle": 4,
+    "secondary_muscles": [
+      2,
+      5,
+      12
+    ],
+    "equipment": [
+      8
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 19,
+  "fields": {
+    "source_id": "507",
+    "owner": null,
+    "slug": "romanian-deadlift",
+    "name_es": "Peso muerto rumano con barra",
+    "name_en": "Romanian Deadlift",
+    "instructions_es": {
+      "1": "Ponte de pie con los pies a la anchura de la cadera y sujeta la barra delante de los muslos con agarre prono, con las manos justo por fuera de las piernas.",
+      "2": "Desbloquea ligeramente las rodillas, activa el core, junta los omóplatos y mantén el pecho alto.",
+      "3": "Lleva la cadera hacia atrás como si quisieras tocar una pared detrás de ti, manteniendo las rodillas solo ligeramente flexionadas.",
+      "4": "Desliza la barra por los muslos y las espinillas, manteniéndola cerca del cuerpo.",
+      "5": "Mantén la espalda recta y baja la barra hasta sentir un fuerte estiramiento en los isquiotibiales, normalmente a la altura de la mitad de la espinilla.",
+      "6": "Empuja la cadera hacia delante y contrae los glúteos para volver a ponerte de pie, con la barra pegada a las piernas.",
+      "7": "Repite las repeticiones deseadas sin redondear la zona lumbar ni convertir el movimiento en una sentadilla."
+    },
+    "instructions_en": {
+      "1": "Stand with your feet hip-width apart and hold the bar in front of your thighs with an overhand grip, hands just outside your legs.",
+      "2": "Unlock your knees slightly, brace your core, pull your shoulder blades back and keep your chest up.",
+      "3": "Push your hips back as if reaching for a wall behind you, keeping your knees only slightly bent.",
+      "4": "Slide the bar down along your thighs and shins, keeping it close to your body.",
+      "5": "Keep your back flat and lower the bar until you feel a strong stretch in your hamstrings, usually around mid-shin.",
+      "6": "Drive your hips forward and squeeze your glutes to return to standing, keeping the bar close to your legs.",
+      "7": "Repeat for the desired number of repetitions without rounding your lower back or turning the movement into a squat."
+    },
+    "image": "exercises/romanian-deadlift.webp",
+    "body_part": 5,
+    "muscle": 7,
+    "secondary_muscles": [
+      8,
+      12
+    ],
+    "equipment": [
+      2
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 20,
+  "fields": {
+    "source_id": "622",
+    "owner": null,
+    "slug": "standing-calf-raises",
+    "name_es": "Elevación de talón de pie",
+    "name_en": "Standing Calf Raises",
+    "instructions_es": {
+      "1": "Colócate sobre la plataforma de la máquina de gemelos de pie con la parte delantera de los pies en el borde, los talones fuera y las almohadillas sobre los hombros.",
+      "2": "Mantén el torso erguido, las rodillas casi rectas y los pies paralelos, separados a la anchura de la cadera.",
+      "3": "Baja los talones todo lo que puedas con comodidad hasta sentir un estiramiento profundo en los gemelos.",
+      "4": "Empuja con la parte delantera de los pies para subir los talones lo más alto posible.",
+      "5": "Contrae los gemelos con fuerza un momento en la parte alta.",
+      "6": "Baja los talones lentamente hasta la posición de máximo estiramiento.",
+      "7": "Repite las repeticiones deseadas sin rebotar ni acortar el recorrido."
+    },
+    "instructions_en": {
+      "1": "Stand on the platform of a standing calf raise machine with the balls of your feet on the edge, your heels hanging off and the shoulder pads resting on your shoulders.",
+      "2": "Keep your torso upright, your knees almost straight and your feet parallel, about hip-width apart.",
+      "3": "Lower your heels as far as you comfortably can to feel a deep stretch in your calves.",
+      "4": "Push through the balls of your feet to raise your heels as high as possible.",
+      "5": "Squeeze your calves hard for a moment at the top.",
+      "6": "Lower your heels slowly back down to the full stretch position.",
+      "7": "Repeat for the desired number of repetitions without bouncing or shortening the range of motion."
+    },
+    "image": "exercises/standing-calf-raise.webp",
+    "body_part": 7,
+    "muscle": 10,
+    "secondary_muscles": [
+      13
+    ],
+    "equipment": []
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 21,
+  "fields": {
+    "source_id": "03lzqwk",
+    "owner": null,
+    "slug": "assisted-hanging-knee-raise",
+    "name_es": "Elevación de rodillas colgado asistida",
+    "name_en": "Assisted Hanging Knee Raise",
+    "instructions_es": {
+      "1": "Cuélgate de una barra de dominadas con los brazos completamente extendidos y las palmas mirando hacia afuera.",
+      "2": "Activa el core y eleva las rodillas hacia el pecho, flexionando la cadera y las rodillas.",
+      "3": "Haz una breve pausa en la parte alta del movimiento, contrayendo el abdomen.",
+      "4": "Baja las piernas lentamente hasta la posición inicial.",
+      "5": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Hang from a pull-up bar with your arms fully extended and your palms facing away from you.",
+      "2": "Engage your core muscles and lift your knees towards your chest, bending at the hips and knees.",
+      "3": "Pause for a moment at the top of the movement, squeezing your abs.",
+      "4": "Slowly lower your legs back down to the starting position.",
+      "5": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/assisted-hanging-knee-raise.webp",
+    "body_part": 5,
+    "muscle": 11,
+    "secondary_muscles": [],
+    "equipment": [
+      8
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 22,
+  "fields": {
+    "source_id": "0I5fUyn",
+    "owner": null,
+    "slug": "band-underhand-pulldown",
+    "name_es": "Jalón supino con banda elástica",
+    "name_en": "Band Underhand Pulldown",
+    "instructions_es": {
+      "1": "Ancla la banda elástica a un punto alto y fijo, como una barra de dominadas o una viga resistente.",
+      "2": "Ponte de pie frente al punto de anclaje con los pies a la anchura de los hombros.",
+      "3": "Agarra la banda con agarre supino, manos ligeramente más separadas que la anchura de los hombros.",
+      "4": "Mantén un tempo clásico y controlado durante toda la serie.",
+      "5": "Extiende los brazos completamente por encima de la cabeza, con los codos ligeramente flexionados.",
+      "6": "Activa los dorsales y tira de la banda hacia el pecho, juntando los omóplatos.",
+      "7": "Haz una breve pausa en la parte baja del movimiento, y luego libera la tensión lentamente volviendo a la posición inicial.",
+      "8": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Attach the band to a high anchor point, such as a pull-up bar or sturdy beam.",
+      "2": "Stand facing the anchor point with your feet shoulder-width apart.",
+      "3": "Grasp the band with an underhand grip, hands slightly wider than shoulder-width apart.",
+      "4": "Keep the movement under classic, controlled tempo throughout the set.",
+      "5": "Extend your arms fully overhead, keeping your elbows slightly bent.",
+      "6": "Engage your lats and pull the band down towards your chest, squeezing your shoulder blades together.",
+      "7": "Pause briefly at the bottom of the movement, then slowly release the tension and return to the starting position.",
+      "8": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/band-underhand-pulldown-with-classic.webp",
+    "body_part": 3,
+    "muscle": 4,
+    "secondary_muscles": [
+      5
+    ],
+    "equipment": []
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 23,
+  "fields": {
+    "source_id": "0dCyly0",
+    "owner": null,
+    "slug": "seated-military-press",
+    "name_es": "Press militar sentado",
+    "name_en": "Seated Military Press",
+    "instructions_es": {
+      "1": "Siéntate en un banco con la espalda recta y los pies apoyados en el suelo.",
+      "2": "Agarra la barra con agarre prono, algo más ancho que la anchura de los hombros.",
+      "3": "Eleva la barra hasta la altura de los hombros, con los codos ligeramente flexionados y apuntando hacia adelante.",
+      "4": "Empuja la barra por encima de la cabeza, extendiendo completamente los brazos.",
+      "5": "Baja la barra de nuevo hasta la altura de los hombros y repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Sit on a bench with your back straight and feet flat on the ground.",
+      "2": "Hold the barbell with an overhand grip, slightly wider than shoulder-width apart.",
+      "3": "Lift the barbell to shoulder height, keeping your elbows slightly bent and pointing forward.",
+      "4": "Press the barbell overhead, fully extending your arms.",
+      "5": "Lower the barbell back to shoulder height and repeat for the desired number of repetitions."
+    },
+    "image": "exercises/barbell-seated-bradford-rocky-press.webp",
+    "body_part": 6,
+    "muscle": 2,
+    "secondary_muscles": [
+      3,
+      12
+    ],
+    "equipment": [
+      2
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 24,
+  "fields": {
+    "source_id": "0Yz8WdV",
+    "owner": null,
+    "slug": "bear-crawl",
+    "name_es": "Caminata del oso",
+    "name_en": "Bear Crawl",
+    "instructions_es": {
+      "1": "Colócate a cuatro apoyos con las manos justo debajo de los hombros y las rodillas justo debajo de las caderas.",
+      "2": "Eleva ligeramente las rodillas del suelo, manteniendo la espalda plana y el core activado.",
+      "3": "Mueve la mano derecha y el pie izquierdo hacia adelante al mismo tiempo, seguido de la mano izquierda y el pie derecho.",
+      "4": "Continúa avanzando a gatas, alternando los movimientos de manos y pies.",
+      "5": "Mantén un ritmo constante y el core activado durante todo el ejercicio.",
+      "6": "Continúa durante la distancia o el tiempo deseado."
+    },
+    "instructions_en": {
+      "1": "Start on all fours with your hands directly under your shoulders and your knees directly under your hips.",
+      "2": "Lift your knees slightly off the ground, keeping your back flat and your core engaged.",
+      "3": "Move your right hand and left foot forward simultaneously, followed by your left hand and right foot.",
+      "4": "Continue crawling forward, alternating your hand and foot movements.",
+      "5": "Maintain a steady pace and keep your core tight throughout the exercise.",
+      "6": "Continue for the desired distance or time."
+    },
+    "image": "exercises/bear-crawl.webp",
+    "body_part": 5,
+    "muscle": 11,
+    "secondary_muscles": [
+      9
+    ],
+    "equipment": [
+      7
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 25,
+  "fields": {
+    "source_id": "gAwDzB3",
+    "owner": null,
+    "slug": "cable-triceps-pushdown-v-bar",
+    "name_es": "Extensión de tríceps en polea (barra en V)",
+    "name_en": "Cable Triceps Pushdown (V-Bar)",
+    "instructions_es": {
+      "1": "Coloca un agarre en V en la máquina de cable, ajustado en la posición más alta.",
+      "2": "Ponte de pie frente a la máquina de cable con los pies a la anchura de los hombros.",
+      "3": "Agarra la barra en V con agarre prono, palmas hacia abajo, manos a la anchura de los hombros.",
+      "4": "Mantén los codos pegados al cuerpo y los brazos superiores fijos durante todo el ejercicio.",
+      "5": "Activa el tríceps y exhala mientras empujas la barra en V hacia abajo hasta extender completamente los brazos.",
+      "6": "Haz una breve pausa en la parte baja, contrayendo el tríceps.",
+      "7": "Inhala mientras vuelves lentamente a la posición inicial, manteniendo el control.",
+      "8": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Attach a V-bar attachment to the cable machine at the highest setting.",
+      "2": "Stand facing the cable machine with your feet shoulder-width apart.",
+      "3": "Grasp the V-bar with an overhand grip, palms facing down, hands shoulder-width apart.",
+      "4": "Keep your elbows close to your sides and your upper arms stationary throughout the exercise.",
+      "5": "Engage your triceps and exhale as you push the V-bar down until your arms are fully extended.",
+      "6": "Pause briefly at the bottom of the movement, squeezing your triceps.",
+      "7": "Inhale as you slowly return the V-bar to the starting position, maintaining control.",
+      "8": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/cable-triceps-pushdown.webp",
+    "body_part": 4,
+    "muscle": 3,
+    "secondary_muscles": [],
+    "equipment": [
+      5
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 26,
+  "fields": {
+    "source_id": "J6Dx1Mu",
+    "owner": null,
+    "slug": "barbell-close-grip-bench-press",
+    "name_es": "Press de banca con agarre cerrado (barra)",
+    "name_en": "Barbell Close-Grip Bench Press",
+    "instructions_es": {
+      "1": "Túmbate en un banco plano con los pies apoyados en el suelo y la espalda pegada al banco.",
+      "2": "Agarra la barra con un agarre cerrado, algo más estrecho que la anchura de los hombros.",
+      "3": "Saca la barra del soporte y bájala lentamente hacia el pecho, manteniendo los codos pegados al cuerpo.",
+      "4": "Haz una breve pausa cuando la barra toque el pecho.",
+      "5": "Empuja la barra de vuelta hacia arriba hasta la posición inicial, extendiendo completamente los brazos.",
+      "6": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Lie flat on a bench with your feet flat on the ground and your back pressed against the bench.",
+      "2": "Grasp the barbell with a close grip, slightly narrower than shoulder-width apart.",
+      "3": "Unrack the barbell and lower it slowly towards your chest, keeping your elbows close to your body.",
+      "4": "Pause for a moment when the barbell touches your chest.",
+      "5": "Push the barbell back up to the starting position, fully extending your arms.",
+      "6": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/close-grip-bench-press.webp",
+    "body_part": 4,
+    "muscle": 3,
+    "secondary_muscles": [
+      1,
+      2
+    ],
+    "equipment": [
+      2
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 27,
+  "fields": {
+    "source_id": "0JtKWum",
+    "owner": null,
+    "slug": "dumbbell-burpee",
+    "name_es": "Burpee con mancuernas",
+    "name_en": "Dumbbell Burpee",
+    "instructions_es": {
+      "1": "Comienza de pie con los pies a la anchura de los hombros y una mancuerna en cada mano.",
+      "2": "Baja el cuerpo a posición de sentadilla, colocando las mancuernas en el suelo frente a ti.",
+      "3": "Lleva los pies hacia atrás de un salto hasta la posición de flexión, manteniendo el cuerpo en línea recta.",
+      "4": "Realiza una flexión, flexionando los codos y bajando el pecho hacia el suelo.",
+      "5": "Lleva los pies de un salto de vuelta hacia las manos, aterrizando en posición de sentadilla.",
+      "6": "Ponte de pie de forma explosiva, levantando las mancuernas del suelo y llevándolas a los hombros.",
+      "7": "Empuja las mancuernas por encima de la cabeza, extendiendo completamente los brazos.",
+      "8": "Baja las mancuernas de nuevo a los hombros y repite toda la secuencia las veces deseadas."
+    },
+    "instructions_en": {
+      "1": "Start in a standing position with your feet shoulder-width apart and a dumbbell in each hand.",
+      "2": "Lower your body into a squat position, placing the dumbbells on the ground in front of you.",
+      "3": "Kick your feet back into a push-up position, keeping your body in a straight line.",
+      "4": "Perform a push-up, bending your elbows and lowering your chest towards the ground.",
+      "5": "Jump your feet back towards your hands, landing in a squat position.",
+      "6": "Stand up explosively, lifting the dumbbells off the ground and bringing them to your shoulders.",
+      "7": "Press the dumbbells overhead, fully extending your arms.",
+      "8": "Lower the dumbbells back to your shoulders and repeat the entire sequence for the desired number of repetitions."
+    },
+    "image": "exercises/dumbbell-burpee.webp",
+    "body_part": 5,
+    "muscle": 9,
+    "secondary_muscles": [
+      2,
+      3,
+      7,
+      10,
+      11
+    ],
+    "equipment": [
+      4
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 28,
+  "fields": {
+    "source_id": "hxyTtWj",
+    "owner": null,
+    "slug": "dumbbell-seated-lateral-raise",
+    "name_es": "Elevación lateral sentado con mancuernas",
+    "name_en": "Dumbbell Seated Lateral Raise",
+    "instructions_es": {
+      "1": "Siéntate en un banco con los pies apoyados en el suelo y una mancuerna en cada mano, apoyadas en los muslos.",
+      "2": "Mantén la espalda recta y el core activado.",
+      "3": "Eleva las mancuernas hacia los lados con una ligera flexión en los codos, hasta que los brazos queden paralelos al suelo.",
+      "4": "Haz una breve pausa arriba, y luego baja las mancuernas lentamente hasta la posición inicial.",
+      "5": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Sit on a bench with your feet flat on the ground and a dumbbell in each hand, resting on your thighs.",
+      "2": "Keep your back straight and core engaged.",
+      "3": "Raise the dumbbells to your sides with a slight bend in your elbows, until your arms are parallel to the ground.",
+      "4": "Pause for a moment at the top, then slowly lower the dumbbells back down to the starting position.",
+      "5": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/dumbbell-fly.webp",
+    "body_part": 6,
+    "muscle": 2,
+    "secondary_muscles": [
+      12
+    ],
+    "equipment": [
+      4
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 29,
+  "fields": {
+    "source_id": "ns0SIbU",
+    "owner": null,
+    "slug": "dumbbell-incline-bench-press",
+    "name_es": "Press de banca inclinado con mancuernas",
+    "name_en": "Dumbbell Incline Bench Press",
+    "instructions_es": {
+      "1": "Ajusta un banco inclinado a un ángulo de 45 grados.",
+      "2": "Siéntate en el banco con los pies apoyados en el suelo y la espalda firmemente pegada al respaldo.",
+      "3": "Sostén una mancuerna en cada mano, palmas mirando hacia adelante, y elévalas a la altura de los hombros.",
+      "4": "Baja lentamente las mancuernas a los lados del pecho, manteniendo los codos en un ángulo de 90 grados.",
+      "5": "Empuja las mancuernas de vuelta hacia arriba hasta la posición inicial, extendiendo completamente los brazos.",
+      "6": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Set up an incline bench at a 45-degree angle.",
+      "2": "Sit on the bench with your feet flat on the ground and your back pressed firmly against the bench.",
+      "3": "Hold a dumbbell in each hand, palms facing forward, and lift them to shoulder height.",
+      "4": "Slowly lower the dumbbells to the sides of your chest, keeping your elbows at a 90-degree angle.",
+      "5": "Push the dumbbells back up to the starting position, fully extending your arms.",
+      "6": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/dumbbell-incline-bench-press.webp",
+    "body_part": 2,
+    "muscle": 1,
+    "secondary_muscles": [
+      2,
+      3
+    ],
+    "equipment": [
+      4
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 30,
+  "fields": {
+    "source_id": "v1qBec9",
+    "owner": null,
+    "slug": "dumbbell-rear-lateral-raise",
+    "name_es": "Elevación lateral posterior con mancuernas",
+    "name_en": "Dumbbell Rear Lateral Raise",
+    "instructions_es": {
+      "1": "Ponte de pie con los pies a la anchura de los hombros y sostén una mancuerna en cada mano, palmas mirando hacia el cuerpo.",
+      "2": "Flexiona ligeramente las rodillas e inclina el torso hacia adelante desde la cadera, manteniendo la espalda recta y el core activado.",
+      "3": "Eleva los brazos hacia los lados, con una ligera flexión en los codos, hasta que queden paralelos al suelo.",
+      "4": "Haz una breve pausa arriba, y luego baja los brazos lentamente hasta la posición inicial.",
+      "5": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Stand with your feet shoulder-width apart and hold a dumbbell in each hand, palms facing your body.",
+      "2": "Bend your knees slightly and hinge forward at the hips, keeping your back straight and core engaged.",
+      "3": "Raise your arms out to the sides, keeping a slight bend in your elbows, until they are parallel to the floor.",
+      "4": "Pause for a moment at the top, then slowly lower your arms back down to the starting position.",
+      "5": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/dumbbell-rear-lateral-raise.webp",
+    "body_part": 6,
+    "muscle": 2,
+    "secondary_muscles": [
+      12
+    ],
+    "equipment": [
+      4
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 31,
+  "fields": {
+    "source_id": "0MlxeMn",
+    "owner": null,
+    "slug": "gentle-style-cable-pulldown-pro-lat-bar",
+    "name_es": "Jalón en polea estilo suave (barra lat pro)",
+    "name_en": "Gentle Style Cable Pulldown (Pro Lat Bar)",
+    "instructions_es": {
+      "1": "Ajusta la altura del asiento de modo que tus muslos queden paralelos al suelo y los pies apoyados en el suelo.",
+      "2": "Agarra la barra lat con agarre prono, algo más ancho que la anchura de los hombros.",
+      "3": "Siéntate e inclínate ligeramente hacia atrás, manteniendo el pecho arriba y la espalda recta.",
+      "4": "Tira de la barra hacia el pecho, juntando los omóplatos.",
+      "5": "Mantén una ejecución suave y controlada durante todo el movimiento.",
+      "6": "Haz una breve pausa en la parte baja del movimiento, y luego suelta la barra lentamente hasta la posición inicial.",
+      "7": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Adjust the seat height so that your thighs are parallel to the ground and your feet are flat on the floor.",
+      "2": "Grasp the lat bar with an overhand grip, slightly wider than shoulder-width apart.",
+      "3": "Sit down and lean back slightly, keeping your chest up and your back straight.",
+      "4": "Pull the bar down towards your chest, squeezing your shoulder blades together.",
+      "5": "Maintain gentle form throughout.",
+      "6": "Pause for a moment at the bottom of the movement, then slowly release the bar back up to the starting position.",
+      "7": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/gentle-style-cable-pulldown-pro-lat-bar.webp",
+    "body_part": 3,
+    "muscle": 4,
+    "secondary_muscles": [
+      5
+    ],
+    "equipment": [
+      5
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 32,
+  "fields": {
+    "source_id": "05Cf2v8",
+    "owner": null,
+    "slug": "impossible-dips",
+    "name_es": "Fondos",
+    "name_en": "Impossible Dips",
+    "instructions_es": {
+      "1": "Colócate entre dos barras paralelas con los brazos completamente extendidos y el cuerpo suspendido en el aire.",
+      "2": "Flexiona las rodillas y cruza los tobillos.",
+      "3": "Baja el cuerpo flexionando los codos hasta que los brazos superiores queden paralelos al suelo.",
+      "4": "Haz una breve pausa, y luego empújate de vuelta hacia arriba hasta la posición inicial extendiendo los brazos.",
+      "5": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Position yourself between two parallel bars with your arms fully extended and your body suspended in the air.",
+      "2": "Bend your knees and cross your ankles.",
+      "3": "Lower your body by bending your elbows until your upper arms are parallel to the ground.",
+      "4": "Pause for a moment, then push yourself back up to the starting position by straightening your arms.",
+      "5": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/impossible-dips.webp",
+    "body_part": 4,
+    "muscle": 3,
+    "secondary_muscles": [
+      1,
+      2
+    ],
+    "equipment": [
+      7
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 33,
+  "fields": {
+    "source_id": "0rHfvy9",
+    "owner": null,
+    "slug": "inverse-leg-curl-on-pull-up-cable-machine",
+    "name_es": "Curl de piernas inverso (en máquina de cable con polea)",
+    "name_en": "Inverse Leg Curl (on Pull-up Cable Machine)",
+    "instructions_es": {
+      "1": "Ajusta la máquina de cable para que las correas de tobillo queden en la posición más baja.",
+      "2": "Túmbate boca abajo en el banco con las piernas extendidas y las correas de tobillo sujetas a los pies.",
+      "3": "Agárrate a las asas del banco para mantener la estabilidad.",
+      "4": "Flexiona las rodillas y curva las piernas hacia los glúteos, contrayendo los isquiotibiales.",
+      "5": "Haz una breve pausa en la parte alta del movimiento, y luego baja las piernas lentamente hasta la posición inicial.",
+      "6": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Adjust the cable machine so that the ankle straps are at the lowest setting.",
+      "2": "Lie face down on the bench with your legs extended and the ankle straps attached to your feet.",
+      "3": "Hold onto the handles of the bench for stability.",
+      "4": "Bend your knees and curl your legs towards your glutes, squeezing your hamstrings.",
+      "5": "Pause for a moment at the top of the movement, then slowly lower your legs back to the starting position.",
+      "6": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/inverse-leg-curl-on-pull-up-cable-machine.webp",
+    "body_part": 5,
+    "muscle": 7,
+    "secondary_muscles": [
+      8,
+      10
+    ],
+    "equipment": [
+      5
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 34,
+  "fields": {
+    "source_id": "RVwzP10",
+    "owner": null,
+    "slug": "cable-pulldown",
+    "name_es": "Jalón en polea",
+    "name_en": "Cable Pulldown",
+    "instructions_es": {
+      "1": "Ajusta la máquina de jalón para que el asiento quede a una altura cómoda y el rodillo de rodillas quede asegurado.",
+      "2": "Siéntate con la espalda recta y los pies apoyados en el suelo.",
+      "3": "Agarra la barra con agarre prono, algo más ancho que la anchura de los hombros.",
+      "4": "Inclínate ligeramente hacia atrás y activa el core.",
+      "5": "Tira de la barra hacia el pecho, juntando los omóplatos.",
+      "6": "Haz una breve pausa en la parte baja del movimiento, y luego suelta la barra lentamente hasta la posición inicial.",
+      "7": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Adjust the cable pulldown machine so that the seat is at a comfortable height and the knee pad is secured.",
+      "2": "Sit on the seat with your back straight and your feet flat on the ground.",
+      "3": "Grasp the cable bar with an overhand grip, slightly wider than shoulder-width apart.",
+      "4": "Lean back slightly and engage your core.",
+      "5": "Pull the cable bar down towards your chest, squeezing your shoulder blades together.",
+      "6": "Pause for a moment at the bottom of the movement, then slowly release the bar back to the starting position.",
+      "7": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/lat-pulldown.webp",
+    "body_part": 3,
+    "muscle": 4,
+    "secondary_muscles": [
+      5
+    ],
+    "equipment": [
+      5
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 35,
+  "fields": {
+    "source_id": "0jp9Rlz",
+    "owner": null,
+    "slug": "one-leg-floor-calf-raise",
+    "name_es": "Elevación de talón a una pierna en el suelo",
+    "name_en": "One Leg Floor Calf Raise",
+    "instructions_es": {
+      "1": "Ponte de pie con los pies a la anchura de la cadera y coloca las manos en una pared u objeto firme para mantener el equilibrio.",
+      "2": "Levanta un pie del suelo y equilíbrate sobre el otro pie.",
+      "3": "Eleva lentamente el talón del suelo, levantando el cuerpo sobre la punta del pie.",
+      "4": "Haz una breve pausa arriba, y luego baja el talón lentamente hasta la posición inicial.",
+      "5": "Repite las repeticiones deseadas y luego cambia de pierna."
+    },
+    "instructions_en": {
+      "1": "Stand with your feet hip-width apart and place your hands on a wall or sturdy object for balance.",
+      "2": "Lift one foot off the ground and balance on the other foot.",
+      "3": "Slowly raise your heel off the ground, lifting your body up onto the ball of your foot.",
+      "4": "Pause for a moment at the top, then slowly lower your heel back down to the starting position.",
+      "5": "Repeat for the desired number of repetitions, then switch legs and repeat."
+    },
+    "image": "exercises/one-leg-floor-calf-raise.webp",
+    "body_part": 7,
+    "muscle": 10,
+    "secondary_muscles": [],
+    "equipment": [
+      7
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 36,
+  "fields": {
+    "source_id": "0xDpB4L",
+    "owner": null,
+    "slug": "resistance-band-seated-hip-abduction",
+    "name_es": "Abducción de cadera sentado con banda elástica",
+    "name_en": "Resistance Band Seated Hip Abduction",
+    "instructions_es": {
+      "1": "Siéntate en una silla o banco con la espalda recta y los pies apoyados en el suelo.",
+      "2": "Coloca la banda elástica alrededor de los muslos, justo por encima de las rodillas.",
+      "3": "Apoya las manos a los lados de la silla o banco para mantener el equilibrio.",
+      "4": "Activa los abductores (músculos externos del muslo) y separa lentamente las rodillas contra la resistencia de la banda.",
+      "5": "Haz una breve pausa al final del movimiento, y luego junta las rodillas lentamente.",
+      "6": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Sit on a chair or bench with your back straight and feet flat on the ground.",
+      "2": "Wrap the resistance band around your thighs, just above your knees.",
+      "3": "Place your hands on the sides of the chair or bench for support.",
+      "4": "Engage your abductors (outer thigh muscles) and slowly push your knees apart, against the resistance of the band.",
+      "5": "Pause for a moment at the end of the movement, then slowly bring your knees back together.",
+      "6": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/resistance-band-seated-hip-abduction.webp",
+    "body_part": 5,
+    "muscle": 8,
+    "secondary_muscles": [
+      7
+    ],
+    "equipment": []
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 37,
+  "fields": {
+    "source_id": "0L2KwtI",
+    "owner": null,
+    "slug": "roller-hip-lat-stretch",
+    "name_es": "Estiramiento de cadera y dorsal con rodillo",
+    "name_en": "Roller Hip Lat Stretch",
+    "instructions_es": {
+      "1": "Comienza arrodillado en el suelo con el rodillo colocado bajo las caderas.",
+      "2": "Apoya las manos en el rodillo para mantener el equilibrio.",
+      "3": "Rueda lentamente el rodillo hacia adelante, extendiendo las caderas y estirando los glúteos.",
+      "4": "Mantén el estiramiento durante unos segundos, y luego rueda de vuelta a la posición inicial.",
+      "5": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Start by kneeling on the ground with the roller positioned under your hips.",
+      "2": "Place your hands on the roller for support.",
+      "3": "Slowly roll the roller forward, extending your hips and stretching your glutes.",
+      "4": "Hold the stretch for a few seconds, then roll back to the starting position.",
+      "5": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/roller-hip-lat-stretch.webp",
+    "body_part": 5,
+    "muscle": 8,
+    "secondary_muscles": [
+      7,
+      9
+    ],
+    "equipment": []
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 38,
+  "fields": {
+    "source_id": "0mB6wHO",
+    "owner": null,
+    "slug": "runners-stretch",
+    "name_es": "Estiramiento del corredor",
+    "name_en": "Runner's Stretch",
+    "instructions_es": {
+      "1": "Ponte de pie con los pies a la anchura de la cadera.",
+      "2": "Da un paso adelante con el pie derecho, manteniendo el pie izquierdo fijo.",
+      "3": "Flexiona la rodilla derecha y baja el cuerpo, manteniendo la pierna izquierda recta.",
+      "4": "Apoya las manos en el muslo derecho para mantener el equilibrio.",
+      "5": "Mantén el estiramiento entre 20 y 30 segundos, y luego cambia de lado y repite."
+    },
+    "instructions_en": {
+      "1": "Stand with your feet hip-width apart.",
+      "2": "Take a step forward with your right foot, keeping your left foot planted.",
+      "3": "Bend your right knee and lower your body down, keeping your left leg straight.",
+      "4": "Place your hands on your right thigh for support.",
+      "5": "Hold the stretch for 20-30 seconds, then switch sides and repeat."
+    },
+    "image": "exercises/runners-stretch.webp",
+    "body_part": 5,
+    "muscle": 7,
+    "secondary_muscles": [
+      9,
+      10
+    ],
+    "equipment": [
+      7
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 39,
+  "fields": {
+    "source_id": "10Z2DXU",
+    "owner": null,
+    "slug": "sled-45-degree-leg-press",
+    "name_es": "Prensa de piernas a 45°",
+    "name_en": "Sled 45° Leg Press",
+    "instructions_es": {
+      "1": "Ajusta el asiento y la plataforma del trineo a una posición cómoda.",
+      "2": "Siéntate en la máquina con la espalda apoyada en el respaldo y los pies a la anchura de los hombros en la plataforma.",
+      "3": "Agarra las asas laterales del asiento para mantener la estabilidad.",
+      "4": "Empuja la plataforma alejándola del cuerpo extendiendo las piernas, manteniendo los talones apoyados.",
+      "5": "Continúa empujando hasta que las piernas queden casi completamente extendidas, sin bloquear las rodillas.",
+      "6": "Haz una breve pausa en la parte alta del movimiento, y luego baja la plataforma lentamente hacia el cuerpo flexionando las rodillas.",
+      "7": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Adjust the seat and footplate of the sled machine to a comfortable position.",
+      "2": "Sit on the sled machine with your back against the backrest and your feet shoulder-width apart on the footplate.",
+      "3": "Grip the handles on the sides of the seat for stability.",
+      "4": "Push the footplate away from your body by extending your legs, keeping your heels on the footplate.",
+      "5": "Continue pushing until your legs are almost fully extended, but without locking your knees.",
+      "6": "Pause for a moment at the top of the movement, then slowly lower the footplate back towards your body by bending your knees.",
+      "7": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/sled-45-degree-leg-press.webp",
+    "body_part": 5,
+    "muscle": 8,
+    "secondary_muscles": [
+      7,
+      9,
+      10
+    ],
+    "equipment": []
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 40,
+  "fields": {
+    "source_id": "0S75mYG",
+    "owner": null,
+    "slug": "smith-seated-one-leg-calf-raise",
+    "name_es": "Elevación de talón sentado a una pierna (máquina)",
+    "name_en": "Smith Seated One Leg Calf Raise",
+    "instructions_es": {
+      "1": "Siéntate en la máquina con la espalda apoyada en el respaldo y los pies en el reposapiés.",
+      "2": "Coloca una pierna en el reposapiés y mantén la otra pierna fuera de él.",
+      "3": "Usando los músculos de la pantorrilla, eleva el talón todo lo posible.",
+      "4": "Haz una breve pausa arriba, y luego baja el talón lentamente hasta la posición inicial.",
+      "5": "Repite las repeticiones deseadas y luego cambia de pierna."
+    },
+    "instructions_en": {
+      "1": "Sit on the machine with your back against the pad and your feet on the footrest.",
+      "2": "Place one leg on the footrest and keep the other leg off the footrest.",
+      "3": "Using your calf muscles, raise your heel as high as possible.",
+      "4": "Pause for a moment at the top, then slowly lower your heel back down to the starting position.",
+      "5": "Repeat for the desired number of repetitions, then switch legs and repeat."
+    },
+    "image": "exercises/smith-seated-one-leg-calf-raise.webp",
+    "body_part": 7,
+    "muscle": 10,
+    "secondary_muscles": [
+      7
+    ],
+    "equipment": []
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 41,
+  "fields": {
+    "source_id": "01qpYSe",
+    "owner": null,
+    "slug": "upward-facing-dog",
+    "name_es": "Upward-Facing Dog",
+    "name_en": "Upward-Facing Dog",
+    "instructions_es": {
+      "1": "Túmbate boca abajo en el suelo con las piernas extendidas detrás de ti.",
+      "2": "Coloca las manos en el suelo junto a las costillas inferiores, con los dedos apuntando hacia adelante.",
+      "3": "Presiona las manos firmemente contra el suelo y extiende los brazos, levantando el torso y los muslos del suelo.",
+      "4": "Lleva los hombros hacia atrás y abajo, abriendo el pecho y elevando la mirada hacia el techo.",
+      "5": "Mantén la posición durante varias respiraciones, y luego baja el cuerpo lentamente hasta la posición inicial.",
+      "6": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Lie face down on the floor with your legs extended behind you.",
+      "2": "Place your hands on the floor next to your lower ribs, fingers pointing forward.",
+      "3": "Press your hands firmly into the floor and straighten your arms, lifting your torso and thighs off the ground.",
+      "4": "Roll your shoulders back and down, opening your chest and lifting your gaze towards the ceiling.",
+      "5": "Hold this position for a few breaths, then slowly lower your body back down to the starting position.",
+      "6": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/upward-facing-dog.webp",
+    "body_part": 3,
+    "muscle": 2,
+    "secondary_muscles": [
+      1
+    ],
+    "equipment": [
+      7
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 42,
+  "fields": {
+    "source_id": "0IgNjSM",
+    "owner": null,
+    "slug": "dumbbell-standing-reverse-curl",
+    "name_es": "Curl de bíceps invertido de pie con mancuernas",
+    "name_en": "Dumbbell Standing Reverse Curl",
+    "instructions_es": {
+      "1": "Ponte de pie con los pies a la anchura de los hombros y sostén una mancuerna en cada mano, palmas mirando hacia el cuerpo.",
+      "2": "Manteniendo los brazos superiores fijos, exhala y flexiona los codos contrayendo el bíceps.",
+      "3": "Continúa subiendo las mancuernas hasta que el bíceps esté completamente contraído y las mancuernas queden a la altura de los hombros.",
+      "4": "Mantén la posición contraída durante una breve pausa apretando el bíceps.",
+      "5": "Inhala y comienza a bajar lentamente las mancuernas hasta la posición inicial.",
+      "6": "Repite las repeticiones deseadas."
+    },
+    "instructions_en": {
+      "1": "Stand up straight with your feet shoulder-width apart and hold a dumbbell in each hand, palms facing your body.",
+      "2": "Keeping your upper arms stationary, exhale and curl the weights while contracting your biceps.",
+      "3": "Continue to raise the weights until your biceps are fully contracted and the dumbbells are at shoulder level.",
+      "4": "Hold the contracted position for a brief pause as you squeeze your biceps.",
+      "5": "Inhale and slowly begin to lower the dumbbells back to the starting position.",
+      "6": "Repeat for the desired number of repetitions."
+    },
+    "image": "exercises/dumbbell-standing-reverse-curl.webp",
+    "body_part": 4,
+    "muscle": 5,
+    "secondary_muscles": [],
+    "equipment": [
+      4
+    ]
+  }
+},
+{
+  "model": "exercises.exercise",
+  "pk": 43,
+  "fields": {
+    "source_id": "0br45wL",
+    "owner": null,
+    "slug": "push-up-inside-leg-kick",
+    "name_es": "Flexión con patada lateral de pierna",
+    "name_en": "Push-Up Inside Leg Kick",
+    "instructions_es": {
+      "1": "Comienza en posición de flexión con las manos algo más separadas que la anchura de los hombros y los pies juntos.",
+      "2": "Baja el cuerpo hacia el suelo flexionando los codos, manteniendo la espalda recta y el core activado.",
+      "3": "Al empujar de vuelta hacia arriba, levanta una pierna del suelo y llévala hacia el lateral, manteniéndola recta.",
+      "4": "Baja la pierna y repite la flexión, luego cambia a la otra pierna.",
+      "5": "Continúa alternando la patada lateral con cada repetición de flexión."
+    },
+    "instructions_en": {
+      "1": "Start in a push-up position with your hands slightly wider than shoulder-width apart and your feet together.",
+      "2": "Lower your body towards the ground by bending your elbows, keeping your back straight and your core engaged.",
+      "3": "As you push back up, lift one leg off the ground and kick it out to the side, keeping it straight.",
+      "4": "Lower your leg back down and repeat the push-up, then switch to the other leg.",
+      "5": "Continue alternating leg kicks with each push-up repetition."
+    },
+    "image": "exercises/push-up-inside-leg-kick.webp",
+    "body_part": 5,
+    "muscle": 8,
+    "secondary_muscles": [
+      7,
+      9,
+      10,
+      11
+    ],
+    "equipment": [
+      7
+    ]
+  }
+}
+]
+
