@@ -198,8 +198,12 @@ LOGOUT_REDIRECT_URL = "/login/"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT") or BASE_DIR / "media")
 
-# CORS: en producción el frontend y la API comparten dominio, así que no hace falta abrirlo
-CORS_ALLOWED_ORIGINS = env_list("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
+# CORS: en local se abre para Vite; en producción el frontend y la API comparten dominio
+# y no hace falta abrirlo a nadie (vacío = ningún origen)
+CORS_ALLOWED_ORIGINS = env_list(
+    "CORS_ALLOWED_ORIGINS",
+    "http://localhost:5173,http://127.0.0.1:5173" if DEBUG else "",
+)
 
 # Orígenes de confianza para los formularios con CSRF (el admin de Django)
 CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")
@@ -211,6 +215,8 @@ if not DEBUG:
     # Las cookies de sesión del admin solo viajan por HTTPS
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    # HSTS: el navegador recuerda durante un día que este dominio solo se usa con HTTPS
+    SECURE_HSTS_SECONDS = 60 * 60 * 24
 
 # DRF
 REST_FRAMEWORK = {
