@@ -217,6 +217,11 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     # HSTS: el navegador recuerda durante un día que este dominio solo se usa con HTTPS
     SECURE_HSTS_SECONDS = 60 * 60 * 24
+    # Avisos de check --deploy revisados y descartados a propósito:
+    # W008: la redirección de HTTP a HTTPS la hace Nginx, no Django
+    # W005: HSTS no se extiende a subdominios (la app no los usa)
+    # W021: no se pide la lista preload de los navegadores (es casi irreversible)
+    SILENCED_SYSTEM_CHECKS = ["security.W008", "security.W005", "security.W021"]
 
 # DRF
 REST_FRAMEWORK = {
