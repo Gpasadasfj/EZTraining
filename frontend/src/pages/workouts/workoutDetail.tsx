@@ -144,7 +144,7 @@ export default function WorkoutDetail() {
   return (
     <div className="mx-auto grid max-w-2xl gap-4 pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-44">
       {/* Pegada justo debajo del Header (h-14 en móvil, h-16 en escritorio) */}
-      <div className="sticky top-14 z-10 -mx-4 -mt-6 grid gap-2.5 border-b border-line bg-canvas/90 px-4 pt-3 pb-3.5 backdrop-blur-md lg:top-16 lg:mx-0 lg:px-0 lg:pt-4">
+      <div className="sticky top-14 z-10 -mx-4 -mt-6 grid gap-2.5 border-b border-line bg-canvas/90 px-4 pt-3 pb-3.5 backdrop-blur-md lg:top-16 lg:mx-0 lg:px-4 lg:pt-4">
         <div className="flex items-center gap-3">
           <Link
             to="/workouts"
