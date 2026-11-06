@@ -16,7 +16,14 @@ import os
 import sys
 from dotenv import load_dotenv
 
+from django.core.exceptions import ImproperlyConfigured
+
 load_dotenv()
+
+def env_list(name, default=""):
+    """Lee una variable de entorno con valores separados por comas: "a,b" → ["a", "b"]."""
+    value = os.getenv(name) or default
+    return [item.strip() for item in value.split(",") if item.strip()]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,12 +34,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+if not SECRET_KEY:
+    raise ImproperlyConfigured("Falta DJANGO_SECRET_KEY en el .env")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", "localhost,127.0.0.1")
 
 # Application definition
 
@@ -174,7 +182,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-
+# Donde collectstatic reúne los estáticos (el CSS del admin) para que los sirva Nginx
+STATIC_ROOT = Path(os.getenv("STATIC_ROOT") or BASE_DIR / "staticfiles")
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -187,13 +196,21 @@ LOGOUT_REDIRECT_URL = "/login/"
 
 # Media
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT") or BASE_DIR / "media")
 
-# CORS
-CORS_ALLOWED_ORIGINS= [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    ]
+# CORS: en producción el frontend y la API comparten dominio, así que no hace falta abrirlo
+CORS_ALLOWED_ORIGINS = env_list("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
+
+# Orígenes de confianza para los formularios con CSRF (el admin de Django)
+CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")
+
+# Detrás de Nginx con HTTPS
+if not DEBUG:
+    # Nginx avisa de que la petición original era HTTPS: así Django genera URLs con https://
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    # Las cookies de sesión del admin solo viajan por HTTPS
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 # DRF
 REST_FRAMEWORK = {

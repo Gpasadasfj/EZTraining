@@ -6,7 +6,6 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView
 )
 
-import debug_toolbar
 
 from django.conf import settings
 
@@ -23,6 +22,8 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
+    import debug_toolbar
+    
     urlpatterns += [
         path("api-auth/", include("rest_framework.urls")),
         path('__debug__/', include(debug_toolbar.urls)),
