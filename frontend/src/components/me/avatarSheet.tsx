@@ -58,7 +58,7 @@ export default function AvatarSheet({ me, onClose }: AvatarSheetProps) {
         className="size-32 justify-self-center font-display text-5xl font-extrabold italic"
       />
       <p className="text-center text-sm text-fg-subtle">
-        JPG, PNG o WebP · máximo 5 MB. Se recorta en círculo.
+        JPG, PNG o WebP · máximo 10 MB. Se recorta en círculo.
       </p>
 
       {error && (

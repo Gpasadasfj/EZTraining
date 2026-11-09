@@ -1,13 +1,24 @@
 import { useEffect, useState, type ChangeEvent } from "react";
 
-const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp"];
-const MAX_SIZE = 5 * 1024 * 1024; // el mismo límite que el backend
+const ACCEPTED_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+  "image/heif",
+];
+const MAX_SIZE = 10 * 1024 * 1024; // el mismo límite que el backend
 
-export const IMAGE_ACCEPT = ACCEPTED_TYPES.join(",");
+// Los tipos y también las extensiones: algunos navegadores no reconocen el tipo de un .heic
+export const IMAGE_ACCEPT = [...ACCEPTED_TYPES, ".heic", ".heif"].join(",");
 
 export function validateImage(file: File): string | null {
-  if (!ACCEPTED_TYPES.includes(file.type)) return "Solo se admiten imágenes JPG, PNG o WebP.";
-  if (file.size > MAX_SIZE) return "La imagen no puede pesar más de 5 MB.";
+  // Si el navegador no sabe qué tipo es (file.type vacío), se mira la extensión
+  const isHeic = /\.(heic|heif)$/i.test(file.name);
+  if (!ACCEPTED_TYPES.includes(file.type) && !isHeic) {
+    return "Solo se admiten imágenes JPG, PNG, WebP o HEIC (fotos de iPhone).";
+  }
+  if (file.size > MAX_SIZE) return "La imagen no puede pesar más de 10 MB.";
   return null;
 }
 

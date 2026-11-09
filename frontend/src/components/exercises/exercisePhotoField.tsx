@@ -65,7 +65,7 @@ export default function ExercisePhotoField({
           <Camera className="size-7 text-fg-subtle" aria-hidden="true" />
           Elegir foto
           <span className="text-sm font-medium text-fg-subtle">
-            JPG, PNG o WebP · máximo 5 MB
+            JPG, PNG o WebP · máximo 10 MB
           </span>
         </label>
       )}
