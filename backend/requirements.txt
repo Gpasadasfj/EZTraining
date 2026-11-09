@@ -12,6 +12,7 @@ drf-nested-routers==0.95.3
 gunicorn==26.2.0
 idna==3.18
 pillow==13.0.0
+pillow_heif==1.8.1
 psycopg==3.3.4
 PyJWT==2.15.1
 python-dotenv==1.2.2

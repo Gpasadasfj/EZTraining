@@ -3,10 +3,15 @@ from uuid import uuid4
 
 from django.core.files.base import ContentFile
 from PIL import Image, ImageOps
+from pillow_heif import register_heif_opener
 from rest_framework import serializers
 
-MAX_UPLOAD_SIZE = 5 * 1024 * 1024  # 5 MB
-ALLOWED_FORMATS = {"JPEG", "PNG", "WEBP"}
+# Las fotos del iPhone se guardan en HEIC. Esto enseña a Pillow a abrirlas, y como
+# se registra al cargar el módulo, también vale para la validación de imágenes de DRF
+register_heif_opener()
+
+MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10 MB
+ALLOWED_FORMATS = {"JPEG", "PNG", "WEBP", "HEIF"}
 
 
 def process_image(uploaded, max_side, square=False):
@@ -15,13 +20,13 @@ def process_image(uploaded, max_side, square=False):
     corregida, reducida y en WebP. Así cada foto ocupa unos 50-100 KB.
     """
     if uploaded.size > MAX_UPLOAD_SIZE:
-        raise serializers.ValidationError("La imagen no puede pesar más de 5 MB.")
+        raise serializers.ValidationError("La imagen no puede pesar más de 10 MB.")
 
     # DRF ya la ha leído para comprobar que es una imagen: hay que volver al principio
     uploaded.seek(0)
     image = Image.open(uploaded)
     if image.format not in ALLOWED_FORMATS:
-        raise serializers.ValidationError("Solo se admiten imágenes JPG, PNG o WebP.")
+        raise serializers.ValidationError("Solo se admiten imágenes JPG, PNG, WebP o HEIC.")
 
     # Las fotos de móvil guardan el giro en los metadatos EXIF, no en los píxeles
     image = ImageOps.exif_transpose(image)

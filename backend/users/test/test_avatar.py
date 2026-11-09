@@ -17,7 +17,6 @@ def make_image(name="foto.png", fmt="PNG", size=(1200, 800)):
     Image.new("RGB", size, "orange").save(buffer, format=fmt)
     return SimpleUploadedFile(name, buffer.getvalue(), content_type=f"image/{fmt.lower()}")
 
-
 class AvatarTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="ana", email="ana@test.com", password="pass1234")
@@ -35,6 +34,17 @@ class AvatarTest(TestCase):
         self.assertTrue(self.user.avatar.name.startswith("avatars/"))
         self.assertTrue(self.user.avatar.name.endswith(".webp"))
         with Image.open(self.user.avatar) as saved:
+            self.assertEqual(saved.size, (512, 512))
+
+    def test_upload_heic_photo_from_iphone(self):
+        # Las fotos del iPhone vienen en HEIC: entran así y se guardan como WebP
+        response = self.upload(make_image("IMG_0001.HEIC", "HEIF"))
+
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.avatar.name.endswith(".webp"))
+        with Image.open(self.user.avatar) as saved:
+            self.assertEqual(saved.format, "WEBP")
             self.assertEqual(saved.size, (512, 512))
 
     def test_replacing_deletes_previous_file(self):
