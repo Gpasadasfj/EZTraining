@@ -11,7 +11,7 @@ from rest_framework import serializers
 register_heif_opener()
 
 MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10 MB
-ALLOWED_FORMATS = {"JPEG", "PNG", "WEBP", "HEIF"}
+ALLOWED_FORMATS = {"JPEG", "MPO", "PNG", "WEBP", "HEIF"}
 
 
 def process_image(uploaded, max_side, square=False):
